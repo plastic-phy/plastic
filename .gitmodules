@@ -1,9 +1,9 @@
 [submodule "celluloid"]
-	path = celluloid
+	path = remote/celluloid
 	url = https://github.com/AlgoLab/celluloid.git
 [submodule "mp3treesim"]
-	path = mp3treesim
+	path = remote/mp3treesim
 	url = https://github.com/AlgoLab/mp3treesim.git
 [submodule "sasc"]
-	path = sasc
+	path = remote/sasc
 	url = https://github.com/sciccolella/sasc.git
