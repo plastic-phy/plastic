@@ -73,10 +73,10 @@ sasc_out_t* compute (sasc_in_t* arguments)
     char MUT_NAMES[M][255];
     char CELL_NAMES[N][255];
     for (i = 0; i < M; i++) {
-      strcpy(MUT_NAMES[i], arguments->mutation_labels[i]->b);
+      strcpy(MUT_NAMES[i], arguments->mutation_labels[i]);
     }
     for (i = 0; i < N; i++) {
-      strcpy(CELL_NAMES[i], arguments->cell_labels[i]->b);
+      strcpy(CELL_NAMES[i], arguments->cell_labels[i]);
     }
 
     // Get error parameters
@@ -109,7 +109,7 @@ sasc_out_t* compute (sasc_in_t* arguments)
     for (i = 0; i < N; i++) {
         INPUT_MATRIX[i] = malloc(M * (sizeof *INPUT_MATRIX[i]));
 	if (INPUT_MATRIX[i] == NULL) { system.exit(-1) };
-	for (j = 0; j < N; j++) {
+	for (j = 0; j < M; j++) {
 	  INPUT_MATRIX[i][j] = arguments->mutations_matrix[i][j];
 	}
     }
@@ -278,6 +278,9 @@ sasc_out_t* compute (sasc_in_t* arguments)
     out->el_alphas = a_xs;
     out->el_gammas = g_xs;
     out->el_beta = b_x;
+
+    for (i = 0; i < N; i++) { free(INPUT_MATRIX[i]); }
+    free(INPUT_MATRIX);
 
     return out;
 }
