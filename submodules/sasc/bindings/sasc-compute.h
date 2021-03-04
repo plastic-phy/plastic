@@ -4,7 +4,7 @@
 /* Ideally this is all we need to expose to python, and we can let the python side do I/O, input validity checks
    and so forth. */
 
-typedef struct Node node_t;
+#include "tree.h"
 
 typedef struct sasc_output {
     node_t* best_tree;
