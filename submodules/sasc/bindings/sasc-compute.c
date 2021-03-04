@@ -34,7 +34,7 @@
 #include "utils.h"
 #include "sastep.h"
 #include "vector.h"
-#include "sasc_compute.h"
+#include "sasc-compute.h"
 
 #ifdef NDEBUG
 #include <assert.h>
@@ -72,17 +72,17 @@ sasc_out_t* compute (sasc_in_t* arguments)
     // Read cell and mutation labels from input
     char MUT_NAMES[M][255];
     char CELL_NAMES[N][255];
-    for (i = 0; i < M; i++) {
+    for (int i = 0; i < M; i++) {
       strcpy(MUT_NAMES[i], arguments->mutation_labels[i]);
     }
-    for (i = 0; i < N; i++) {
+    for (int i = 0; i < N; i++) {
       strcpy(CELL_NAMES[i], arguments->cell_labels[i]);
     }
 
     // Get error parameters
     double MULTI_ALPHAS[M];
     double MULTI_GAMMAS[M];
-    for (i = 0; i < M; i++) {
+    for (int i = 0; i < M; i++) {
         MULTI_ALPHAS[i] = arguments->alphas[i];
         MULTI_GAMMAS[i] = arguments->gammas[i];
     }
@@ -105,11 +105,9 @@ sasc_out_t* compute (sasc_in_t* arguments)
 
     // Initialize the input matrix
     int** INPUT_MATRIX = malloc(N * (sizeof *INPUT_MATRIX));
-    if (INPUT_MATRIX == NULL) { system.exit(-1) };
-    for (i = 0; i < N; i++) {
+    for (int i = 0; i < N; i++) {
         INPUT_MATRIX[i] = malloc(M * (sizeof *INPUT_MATRIX[i]));
-	if (INPUT_MATRIX[i] == NULL) { system.exit(-1) };
-	for (j = 0; j < M; j++) {
+	for (int j = 0; j < M; j++) {
 	  INPUT_MATRIX[i][j] = arguments->mutations_matrix[i][j];
 	}
     }
@@ -275,11 +273,11 @@ sasc_out_t* compute (sasc_in_t* arguments)
     out->best_tree = best_tree;
     out->calculated_likelihood = best_calculated_likelihood;
     out->gtp_matrix = gtp_mat;
-    out->el_alphas = a_xs;
-    out->el_gammas = g_xs;
-    out->el_beta = b_x;
+    out->el_alphas = (double*) &a_xs;
+    out->el_gammas = (double*) &g_xs;
+    out->el_beta = BETA;
 
-    for (i = 0; i < N; i++) { free(INPUT_MATRIX[i]); }
+    for (int i = 0; i < N; i++) { free(INPUT_MATRIX[i]); }
     free(INPUT_MATRIX);
 
     return out;

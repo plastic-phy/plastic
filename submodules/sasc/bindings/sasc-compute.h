@@ -4,15 +4,15 @@
 /* Ideally this is all we need to expose to python, and we can let the python side do I/O, input validity checks
    and so forth. */
 
-#include "tree.h"
+typedef struct Node node_t;
 
 typedef struct sasc_output {
     node_t* best_tree;
     double calculated_likelihood;
     int** gtp_matrix;
-    double el_alphas;
+    double* el_alphas;
     double el_beta;
-    double el_gammas;
+    double* el_gammas;
 } sasc_out_t;
 
 // This struct might correspond to a couple different ones on the python side.
