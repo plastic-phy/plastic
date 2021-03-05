@@ -14,6 +14,7 @@ setup(
                   define_macros = [("DNDEBUG",)],
                   include_dirs = ["bindings", "sasc"],
                   extra_compile_args = ["-O3"]
-        )
+        ),
+        language_level = 3
     )
 )

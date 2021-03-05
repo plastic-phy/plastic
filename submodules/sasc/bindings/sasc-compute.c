@@ -227,7 +227,7 @@ sasc_out_t* compute (sasc_in_t* arguments)
 //        for (int i = 0; i < M; i++) { printf("%d ", Cj[i]); } printf("\n");
 
         double current_lh = greedy_tree_loglikelihood(ml_tree, ml_tree_vec, SIGMA, INPUT_MATRIX, N, M, MULTI_ALPHAS, BETA, MULTI_GAMMAS, Cj, arguments->cores);
-        // printf("Maximum log-likelihood: %lf\n", current_lh);
+//        printf("Maximum log-likelihood: %lf\n", current_lh);
 
         if (current_lh > best_loglike) {
             if (best_tree != NULL)
@@ -246,18 +246,17 @@ sasc_out_t* compute (sasc_in_t* arguments)
         vector_free(&ml_tree_vec);
         destroy_tree(root);
         destroy_tree(ml_tree);
-        
     }
 
     double best_calculated_likelihood = greedy_tree_loglikelihood(best_tree, best_tree_vec, best_sigma, INPUT_MATRIX, N, M, MULTI_ALPHAS, BETA, MULTI_GAMMAS, Cj, arguments->cores);
 
     
     int gtpo[M];
-    int** gtp_mat = malloc(N * (sizeof *gtp_mat));
+    int** gtp_mat = (int**) malloc(N * (sizeof(int*)));
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < M; j++) { gtpo[j] = 0; }
-	gtp_mat[i] = malloc(M * (sizeof *gtp_mat[i]));
+	gtp_mat[i] = (int**) malloc(M * (sizeof(int)));
 
 	node_t *node = vector_get(&best_tree_vec, best_sigma[i]);
 	assert(node != NULL);
@@ -267,8 +266,8 @@ sasc_out_t* compute (sasc_in_t* arguments)
 	  gtp_mat[i][j] = gtpo[j]; 
 	}
     }
-
-    sasc_out_t* out = malloc(sizeof(sasc_out_t)); 
+    
+    sasc_out_t* out = (sasc_out_t*) malloc(sizeof(sasc_out_t)); 
 
     out->best_tree = best_tree;
     out->calculated_likelihood = best_calculated_likelihood;
@@ -276,7 +275,7 @@ sasc_out_t* compute (sasc_in_t* arguments)
     out->el_alphas = (double*) &a_xs;
     out->el_gammas = (double*) &g_xs;
     out->el_beta = BETA;
-
+    
     for (int i = 0; i < N; i++) { free(INPUT_MATRIX[i]); }
     free(INPUT_MATRIX);
 
