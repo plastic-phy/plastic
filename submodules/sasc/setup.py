@@ -13,7 +13,8 @@ setup(
                    "sasc/sastep.c"],
                   define_macros = [("DNDEBUG",)],
                   include_dirs = ["bindings", "sasc"],
-                  extra_compile_args = ["-O3"]
+                  extra_compile_args = ["-O3", "-fopenmp"],
+                  extra_link_args = ["-fopenmp"]
         ),
         language_level = 3
     )
