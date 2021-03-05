@@ -119,8 +119,6 @@ def compute(
     free(c_out.el_gammas)
 
     el_beta = c_out.el_beta
-
-    best_tree = "sharlmao"
     
     # Build the output 
     out = best_tree, c_out.calculated_likelihood, expected_matrix, el_alphas, el_beta, el_gammas 
