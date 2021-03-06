@@ -51,7 +51,7 @@
 
 int MAX_ID_TREE = 0;
 
-sasc_out_t* compute (sasc_in_t* arguments)
+int compute (sasc_in_t* arguments, sasc_out_t* out)
 {   
     int N = arguments->N;
     int M = arguments->M;
@@ -252,11 +252,11 @@ sasc_out_t* compute (sasc_in_t* arguments)
 
     
     int gtpo[M];
-    int** gtp_mat = (int**) malloc(N * (sizeof(int*)));
+    int** gtp_mat = malloc(N * (sizeof *gtp_mat));
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < M; j++) { gtpo[j] = 0; }
-	gtp_mat[i] = (int**) malloc(M * (sizeof(int)));
+	gtp_mat[i] = malloc(M * (sizeof *gtp_mat[i]));
 
 	node_t *node = vector_get(&best_tree_vec, best_sigma[i]);
 	assert(node != NULL);
@@ -267,8 +267,6 @@ sasc_out_t* compute (sasc_in_t* arguments)
 	}
     }
     
-    sasc_out_t* out = (sasc_out_t*) malloc(sizeof(sasc_out_t)); 
-
     out->best_tree = best_tree;
     out->calculated_likelihood = best_calculated_likelihood;
     out->gtp_matrix = gtp_mat;
@@ -279,5 +277,5 @@ sasc_out_t* compute (sasc_in_t* arguments)
     for (int i = 0; i < N; i++) { free(INPUT_MATRIX[i]); }
     free(INPUT_MATRIX);
 
-    return out;
+    return 0;
 }

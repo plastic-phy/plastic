@@ -30,8 +30,8 @@ def compute(
     # Some inputs need to be processed and marshalled "manually" before being fed to the c function.
     # Let Cython handle the rest of them by itself.
     
-    # Marshalling of the matrix, assuming row-major list representation (that is, each column is a contiguous
-    # sublist of the original one.
+    # Marshalling of the matrix, assuming that the rows represent cells and the columns represent
+    # mutations.
     
     arguments.N = len(mutations_matrix)
     arguments.M = len(mutations_matrix[0])
@@ -83,32 +83,32 @@ def compute(
     arguments.cooling_rate = cooling_rate
     arguments.cores = cores
     
-    cdef sca.sasc_out_t* c_out
-    
-    # THE C A L L.
-    c_out = sca.compute(arguments)
+    cdef sca.sasc_out_t out_struct
+    cdef sca.sasc_out_t* c_out = &out_struct
+
+    cdef int comp_result
+    # THE C A L L
+    with nogil:
+        comp_result = sca.compute(arguments, c_out)
     
     # And now for the unmarshalling. We'll output a tuple with the tree as a networkx graph, the matrix as
-    # a numpy array, and the rest of the values as simple ints/doubles
-    
-    
+    # a numpy array, and the rest of the values as simple ints/doubles/strings.
     
     # Unmarshalling of the tree.
     cdef sca.node_t* root = c_out.best_tree
     best_tree = nx.DiGraph()
-    best_tree.add_node(root.id, label = str(root.label), loss = root.loss, mutation_index = root.mut_index)
+    best_tree.add_node(root.id, label = str(root.label, 'utf-8'), loss = root.loss, mutation_index = root.mut_index)
     unmarshal_tree(root, best_tree)
 
     sca.destroy_tree(c_out.best_tree)
     
-    #Unmarshalling of the expected matrix
+    # Unmarshalling of the expected genotype matrix
     expected_matrix = np.ndarray([N, M])
     for i in range(N):
         for j in range(M):
             expected_matrix[i][j] = c_out.gtp_matrix[i][j]
         free(c_out.gtp_matrix[i])
     free(c_out.gtp_matrix)
-    print(expected_matrix)
     
     # Unmarshalling of the error learning parameters
     el_alphas = [None] * M
@@ -119,20 +119,20 @@ def compute(
     
     el_beta = c_out.el_beta
     
-    # Build the output 
+    # Building the output 
     out = best_tree, c_out.calculated_likelihood, expected_matrix, el_alphas, el_beta, el_gammas
     
     # Cleanup and return
-    free(c_out)
     return out
 
 
+# Builds a networkx representation of a sasc tree assuming that G already holds the root node.
 cdef unmarshal_tree(sca.node_t* root, G):
     
     cdef sca.node_t* curr_child = root.first_child
     while curr_child != NULL:
-        G.add_node(curr_child.id, label = str(curr_child.label), loss = curr_child.loss, mutation_index = curr_child.mut_index)
+        G.add_node(curr_child.id, label = str(curr_child.label, 'utf-8'), loss = curr_child.loss, mutation_index = curr_child.mut_index)
         G.add_edge(root.id, curr_child.id)
         unmarshal_tree(curr_child, G)
-        curr_child = curr_child.next_sibling;
+        curr_child = curr_child.next_sibling
 

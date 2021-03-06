@@ -42,6 +42,6 @@ typedef struct sasc_input {
 } sasc_in_t;
 
 
-sasc_out_t* compute(sasc_in_t* arguments); 
+int compute(sasc_in_t* arguments, sasc_out_t* out); 
 
 #endif

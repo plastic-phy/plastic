@@ -50,4 +50,4 @@ cdef extern from "sasc-compute.h":
 
     ctypedef sasc_output sasc_out_t
     
-    sasc_out_t* compute(sasc_in_t* arguments)
+    int compute(sasc_in_t* arguments, sasc_out_t* out) nogil
