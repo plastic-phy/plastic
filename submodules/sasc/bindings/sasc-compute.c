@@ -52,7 +52,7 @@
 int MAX_ID_TREE = 0;
 
 int compute (sasc_in_t* arguments, sasc_out_t* out)
-{   
+{
     int N = arguments->N;
     int M = arguments->M;
     int K = arguments->k;

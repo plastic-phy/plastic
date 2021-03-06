@@ -11,10 +11,10 @@ setup(
                    "sasc/vector.c",
                    "sasc/utils.c",
                    "sasc/sastep.c"],
-                  define_macros = [("DNDEBUG",)],
+                  define_macros = [],
                   include_dirs = ["bindings", "sasc"],
-                  extra_compile_args = ["-O3", "-fopenmp"],
-                  extra_link_args = ["-fopenmp"]
+                  extra_compile_args = ["-O3", "-fopenmp", "-DNDEBUG"],
+                  extra_link_args = ["-O3", "-fopenmp", "-DNDEBUG"]
         ),
         language_level = 3
     )

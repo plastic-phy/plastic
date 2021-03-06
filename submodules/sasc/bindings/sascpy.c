@@ -3,18 +3,16 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "define_macros": [
-            [
-                "DNDEBUG"
-            ]
-        ],
         "depends": [],
         "extra_compile_args": [
             "-O3",
-            "-fopenmp"
+            "-fopenmp",
+            "-DNDEBUG"
         ],
         "extra_link_args": [
-            "-fopenmp"
+            "O3",
+            "-fopenmp",
+            "-DNDEBUG"
         ],
         "include_dirs": [
             "bindings",
