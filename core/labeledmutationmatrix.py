@@ -1,8 +1,7 @@
 from pandas import DataFrame
 import numpy as np
 import tatsu as ts
-class LabelError(Exception): pass
-class MatrixLabelSizeMismatch(Exception): pass
+
 class DuplicateLabelsError(Exception): pass
 class EmptyMatrixError(Exception): pass
 class MatrixLabelSizeMismatch(Exception): pass
@@ -11,41 +10,57 @@ class LabeledMutationMatrix:
 
     def __init__(self, mutation_matrix, cell_labels = None, mutation_labels = None):
 
-        mutation_matrix = np.array(mutation_matrix, dtype = 'int')
-        shape = mutation_matrix.shape
-        if len(shape) != 2:
-            raise NotAMatrixError()
-        if len(mutation_matrix.flat) == 0:
+        def is_collection(obj):
+            try:
+                list(obj)
+                return True
+            except TypeError:
+                return False
+        
+        if not is_collection(mutation_matrix):
+            raise TypeError('The matrix must be a collection.')
+
+        height = len(mutation_matrix)
+        if height == 0:
             raise EmptyMatrixError()
-        for element in mutation_matrix.flat:
-            if element not in {1, 2, 0}:
-                raise ValueError(element)
+
+        for row in list(mutation_matrix):
+            if not is_collection(row):
+                raise TypeError('Each row of the matrix must be a collection')
+            for element in row:
+                if element not in {1, 2, 0}:
+                    raise ValueError(element)
+        width = len(mutation_matrix[0])
+        if any([len(row) != width for row in mutation_matrix]):
+            raise NotAMatrixError('Each row in the matrix must be of the same length')
 
         if cell_labels is None:
-            cell_labels = [str(i) for i in range(1, shape[0] + 1)]
+            cell_labels = [str(i) for i in range(1, height + 1)]
         if mutation_labels is None:
-            mutation_labels = [str(i) for i in range(1, shape[1] + 1)]
+            mutation_labels = [str(i) for i in range(1, width + 1)]
 
         def _validate_labels(label_list, expected_length):
-            if not isinstance(label_list, list):
-                raise TypeError(label_list)
+            if not is_collection(label_list):
+                raise TypeError('mutation_labels and cell_labels must be collections')
+            if any([isinstance(label_list, tp) for tp in {str, bytes}]):
+                raise TypeError('strings are not accepted as label lists')
             
             if len(label_list) != expected_length:
                 raise MatrixLabelSizeMismatch('expected: {0}, found: {1}'.format(len(label_list), expected_length) )
             
             for label in label_list:
                 if not isinstance(label, str):
-                    raise TypeError(label)
+                    raise TypeError('each label must be a string')
                 if len(label) == 0 or len(label) > 254:
-                    raise ValueError(label)
+                    raise ValueError('label with bad length: {0}'.format(label))
 
             if len(set(label_list)) != len(label_list):
                 raise DuplicateLabelsError()
 
-        _validate_labels(cell_labels, shape[0])
-        _validate_labels(mutation_labels, shape[1])
+        _validate_labels(cell_labels, height)
+        _validate_labels(mutation_labels, width)
         
-        self._data = DataFrame(mutation_matrix, index = cell_labels, columns = mutation_labels)
+        self._data = DataFrame(mutation_matrix, index = cell_labels, columns = mutation_labels, dtype = int)
 
     # The initial choice is to make the matrix immutable and to use external representations that are as general
     # as possible.
@@ -86,7 +101,7 @@ class LabeledMutationMatrix:
             return [lb.strip() for lb in labels_string.splitlines()]
         
         return LabeledMutationMatrix(
-            MatrixParser(matstring_format).parse_matrix(mutation_matrix),
+            _MatrixParser(matstring_format).parse_matrix(mutation_matrix),
             _parse_labels(cell_labels),
             _parse_labels(mutation_labels)
         )
@@ -174,7 +189,7 @@ _formats = {
 class NotAMatrixError(Exception): pass
 class MeaninglessCellValueError(Exception): pass
 
-class MatrixParser:
+class _MatrixParser:
 
     def __init__(self, parser_name):
         self.matrix_format = _formats[parser_name]
