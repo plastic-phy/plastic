@@ -252,11 +252,10 @@ int compute (sasc_in_t* arguments, sasc_out_t* out)
 
     
     int gtpo[M];
-    int** gtp_mat = malloc(N * (sizeof *gtp_mat));
+    
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < M; j++) { gtpo[j] = 0; }
-	gtp_mat[i] = malloc(M * (sizeof *gtp_mat[i]));
 
 	node_t *node = vector_get(&best_tree_vec, best_sigma[i]);
 	assert(node != NULL);
@@ -270,9 +269,17 @@ int compute (sasc_in_t* arguments, sasc_out_t* out)
     out->best_tree = best_tree;
     out->calculated_likelihood = best_calculated_likelihood;
     out->gtp_matrix = gtp_mat;
-    out->el_alphas = (double*) &a_xs;
-    out->el_gammas = (double*) &g_xs;
-    out->el_beta = BETA;
+
+    for (int i = 0; i < N; i++) {
+        node_t *leaf = vector_get(&best_tree_vec, best_sigma[i]);
+	out->ids_of_leaves[i] = leaf->id;
+    }
+    
+    for(int i = 0; i < M; i ++) {
+        out->el_alphas[i] = el_alphas[i];
+        out->el_gammas[i] = el_gammas[i];
+    }
+    out->el_beta = el_params->b_x;
     
     for (int i = 0; i < N; i++) { free(INPUT_MATRIX[i]); }
     free(INPUT_MATRIX);
