@@ -53,10 +53,10 @@ def compute(
     cell_labels_bytes = [bytes(lb, 'ascii') for lb in cell_labels] 
     mutation_labels_bytes = [bytes(lb, 'ascii') for lb in mutation_labels]
     
-    for ix in range(N):
-        arguments.cell_labels[ix] = cell_labels_bytes[ix]
-    for ix in range(M):
-        arguments.mutation_labels[ix] = mutation_labels_bytes[ix]
+    for i in range(N):
+        arguments.cell_labels[i] = cell_labels_bytes[i]
+    for i in range(M):
+        arguments.mutation_labels[i] = mutation_labels_bytes[i]
     
     # Python bools must be converted into C integers
     arguments.single_alpha = 1 if single_alpha else 0
@@ -67,9 +67,9 @@ def compute(
     arguments.alphas = <double*>malloc(M * sizeof(double))
     arguments.gammas = <double*>malloc(M * sizeof(double))
     
-    for ix in range(M):
-        arguments.alphas[ix] = alphas[ix]
-        arguments.gammas[ix] = gammas[ix]
+    for i in range(M):
+        arguments.alphas[i] = alphas[i]
+        arguments.gammas[i] = gammas[i]
     
     # Automatic marshalling.
     arguments.beta = beta
@@ -86,6 +86,14 @@ def compute(
     cdef sca.sasc_out_t out_struct
     cdef sca.sasc_out_t* c_out = &out_struct
 
+    out.gtp_mat = <int**> malloc(N * sizeof(int*))
+    for i in range(N):
+        out->gtp_mat[i] = <int*> malloc(M * sizeof(int))
+
+    out.ids_of_leaves = <int*> malloc(N * sizeof(int));
+    out.el_alphas = <double*> malloc(M * sizeof(int));
+    out.el_gammas = <double*> malloc(M * sizeof(int));
+
     cdef int comp_result
     # THE C A L L
     with nogil:
@@ -100,7 +108,12 @@ def compute(
     best_tree.add_node(root.id, label = str(root.label, 'utf-8'), loss = root.loss, mutation_index = root.mut_index)
     unmarshal_tree(root, best_tree)
 
+    for i, cell in enumerate(cell_labels):
+        G.add_node(cell, shape = 'box', cell_name = cell)
+        G.add_edge(ids_of_leaves[i], cell)
+    
     sca.destroy_tree(c_out.best_tree)
+    free(out.best_sigma)
     
     # Unmarshalling of the expected genotype matrix
     expected_matrix = np.ndarray([N, M])
@@ -113,9 +126,12 @@ def compute(
     # Unmarshalling of the error learning parameters
     el_alphas = [None] * M
     el_gammas = [None] * N
-    for ix in range(M):
-        el_gammas[ix] = c_out.el_gammas[ix]
-        el_alphas[ix] = c_out.el_alphas[ix]
+    for i in range(M):
+        el_gammas[i] = c_out.el_gammas[i]
+        el_alphas[i] = c_out.el_alphas[i]
+
+    free(c_out.el_alphas[i])
+    free(c_out.el_gammas[i])
     
     el_beta = c_out.el_beta
     
@@ -126,13 +142,24 @@ def compute(
     return out
 
 
-# Builds a networkx representation of a sasc tree assuming that G already holds the root node.
-cdef unmarshal_tree(sca.node_t* root, G):
-    
-    cdef sca.node_t* curr_child = root.first_child
-    while curr_child != NULL:
-        G.add_node(curr_child.id, label = str(curr_child.label, 'utf-8'), loss = curr_child.loss, mutation_index = curr_child.mut_index)
-        G.add_edge(root.id, curr_child.id)
-        unmarshal_tree(curr_child, G)
-        curr_child = curr_child.next_sibling
 
+    
+cdef unmarshal_tree(sca.node_t* node, G):
+
+    unmarshal_tree(node->next_sibling)
+    unmarshal_tree(node->first_child)
+
+    # add the node to the tree
+    if (node == NULL):
+        return;
+
+    # If the node is a deletion, color it in red.
+    if (node.loss == 1):
+        G.add_node(node.id, color = 'indianred1', style = 'filled', label = str(node.label, 'ascii'))
+    else:
+        G.add_node(node.id, label = str(node.label, 'ascii'))
+
+    # Add the arc from the parent of the node to the node (if this is not the root node).
+    if(node.parent != NULL):
+        G.add_edge(parent.id, node.id)
+}
