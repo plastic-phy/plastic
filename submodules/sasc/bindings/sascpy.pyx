@@ -105,13 +105,13 @@ def compute(
     # Unmarshalling of the tree.
     cdef sca.node_t* root = c_out.best_tree
     best_tree = nx.DiGraph()
-    best_tree.add_node(root.id, label = str(root.label, 'utf-8'), loss = root.loss, mutation_index = root.mut_index)
+    
     unmarshal_tree(root, best_tree)
 
     for i, cell in enumerate(cell_labels):
         best_tree.add_node(cell, shape = 'box', cell_name = cell)
         best_tree.add_edge(c_out.ids_of_leaves[i], cell)
-    
+
     sca.destroy_tree(c_out.best_tree)
     free(c_out.ids_of_leaves)
     
@@ -146,12 +146,11 @@ def compute(
     
 cdef unmarshal_tree(sca.node_t* node, G):
 
-    unmarshal_tree(node.next_sibling, G)
-    unmarshal_tree(node.first_child, G)
-
-    # add the node to the tree
     if (node == NULL):
         return;
+
+    unmarshal_tree(node.next_sibling, G)
+    unmarshal_tree(node.first_child, G)
 
     # If the node is a deletion, color it in red.
     if (node.loss == 1):
