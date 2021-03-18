@@ -3,4 +3,5 @@
 .vs
 *__pycache__
 *.pytest_cache
-issue2-core
+build/
+
