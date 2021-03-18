@@ -13,6 +13,7 @@ typedef struct sasc_output {
     double* el_alphas;
     double el_beta;
     double* el_gammas;
+    int* ids_of_leaves;
 } sasc_out_t;
 
 // This struct might correspond to a couple different ones on the python side.

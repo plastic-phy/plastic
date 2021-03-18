@@ -86,13 +86,13 @@ def compute(
     cdef sca.sasc_out_t out_struct
     cdef sca.sasc_out_t* c_out = &out_struct
 
-    out.gtp_mat = <int**> malloc(N * sizeof(int*))
+    c_out.gtp_matrix = <int**> malloc(N * sizeof(int*))
     for i in range(N):
-        out->gtp_mat[i] = <int*> malloc(M * sizeof(int))
+        c_out.gtp_matrix[i] = <int*> malloc(M * sizeof(int))
 
-    out.ids_of_leaves = <int*> malloc(N * sizeof(int));
-    out.el_alphas = <double*> malloc(M * sizeof(int));
-    out.el_gammas = <double*> malloc(M * sizeof(int));
+    c_out.ids_of_leaves = <int*> malloc(N * sizeof(int));
+    c_out.el_alphas = <double*> malloc(M * sizeof(int));
+    c_out.el_gammas = <double*> malloc(M * sizeof(int));
 
     cdef int comp_result
     # THE C A L L
@@ -109,11 +109,11 @@ def compute(
     unmarshal_tree(root, best_tree)
 
     for i, cell in enumerate(cell_labels):
-        G.add_node(cell, shape = 'box', cell_name = cell)
-        G.add_edge(ids_of_leaves[i], cell)
+        best_tree.add_node(cell, shape = 'box', cell_name = cell)
+        best_tree.add_edge(c_out.ids_of_leaves[i], cell)
     
     sca.destroy_tree(c_out.best_tree)
-    free(out.best_sigma)
+    free(c_out.ids_of_leaves)
     
     # Unmarshalling of the expected genotype matrix
     expected_matrix = np.ndarray([N, M])
@@ -130,8 +130,8 @@ def compute(
         el_gammas[i] = c_out.el_gammas[i]
         el_alphas[i] = c_out.el_alphas[i]
 
-    free(c_out.el_alphas[i])
-    free(c_out.el_gammas[i])
+    free(c_out.el_alphas)
+    free(c_out.el_gammas)
     
     el_beta = c_out.el_beta
     
@@ -146,8 +146,8 @@ def compute(
     
 cdef unmarshal_tree(sca.node_t* node, G):
 
-    unmarshal_tree(node->next_sibling)
-    unmarshal_tree(node->first_child)
+    unmarshal_tree(node.next_sibling, G)
+    unmarshal_tree(node.first_child, G)
 
     # add the node to the tree
     if (node == NULL):
@@ -161,5 +161,5 @@ cdef unmarshal_tree(sca.node_t* node, G):
 
     # Add the arc from the parent of the node to the node (if this is not the root node).
     if(node.parent != NULL):
-        G.add_edge(parent.id, node.id)
-}
+        G.add_edge(node.parent.id, node.id)
+

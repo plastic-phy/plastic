@@ -47,6 +47,7 @@ cdef extern from "sasc-compute.h":
         double* el_alphas
         double el_beta
         double* el_gammas
+        int* ids_of_leaves
 
     ctypedef sasc_output sasc_out_t
     

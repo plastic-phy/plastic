@@ -262,13 +262,12 @@ int compute (sasc_in_t* arguments, sasc_out_t* out)
 	get_genotype_profile(vector_get(&best_tree_vec, best_sigma[i]), gtpo);
 
 	for (int j = 0; j < M; j++) {
-	  gtp_mat[i][j] = gtpo[j]; 
+	  out->gtp_matrix[i][j] = gtpo[j]; 
 	}
     }
     
     out->best_tree = best_tree;
     out->calculated_likelihood = best_calculated_likelihood;
-    out->gtp_matrix = gtp_mat;
 
     for (int i = 0; i < N; i++) {
         node_t *leaf = vector_get(&best_tree_vec, best_sigma[i]);
@@ -276,8 +275,8 @@ int compute (sasc_in_t* arguments, sasc_out_t* out)
     }
     
     for(int i = 0; i < M; i ++) {
-        out->el_alphas[i] = el_alphas[i];
-        out->el_gammas[i] = el_gammas[i];
+        out->el_alphas[i] = a_xs[i];
+        out->el_gammas[i] = g_xs[i];
     }
     out->el_beta = el_params->b_x;
     
