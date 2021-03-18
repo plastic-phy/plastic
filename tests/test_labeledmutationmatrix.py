@@ -152,3 +152,10 @@ class Test_Serialization:
         assert a.matrix() == a_after_rt.matrix()
         assert a.cell_labels == a_after_rt.cell_labels
         assert a.mutation_labels == a_after_rt.mutation_labels
+
+
+class TestMatrixLoading:
+
+    def test_plain_matrix_loading(self):
+
+        a = LabeledMutationMatrix.from_files('matrepr_files/sasc_example')
