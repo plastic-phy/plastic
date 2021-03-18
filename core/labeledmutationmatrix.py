@@ -2,13 +2,13 @@ from pandas import DataFrame
 import numpy as np
 import tatsu as ts
 
+class DuplicateLabelsError(Exception): pass
+class EmptyMatrixError(Exception): pass
+class MatrixLabelSizeMismatch(Exception): pass
 
 class LabeledMutationMatrix:
 
-    class DuplicateLabelsError(Exception): pass
-    class EmptyMatrixError(Exception): pass
-    class MatrixLabelSizeMismatch(Exception): pass
-
+    
     def __init__(self, mutation_matrix, cell_labels = None, mutation_labels = None):
 
         def is_collection(obj):
@@ -61,7 +61,7 @@ class LabeledMutationMatrix:
         _validate_labels(cell_labels, height)
         _validate_labels(mutation_labels, width)
         
-        self._data = DataFrame(mutation_matrix, index = cell_labels, columns = mutation_labels, dtype = int)
+        self._data = DataFrame(mutation_matrix, index = cell_labels, columns = mutation_labels, dtype = int, copy = True)
 
     # The initial choice is to make the matrix immutable and to use external representations that are as general
     # as possible.
