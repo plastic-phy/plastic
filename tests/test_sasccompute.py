@@ -22,7 +22,7 @@ def test_dummy_input():
         repetitions = 5,
         force_monoclonal = False,
         start_temp = 10**4,
-        cooling_rate =  10**-4,
+        cooling_rate =  10**-2,
         cores = 8
     )
 
