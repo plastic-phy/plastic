@@ -4,7 +4,7 @@ from Cython.Build import cythonize
 sascdir = 'submodules/sasc/'
 
 st.setup(
-    name = 'pollopacco',
+    name = 'phylopipelinetestbuild',
     ext_modules = cythonize(
         st.Extension("sasc",
                   [sascdir + filepath for filepath in
@@ -28,9 +28,8 @@ st.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: POSIX",
     ],
-    install_requires=[
+    install_requires = [
         'pandas',
-        'celluloid-clust',
-        'mp3treesim'
-    ],
+        'tatsu'
+    ]
 )
