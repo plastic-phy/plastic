@@ -17,21 +17,21 @@ class PhylogenyTree():
             raise NotATreeError('the graph must be a tree.')
 
         self._tree = deepcopy(tree_as_nx_graph)
+        self._leaves = [node for node in self._tree.nodes if self._tree.out_degree(node) == 0]
 
-    def as_digraph(self, with_terminal_specimen = True):
+    def as_digraph(self, with_leaves = False):
 
         out = deepcopy(self._tree)
-        if not with_terminal_specimen:
-            leaves = [node for node in out if out.out_degree(node) == 0]
-            out.remove_nodes_from(leaves)
+        if not with_leaves:
+            out.remove_nodes_from(self._leaves)
 
         return out
 
-    def draw(with_terminal_specimen = True):
+    def draw(with_leaves = False):
 
         # Should this depend from mp3 instead? I think it would be a fine idea to let it be 
         # available from SASC as well.
-        drawtree = nx.convert_node_labels_to_integers(self.as_digraph(with_terminal_specimen))
+        drawtree = nx.convert_node_labels_to_integers(self.as_digraph(with_leaves))
 
         labels = nx.get_node_attributes(drawtree, 'label')
 

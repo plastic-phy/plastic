@@ -3,7 +3,6 @@ import numpy as np
 import tatsu as ts
 
 
-
 class LabeledMutationMatrix:
 
     class DuplicateLabelsError(Exception): pass
@@ -20,7 +19,7 @@ class LabeledMutationMatrix:
                 return False
         
         if not is_collection(mutation_matrix):
-            raise TypeError('The matrix must be a collection.')
+            raise TypeError('The matrix must be a collection, but {0} is not.'.format(mutation_matrix))
 
         height = len(mutation_matrix)
         if height == 0:
@@ -28,7 +27,7 @@ class LabeledMutationMatrix:
 
         for row in list(mutation_matrix):
             if not is_collection(row):
-                raise TypeError('Each row of the matrix must be a collection')
+                raise TypeError('Each row of the matrix must be a collection, but {0} was not.'.format(row))
             for element in row:
                 if element not in {1, 2, 0}:
                     raise ValueError(element)
@@ -43,18 +42,18 @@ class LabeledMutationMatrix:
 
         def _validate_labels(label_list, expected_length):
             if not is_collection(label_list):
-                raise TypeError('mutation_labels and cell_labels must be collections')
+                raise TypeError('mutation_labels and cell_labels must be collections, but {0} is not'.format(label_list))
             if any([isinstance(label_list, tp) for tp in {str, bytes}]):
-                raise TypeError('strings are not accepted as label lists')
+                raise TypeError('strings like {0} are not accepted as label lists'.format(label_list))
             
             if len(label_list) != expected_length:
-                raise MatrixLabelSizeMismatch('expected: {0}, found: {1}'.format(len(label_list), expected_length) )
+                raise MatrixLabelSizeMismatch('expected {0} labels, but found {1} in {2}.'.format(expected_length, len(label_list), label_list))
             
             for label in label_list:
                 if not isinstance(label, str):
-                    raise TypeError('each label must be a string')
-                if len(label) == 0 or len(label) > 254:
-                    raise ValueError('label with bad length: {0}'.format(label))
+                    raise TypeError('each label must be a string, but {0} is not.'.format(label))
+                if len(label) == 0 or len(bytes(label, 'ascii')) > 254:
+                    raise ValueError('The label "{0}" is either an empty string, or a label with more than 254 characters.'.format(label))
 
             if len(set(label_list)) != len(label_list):
                 raise DuplicateLabelsError()
@@ -100,7 +99,7 @@ class LabeledMutationMatrix:
         def _parse_labels(labels_string):
             if labels_string is None:
                 return None
-            return [lb.strip() for lb in labels_string.splitlines()]
+            return [lb.strip() for lb in labels_string.splitlines() if lb.strip() != ""]
         
         return LabeledMutationMatrix(
             _MatrixParser(matstring_format).parse_matrix(mutation_matrix),
@@ -126,7 +125,7 @@ class LabeledMutationMatrix:
         return LabeledMutationMatrix._from_strings(
             mutation_matrix = mutation_matrix,
             cell_labels = _read_nullable(cells_file),
-            mutation_labls = _read_nullable(mutations_file),
+            mutation_labels = _read_nullable(mutations_file),
             matstring_format = matstring_format
         )
 
