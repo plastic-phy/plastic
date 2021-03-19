@@ -112,7 +112,7 @@ def compute(
     unmarshal_tree(root, best_tree)
 
     for i, cell in enumerate(cell_labels):
-        best_tree.add_node(cell, shape = 'box', cell_name = cell)
+        best_tree.add_node(cell, shape = 'box', label = cell, is_cell = True)
         best_tree.add_edge(c_out.ids_of_leaves[i], cell)
 
     sca.destroy_tree(c_out.best_tree)
