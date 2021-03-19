@@ -20,15 +20,16 @@ def test_dummy_input():
         el_b_variance = 0.01,
         el_g_variance = 0.01,
         k = 1,
-        max_deletions = 2,
+        max_deletions = 10,
         repetitions = 5,
         force_monoclonal = False,
         start_temp = 10**4,
-        cooling_rate =  10**-1,
-        cores = 8
+        cooling_rate =  10**-2,
+        cores = 12
     )
 
-    print([edge for edge in out[0].edges])
+    [print(node) for node in out[0].nodes(data = True)]
+    [print(edge) for edge in out[0].edges]
     print(out[1])
     print(out[2])
     print(out[3])
