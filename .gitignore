@@ -3,4 +3,6 @@
 build/
 .vs
 *__pycache__
+dist
+*.egg-info*
 

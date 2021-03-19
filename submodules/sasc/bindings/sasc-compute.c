@@ -273,8 +273,8 @@ int compute (sasc_in_t* arguments, sasc_out_t* out)
         node_t *leaf = vector_get(&best_tree_vec, best_sigma[i]);
 	out->ids_of_leaves[i] = leaf->id;
     }
-    
-    for(int i = 0; i < M; i ++) {
+
+    for(int i = 0; i < M; i++) {
         out->el_alphas[i] = a_xs[i];
         out->el_gammas[i] = g_xs[i];
     }

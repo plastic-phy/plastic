@@ -66,7 +66,9 @@ def compute(
     # Arrays with error parameters must be allocated and filled
     arguments.alphas = <double*>malloc(M * sizeof(double))
     arguments.gammas = <double*>malloc(M * sizeof(double))
-    
+
+    print(len(alphas))
+    print(M)
     for i in range(M):
         arguments.alphas[i] = alphas[i]
         arguments.gammas[i] = gammas[i]
@@ -91,13 +93,14 @@ def compute(
         c_out.gtp_matrix[i] = <int*> malloc(M * sizeof(int))
 
     c_out.ids_of_leaves = <int*> malloc(N * sizeof(int));
-    c_out.el_alphas = <double*> malloc(M * sizeof(int));
-    c_out.el_gammas = <double*> malloc(M * sizeof(int));
+    c_out.el_alphas = <double*> malloc(M * sizeof(double));
+    c_out.el_gammas = <double*> malloc(M * sizeof(double));
 
     cdef int comp_result
     # THE C A L L
     with nogil:
         comp_result = sca.compute(arguments, c_out)
+    print(comp_result)
     
     # And now for the unmarshalling. We'll output a tuple with the tree as a networkx graph, the matrix as
     # a numpy array, and the rest of the values as simple ints/doubles/strings.
@@ -125,7 +128,7 @@ def compute(
     
     # Unmarshalling of the error learning parameters
     el_alphas = [None] * M
-    el_gammas = [None] * N
+    el_gammas = [None] * M
     for i in range(M):
         el_gammas[i] = c_out.el_gammas[i]
         el_alphas[i] = c_out.el_alphas[i]
