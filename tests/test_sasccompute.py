@@ -1,17 +1,19 @@
 from sasc import compute
+from core.labeledmutationmatrix import LabeledMutationMatrix
 
 def test_dummy_input():
+
+    inp = LabeledMutationMatrix.from_files('matrepr_files/clustered_example')
+    mat = inp.matrix()
+    M = len(mat[0])
+    
     out = compute(
-        mutations_matrix = [
-            [1, 0, 0],
-            [1, 2, 0],
-            [1, 0, 1]
-        ],
-        mutation_labels = ['m1', 'm2', 'm3'],
-        cell_labels = ['c1', 'c2', 'c3'],
-        alphas = [0.1, 0.1, 0.1],
+        mutations_matrix = mat,
+        mutation_labels = inp.mutation_labels,
+        cell_labels = inp.cell_labels,
+        alphas = [0.1] * M,
         beta = 0.00001,
-        gammas = [0.2, 0.2, 0.2],
+        gammas = [0.2] * M,
         single_alpha = True,
         single_gamma = True,
         el_a_variance = 0.01,
@@ -22,7 +24,7 @@ def test_dummy_input():
         repetitions = 5,
         force_monoclonal = False,
         start_temp = 10**4,
-        cooling_rate =  10**-2,
+        cooling_rate =  10**-1,
         cores = 8
     )
 
