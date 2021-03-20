@@ -1,9 +1,10 @@
 *~
 *.o
-build/
 .vs
 *__pycache__
-dist
+*.pytest_cache
+build/
 *.egg-info*
+dist
 *#
 
