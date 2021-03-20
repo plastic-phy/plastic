@@ -2,8 +2,9 @@
 *.o
 .vs
 *__pycache__
-build
+*.pytest_cache
+build/
+*.egg-info*
 dist
-*.egg-info
 *#
 
