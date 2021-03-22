@@ -91,7 +91,7 @@ class LabeledMutationMatrix:
     # The initial choice is to make the matrix immutable and to use external representations that are as general
     # as possible.
         
-    def as_matrix(self):
+    def matrix(self):
         """
         Returns a copy of the matrix that was used to initialize the object as a list of lists, where each list is a row 
         in the matrix.
@@ -190,7 +190,7 @@ class LabeledMutationMatrix:
             return [lb.strip() for lb in labels_string.splitlines() if lb.strip() != ""]
         
         return LabeledMutationMatrix(
-            _MatrixParser._from_default_format(matstring_format).parse_matrix(mutation_matrix),
+            MatrixParser._from_default_format(matstring_format).parse_matrix(mutation_matrix),
             _parse_labels(cell_labels),
             _parse_labels(mutation_labels)
         )
@@ -254,7 +254,7 @@ _formats = {
             @@whitespace ::  /(?s)[ \t\r\f\v]+/
             start = matrix $ ;
             mcell = "0" ~ | "1" ~ | "2" ~ ;
-            row = {mcell};
+            row = { mcell };
             matrix = ("\n").{ row } ;
             """
         ),
@@ -269,7 +269,7 @@ _formats = {
             @@whitespace ::  /(?s)[ \t\r\f\v]+/
             start = matrix $ ;
             mcell = "0" ~ | "1" ~ | "2" ~ | "3" ~ ;
-            row = {mcell};
+            row = { mcell };
             matrix = ("\n").{ row } ;
             """
         ),
@@ -287,8 +287,8 @@ _formats = {
             cell_number_line = /\d+/;
             snv_number_line = /\d+/;
             mcell = "0" ~ | "1" ~ | "-1" ~ ;
-            row = {mcell};
-            matrix = ("\n").{row};
+            row = { mcell };
+            matrix = ("\n").{ row };
             """
         ),
         value_map = {'0' : 0, '1': 1, '-1' : 2},
@@ -319,15 +319,16 @@ class _MatrixSemantics:
         if any([len(row) != matrix_width for row in self.current_matrix_rows]):
             raise NotAMatrixError()
 
-        matrix = np.array(current_matrix_rows)
+        matrix = np.array(self.current_matrix_rows)
+        self.current_matrix_rows = []
         if self._transpose: mutation_matrix = np.transpose(matrix)
         self.matrix_list.append(matrix)
         return ast
     
     def row(self, ast):
         if self.current_row != []:
-            self.current_matrix_rows.append(self.current_row)
-            self.current_row = []
+            self.current_matrix_rows.append(self.current_row.copy())
+        self.current_row = []
         return ast
     
     def mcell(self, ast):
@@ -347,13 +348,14 @@ class MatrixParser:
     """
     def __init__(self, file_format):
         self.inner_parser = ts.compile(file_format.grammar)
-        self.semantics = _MatrixSemantics(file_format.value_map, file_format.transpose)
+        self.matrix_builder = _MatrixSemantics(file_format.value_map, file_format.transpose)
 
     def parse_matrix(self, matrix_string):
         
-        parsed_matrix_list = self.inner_parser.parse(matrix_string, semantics = self.semantics)
+        self.inner_parser.parse(matrix_string, semantics = self.matrix_builder)
 
-        matrix = parsed_matrix_list[0]
+        matrix = self.matrix_builder.matrix_list[0]
+        print(matrix)
         return matrix
 
     def _from_default_format(matstring_format):
