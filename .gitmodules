@@ -1,9 +1,9 @@
 [submodule "celluloid"]
-	path = submodules/celluloid/celluloid
+	path = phylo/celluloid/celluloid
 	url = https://github.com/AlgoLab/celluloid.git
 [submodule "mp3treesim"]
-	path = submodules/mp3/mp3treesim
+	path = phylo/mp3/mp3treesim
 	url = https://github.com/AlgoLab/mp3treesim.git
 [submodule "sasc"]
-	path = submodules/sasc/sasc
+	path = phylo/sasc/sasc
 	url = https://github.com/sciccolella/sasc.git

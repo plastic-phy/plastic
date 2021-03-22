@@ -1,7 +1,7 @@
 import setuptools as st
 from Cython.Build import cythonize
 
-sascdir = 'submodules/sasc/'
+sascdir = 'phylo/sasc/'
 
 st.setup(
     name = 'phylopipelinetestbuild',
