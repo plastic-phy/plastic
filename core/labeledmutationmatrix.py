@@ -18,23 +18,24 @@ class LabeledMutationMatrix:
             except TypeError:
                 return False
         
-        if not is_collection(mutation_matrix):
-            raise TypeError('The matrix must be a collection, but {0} is not.'.format(mutation_matrix))
+        # Given how commonly used numpy is, we let its exceptions go through.
+        
+        mutation_matrix = np.array(mutation_matrix, dtype = 'int')
+        if len(mutation_matrix.shape) != 2:
+            raise ValueError(
+                "the input matrix should be two-dimensional, but {0} is {1}-dimensional instead.".format(mutation_matrix, len(mutation_matrix.shape))
+                )
 
-        height = len(mutation_matrix)
-        if height == 0:
+        if len(mutation_matrix.flat) == 0:
             raise EmptyMatrixError()
 
-        for row in list(mutation_matrix):
-            if not is_collection(row):
-                raise TypeError('Each row of the matrix must be a collection, but {0} was not.'.format(row))
-            for element in row:
-                if element not in {1, 2, 0}:
-                    raise ValueError(element)
-        width = len(mutation_matrix[0])
-        if any([len(row) != width for row in mutation_matrix]):
-            raise NotAMatrixError('Each row in the matrix must be of the same length')
-
+        allowed_values = {1, 2, 0}
+        for element in mutation_matrix.flat:
+            if element not in allowed_values:
+                raise ValueError(element)
+        height, width = tuple(mutation_matrix.shape)
+        
+        # Automatically make the labels if none are specified.
         if cell_labels is None:
             cell_labels = [str(i) for i in range(1, height + 1)]
         if mutation_labels is None:
@@ -43,7 +44,7 @@ class LabeledMutationMatrix:
         def _validate_labels(label_list, expected_length):
             if not is_collection(label_list):
                 raise TypeError('mutation_labels and cell_labels must be collections, but {0} is not'.format(label_list))
-            if any([isinstance(label_list, tp) for tp in {str, bytes}]):
+            if any([isinstance(label_list, str_like_type) for str_like_type in {str, bytes}]):
                 raise TypeError('strings like {0} are not accepted as label lists'.format(label_list))
             
             if len(label_list) != expected_length:
