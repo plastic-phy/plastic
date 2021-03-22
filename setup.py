@@ -30,6 +30,8 @@ st.setup(
     ],
     install_requires = [
         'pandas',
-        'tatsu'
+        'tatsu',
+        'pydot',
+        'pygraphviz'
     ]
 )
