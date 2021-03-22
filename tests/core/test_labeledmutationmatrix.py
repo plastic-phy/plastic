@@ -1,4 +1,4 @@
-from core.labeledmutationmatrix import *
+from phylo.core.labeledmutationmatrix import *
 import pytest as pt
 import pandas as pd
 import numpy as np
@@ -158,4 +158,4 @@ class TestMatrixLoading:
 
     def test_plain_matrix_loading(self):
 
-        a = LabeledMutationMatrix.from_files('matrepr_files/sasc_example')
+        sasc_format_matrix = LabeledMutationMatrix.from_files('matrepr_files/sasc_example')

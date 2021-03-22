@@ -1,4 +1,4 @@
-from core.phylogenytree import *
+from phylo.core.phylogenytree import *
 import networkx as nx
 import pytest as pt
 
