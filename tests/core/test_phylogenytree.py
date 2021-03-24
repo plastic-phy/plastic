@@ -2,106 +2,102 @@ from phylo.core.phylogenytree import *
 import networkx as nx
 import pytest as pt
 
-def dummy_graph(with_null_label = True):
+def dummy_graph(with_unlabeled_node = True):
     G = nx.DiGraph()
-    G.add_node(0, label = 'sabbia', is_terminal = False)
-    G.add_node(1, label = 'pollo', is_terminal = False)
-    G.add_node(2, label = 'tasso' if not with_null_label else None, is_terminal = True)
-    G.add_edge(0, 1)
-    G.add_edge(0, 2)
+    G.add_node('0', label = 'sabbia')
+    G.add_node('1', label = 'pollo')
+    G.add_node('2')
+    if not with_unlabeled_node:
+        G.nodes['2']['label'] = 'sBin'
+    G.add_edge('0', '1')
+    G.add_edge('0', '2')
     return G
 
-def dummy_tree(with_null_label = True, fully_labeled = False):
+def dummy_tree(with_unlabeled_node = True, fully_labeled = False):
     
-    return PhylogenyTree(dummy_graph(with_null_label = with_null_label), fully_labeled)
+    return PhylogenyTree(dummy_graph(with_unlabeled_node = with_unlabeled_node), fully_labeled)
 
 class TestInit:
 
-    def test_standard_init():
+    def test_standard_init(self):
         tree = dummy_tree()
 
-    def test_init_with_null_node_but_fully_labeled_tree():
-        with pt.raises(ValueError):
-            tree = dummy_tree(with_null_label = True, fully_labeled = True)
+    def test_init_with_null_node_but_fully_labeled_tree(self):
+        with pt.raises(NotFullyLabeled):
+            tree = dummy_tree(with_unlabeled_node = True, fully_labeled = True)
 
-    def test_init_with_bad_label():
+    def test_init_with_bad_label_type(self):
         G = nx.DiGraph()
-        G.add_node(0, label = 1337, is_terminal = True)
+        G.add_node('0', label = 1337)
 
         with pt.raises(TypeError):
             tree = PhylogenyTree(G)
 
-    def test_init_with_empty_label():
+    def test_init_with_empty_label(self):
         G = nx.DiGraph()
-        G.add_node(0, label = '', is_terminal = True)
+        G.add_node('0', label = '')
         
         with pt.raises(ValueError):
             tree = PhylogenyTree(G)
 
-    def test_init_with_missing_attribute():
-        G = nx.DiGraph()
-        G.add_node(0, is_terminal = False)
-
-        with pt.raises(ValueError):
-            tree = PhylogenyTree(G)
-
-    def test_init_with_non_tree():
+    def test_init_with_non_tree(self):
         not_a_tree = dummy_graph()
-        not_a_tree.add_edge(2, 0)
+        not_a_tree.add_edge('2', '0')
         
         with pt.raises(NotATreeError):
             tree = PhylogenyTree(not_a_tree)
 
+    def test_init_with_bad_node(self):
+        integer_node = nx.DiGraph()
+        integer_node.add_node(0)
+        with pt.raises(TypeError):
+            tree = PhylogenyTree(integer_node)
+
+    def test_init_with_bad_graph_attribute(self):
+        G = dummy_graph()
+        G.graph['edge'] = 'this is not allowed!'
+        with pt.raises(ValueError):
+            tree = PhylogenyTree(G)
+
 class TestAccessors:
 
-    def test_graph_accessor():
+    def test_graph_accessor(self):
         G = dummy_graph()
         T = dummy_tree()
-        assert T.as_digraph() == G
-
-    def test_graph_without_leaves_accessor():
-        T = dummy_tree()
-        assert T.as_digraph(with_terminals = False).nodes == [0, 1]
-
-    def test_terminals_accessor():
-        T = dummy_tree()
-        assert T.terminal_nodes == [(2, {label : None, is_terminal : True})]
+        assert list(T.as_digraph().nodes(data = True)) == list(G.nodes(data = True))
+        assert list(T.as_digraph().edges(data = True)) == list(G.edges(data = True))
 
 class TestImmutability:
 
-    def test_immutability_after_init():
+    def test_immutability_after_init(self):
         G = dummy_graph()
-        T = PhylogenyTree(G, fully_labeled = False)
-        G.add_edge(2, 0)
-        assert (2, 0) not in T.as_digraph().edges
+        T = PhylogenyTree(G)
+        G.add_edge('2', '0')
+        assert ('2', '0') not in T.as_digraph().edges
 
-    def test_immutability_after_graph_access():
+    def test_immutability_after_graph_access(self):
         T = dummy_tree()
         G = T.as_digraph()
-        G.add_edge(2, 0)
-        assert (2, 0) not in T.as_digraph().edges
-
-    def test_immutability_after_terminals_access():
-        T = dummy_tree()
-        terminals = T.terminal_nodes
-        terminals[0][1]['label'] = 'pollozorg'
-        assert T.terminal_nodes[0][1]['label'] != 'pollozorg'
+        G.add_edge('2', '0')
+        assert ('2', '0') not in T.as_digraph().edges
 
 class TestSerialization:
 
-    def test_serialization_roundtrip():
+    def test_serialization_roundtrip(self):
         T = dummy_tree()
         T_as_string = T.to_dotstring()
-        T_after_roundtrip = PhylogenyTree.from_dotstring()
+        T_after_roundtrip = PhylogenyTree.from_dotstring(T_as_string)
 
-        assert T.as_digraph() == T_after_roundtrip.as_digraph()
+        assert list(T.as_digraph().graph) == list(T_after_roundtrip.as_digraph().graph)
+        assert list(T.as_digraph().nodes(data = True)) == list(T_after_roundtrip.as_digraph().nodes(data = True))
+        assert list(T.as_digraph().edges(data = True)) == list(T_after_roundtrip.as_digraph().edges(data = True))
 
 class TestDrawing():
 
-    def test_rendering_to_png_and_pdf():
+    def test_rendering_to_png_and_pdf(self):
         T = dummy_tree()
         T.draw_to_file('sabbia.png')
-        T.draw_to_file('pollo.pdf', with_terminals = False)
+        T.draw_to_file('pollo.pdf')
 
     
         
