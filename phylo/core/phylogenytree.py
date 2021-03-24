@@ -1,5 +1,7 @@
 import networkx as nx
 from copy import deepcopy
+import pygraphviz
+from io import StringIO
 
 
 class NotATreeError(Exception): pass
@@ -7,7 +9,7 @@ class NotFullyLabeled(Exception): pass
 
 class PhylogenyTree():
 
-    def __init__(self, tree_as_nx_graph, fully_labeled = True):
+    def __init__(self, tree_as_nx_graph, fully_labeled = False):
         """
         Verifies that a networkx graph is a tree and validates its attributes, then
         it creates a PhylogenyTree instance for that graph.
@@ -16,7 +18,8 @@ class PhylogenyTree():
         - tree_as_nx_graph(networkx.DiGraph): a graph that represents a tree (a completely connected,
           acyclic and directed graph), and where for each node that has a label attribute the label is
           a non-empty string. 
-        - fully_labeled(boolean): if this is true, initialization will fail if the tree has unlabeled nodes.
+        - fully_labeled(boolean), by default False: if this is true, initialization will fail if 
+          the tree has unlabeled nodes.
 
         Returns:
           PhylogenyTree: the object that has been initialized with tree_as_nx_graph if the tree is valid.
@@ -27,16 +30,35 @@ class PhylogenyTree():
         if not nx.is_tree(tree_as_nx_graph):
             raise NotATreeError('the graph must be a tree.')
 
-        # Validating the presence of the attributes sets a convention on the tree's representation.
+        # to allow correct serialization in DOT format, all attributes and node IDS must be strings,
+        # and some graph attribute names must be reserved.
+        # All of coupled with the ugly hack done during deserialization is making me think we should
+        # think about using a different format.
+
+        if any([attribute in tree_as_nx_graph.graph for attribute in {'edge', 'node', 'graph'}]):
+            bad_keys = set(tree_as_nx_graph.graph.keys()).intersection({'edge', 'node', 'graph'})
+            raise ValueError(f'graph attributes with keys "edge", "node" or "graph", are not allowed, but {bad_keys} were present')
+        for (key, value) in tree_as_nx_graph.graph.items():
+            if not isinstance(value, str):
+                raise TypeError(f'graph attribute {key} has non-string value {value}')
+            
+        for (u, v, attributes) in tree_as_nx_graph.edges(data = True):
+            for (key, value) in attributes.items():
+                if not isinstance(value, str):
+                    raise TypeError(f'{key} attribute of edge {u} -> {v} has non-string value {value}')
+                
         for (node, attributes) in tree_as_nx_graph.nodes(data = True):
+            if not isinstance(node, str):
+                raise TypeError(f'all nodes must be identified by strings, but {node} is not')
+            for (key, value) in attributes.items():
+                if not isinstance(value, str):
+                    raise TypeError(f'{key} attribute of node {node} has non-string value {value}')
             if 'label' in attributes:
-                label = attributes['label']
-                if not isinstance(label, str):
-                    raise TypeError(f'every label must be a string, but the label {label} of the node {node} is not.')
-                if len(label) == 0:
+                if len(attributes['label']) == 0:
                     raise ValueError(f'the node {node} has an empty label.')
             elif fully_labeled:
                 raise NotFullyLabeled()
+            
 
         # In order to ensure the object's immutability, everything is copied over.
         self._tree = deepcopy(tree_as_nx_graph)
@@ -51,7 +73,7 @@ class PhylogenyTree():
         
         return out
 
-    def draw_to_file(file_path):
+    def draw_to_file(self, file_path):
         """
         Draws the tree to a file using a dot layout. Requires a Graphviz installation.
 
@@ -72,7 +94,7 @@ class PhylogenyTree():
         drawtree = self.as_digraph()
 
         # The nodes will be labeled with their numerical ID if a label isn't present.
-        for [node, attributes] in drawtree:
+        for [node, attributes] in drawtree.nodes(data = True):
             if 'label' not in attributes:
                 attributes['label'] = f'no label for node with ID: {node}'
 
@@ -88,8 +110,16 @@ class PhylogenyTree():
         Validates the content of a string representing a graph in dot format, then
         initializes and returns a PhylogenyTree representation if the string is valid.
         """
-        nx_representation = nx.nx_agraph.from_agraph(pygraphviz.AGraph(graph))
-        return PhilogenyTree(nx_representation)
+        
+        nx_representation = nx.nx_agraph.from_agraph(pygraphviz.AGraph(dot_string))
+
+        # Converting to an AGraph adds its own set of default attributes that need
+        # to be removed before conversion to a NetworkX graph.
+        # Still, this is quite the weird hack and I'd much rather not do it.
+        del nx_representation.graph['graph']
+        del nx_representation.graph['node']
+        del nx_representation.graph['edge']
+        return PhylogenyTree(nx_representation)
 
     def to_dotstring(self):
         """
