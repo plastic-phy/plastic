@@ -14,18 +14,8 @@ class PhylogenyTree():
 
         Parameters:
         - tree_as_nx_graph(networkx.DiGraph): a graph that represents a tree (a completely connected,
-          acyclic and directed graph), with each node possessing the following attributes:
-            * is_terminal(boolean): true if the node represents an individual in the sample that was
-              used to infer the phylogeny tree, false if the node represents a set of mutations or a 
-              set of deletions of mutations in the inferred phylogeny.
-            * label(string), by default True: the name of the set of mutations or deletions represented 
-              by the node if the node is not terminal, the name of the individual of the sample if the node
-              is terminal. Multiple mutations must be separated by commas, and each label must be a
-              non-empty string.
-              If fully_labeled is false, then the value None is allowed in place of a string to 
-              signify the lack of labels in the node.
-          The internal representation of the tree will be independent from the graph that was used to
-          initialize it, so subsequent changes to tree_as_nx_graph will not reflect on the PhylogenyTree.
+          acyclic and directed graph), and where for each node that has a label attribute the label is
+          a non-empty string. 
         - fully_labeled(boolean): if this is true, initialization will fail if the tree has unlabeled nodes.
 
         Returns:
@@ -38,68 +28,36 @@ class PhylogenyTree():
             raise NotATreeError('the graph must be a tree.')
 
         # Validating the presence of the attributes sets a convention on the tree's representation.
-        for (node, node_attributes) in tree_as_nx_graph.nodes(data = True):
-            try:
-                label = node_attributes['label']
-                is_terminal = node_attributes['is_terminal']
-            except KeyError as e:
-                raise ValueError(f'node with id {node} does not have the necessary attribute {str(e)}')
-            if label is None and fully_labeled:
-                raise NotFullyLabeled(f'node with id {node} does not have a label, but the tree was specified as fully labeled.')
-            if label is not None:
+        for (node, attributes) in tree_as_nx_graph.nodes(data = True):
+            if 'label' in attributes:
+                label = attributes['label']
                 if not isinstance(label, str):
-                    raise TypeError(f'label {label} of node with id {node} must be a string (or None if the node is not labeled).')
+                    raise TypeError(f'every label must be a string, but the label {label} of the node {node} is not.')
                 if len(label) == 0:
-                    raise ValueError(f'label of node with id {node} must be non-empty.')
-            if is_terminal not in {True, False}:
-                raise TypeError(f'is_terminal must be a boolean, but node with id {node} has value {is_terminal} for it.')
+                    raise ValueError(f'the node {node} has an empty label.')
+            elif fully_labeled:
+                raise NotFullyLabeled()
 
         # In order to ensure the object's immutability, everything is copied over.
         self._tree = deepcopy(tree_as_nx_graph)
-        self.terminal_nodes = [(node, attributes) for (node, attributes) in self._tree.nodes(data = True) if attributes['is_terminal']]
 
     # the external representation gives an independent copy. 
-    def as_digraph(self, with_terminals = True):
+    def as_digraph(self):
         """
-        Returns a networkx representation of the tree as a digraph. Gives back the tree without terminal
-        nodes if so specified.
-
-        Parameters:
-        - with_terminals(boolean), by default True: if this is true, the terminal nodes will be included
-          in the representation.
-
-        Returns: 
-        - nx.DiGraph: a mutable copy of the tree that the object has been initialized with, 
-          with or without the terminal nodes.
+        Returns a networkx representation of the tree as a networkx digraph.
+        The returned tree is independent from the internal representation.
         """
         out = deepcopy(self._tree)
-
-        if not with_terminals:
-            out.remove_nodes_from(self._terminal_nodes)
-
+        
         return out
 
-    @property
-    def terminal_nodes(self):
-        """
-        Returns a list of the terminal nodes of the tree.
-
-        Parameters: none.
-
-        Returns: 
-        - list: a list in which each element is a tuple of two components: the id of a terminal node, 
-          and its attributes as a dictionary. 
-        """
-        return deecopy(self._terminal_nodes)
-
-    def draw_to_file(file_path, with_terminals = True):
+    def draw_to_file(file_path):
         """
         Draws the tree to a file using a dot layout. Requires a Graphviz installation.
 
         Parameters: 
         - file_path(string): The file in which the tree will be drawn. The tested use cases are drawing the tree
           as an image (file with .png extension) or as a PDF (file with .pdf extension).
-          with_terminals(boolean), by default False: if true, the terminal nodes will be drawn as well.
 
         Returns: nothing.
 
@@ -111,11 +69,11 @@ class PhylogenyTree():
 
         # Should this depend from mp3 instead? I think it would be a fine idea to let it be 
         # available from SASC as well.
-        drawtree = self.as_digraph(with_terminals = with_terminals)
+        drawtree = self.as_digraph()
 
         # The nodes will be labeled with their numerical ID if a label isn't present.
-        for (node, attributes) in drawtree:
-            if attributes['label'] is None:
+        for [node, attributes] in drawtree:
+            if 'label' not in attributes:
                 attributes['label'] = f'no label for node with ID: {node}'
 
         drawtree = nx.nx_agraph.to_agraph(drawtree)
@@ -137,5 +95,5 @@ class PhylogenyTree():
         """
         Dumps the tree to a string with its dot representation.
         """
-        pydot_representation = networkx.drawing.nx_pydot.to_pydot(self._tree)
+        pydot_representation = nx.drawing.nx_pydot.to_pydot(self._tree)
         return pydot_representation.to_string()
