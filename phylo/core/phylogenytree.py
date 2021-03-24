@@ -1,5 +1,6 @@
 import networkx as nx
 from copy import deepcopy
+import pygraphviz
 
 
 class NotATreeError(Exception): pass
@@ -7,7 +8,7 @@ class NotFullyLabeled(Exception): pass
 
 class PhylogenyTree():
 
-    def __init__(self, tree_as_nx_graph, fully_labeled = True):
+    def __init__(self, tree_as_nx_graph, fully_labeled = True, terminal_nodes = []):
         """
         Verifies that a networkx graph is a tree and validates its attributes, then
         it creates a PhylogenyTree instance for that graph.
@@ -15,9 +16,6 @@ class PhylogenyTree():
         Parameters:
         - tree_as_nx_graph(networkx.DiGraph): a graph that represents a tree (a completely connected,
           acyclic and directed graph), with each node possessing the following attributes:
-            * is_terminal(boolean): true if the node represents an individual in the sample that was
-              used to infer the phylogeny tree, false if the node represents a set of mutations or a 
-              set of deletions of mutations in the inferred phylogeny.
             * label(string), by default True: the name of the set of mutations or deletions represented 
               by the node if the node is not terminal, the name of the individual of the sample if the node
               is terminal. Multiple mutations must be separated by commas, and each label must be a
@@ -38,25 +36,19 @@ class PhylogenyTree():
             raise NotATreeError('the graph must be a tree.')
 
         # Validating the presence of the attributes sets a convention on the tree's representation.
-        for (node, node_attributes) in tree_as_nx_graph.nodes(data = True):
-            try:
-                label = node_attributes['label']
-                is_terminal = node_attributes['is_terminal']
-            except KeyError as e:
-                raise ValueError(f'node with id {node} does not have the necessary attribute {str(e)}')
-            if label is None and fully_labeled:
+        for (node, attributes) in tree_as_nx_graph.nodes(data = True):
+            if 'label' not in attributes and fully_labeled:
                 raise NotFullyLabeled(f'node with id {node} does not have a label, but the tree was specified as fully labeled.')
-            if label is not None:
+            if 'label' in attributes:
+                label = attributes['label']
                 if not isinstance(label, str):
                     raise TypeError(f'label {label} of node with id {node} must be a string (or None if the node is not labeled).')
                 if len(label) == 0:
                     raise ValueError(f'label of node with id {node} must be non-empty.')
-            if is_terminal not in {True, False}:
-                raise TypeError(f'is_terminal must be a boolean, but node with id {node} has value {is_terminal} for it.')
 
         # In order to ensure the object's immutability, everything is copied over.
         self._tree = deepcopy(tree_as_nx_graph)
-        self.terminal_nodes = [(node, attributes) for (node, attributes) in self._tree.nodes(data = True) if attributes['is_terminal']]
+        self._terminal_nodes = [(node, attributes) for (node, attributes) in self._tree.nodes(data = True) if attributes['is_terminal']]
 
     # the external representation gives an independent copy. 
     def as_digraph(self, with_terminals = True):
@@ -75,7 +67,7 @@ class PhylogenyTree():
         out = deepcopy(self._tree)
 
         if not with_terminals:
-            out.remove_nodes_from(self._terminal_nodes)
+            out.remove_nodes_from([tnode for (tnode, attributes) in self._terminal_nodes])
 
         return out
 
@@ -90,9 +82,9 @@ class PhylogenyTree():
         - list: a list in which each element is a tuple of two components: the id of a terminal node, 
           and its attributes as a dictionary. 
         """
-        return deecopy(self._terminal_nodes)
+        return deepcopy(self._terminal_nodes)
 
-    def draw_to_file(file_path, with_terminals = True):
+    def draw_to_file(self, file_path, with_terminals = True):
         """
         Draws the tree to a file using a dot layout. Requires a Graphviz installation.
 
@@ -114,7 +106,7 @@ class PhylogenyTree():
         drawtree = self.as_digraph(with_terminals = with_terminals)
 
         # The nodes will be labeled with their numerical ID if a label isn't present.
-        for (node, attributes) in drawtree:
+        for (node, attributes) in drawtree.nodes(data = True):
             if attributes['label'] is None:
                 attributes['label'] = f'no label for node with ID: {node}'
 
@@ -130,12 +122,12 @@ class PhylogenyTree():
         Validates the content of a string representing a graph in dot format, then
         initializes and returns a PhylogenyTree representation if the string is valid.
         """
-        nx_representation = nx.nx_agraph.from_agraph(pygraphviz.AGraph(graph))
-        return PhilogenyTree(nx_representation)
+        nx_representation = nx.nx_agraph.from_agraph(pygraphviz.AGraph(dot_string))
+        return PhylogenyTree(nx_representation)
 
     def to_dotstring(self):
         """
         Dumps the tree to a string with its dot representation.
         """
-        pydot_representation = networkx.drawing.nx_pydot.to_pydot(self._tree)
+        pydot_representation = nx.drawing.nx_pydot.to_pydot(self._tree)
         return pydot_representation.to_string()
