@@ -4,16 +4,14 @@ import networkx as nx
 cimport sascpycapi as sca
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
+from phylo.core.labeledmutationmatrix import LabeledMutationMatrix
+from phylo.core.phylogenytree import PhylogenyTree
 
 def compute(
-        mutations_matrix,
-        mutation_labels,
-        cell_labels,
+        labeled_mutation_matrix,
         alphas,
         beta,
         gammas,
-        single_alpha,
-        single_gamma,
         el_a_variance,
         el_b_variance,
         el_g_variance,
@@ -23,7 +21,8 @@ def compute(
         force_monoclonal,
         start_temp,
         cooling_rate,
-        cores
+        cores,
+        get_leaves = False
 ):
     
     cdef sca.sasc_in_t* arguments = <sca.sasc_in_t*>malloc(sizeof(sca.sasc_in_t))
@@ -32,6 +31,8 @@ def compute(
     
     # Marshalling of the matrix, assuming that the rows represent cells and the columns represent
     # mutations.
+
+    mutations_matrix = labeled_mutation_matrix.matrix()
     
     arguments.N = len(mutations_matrix)
     arguments.M = len(mutations_matrix[0])
@@ -50,25 +51,37 @@ def compute(
     arguments.cell_labels = <char**>malloc(N * sizeof(char*))
     arguments.mutation_labels = <char**>malloc(M * sizeof(char*))
     
-    cell_labels_bytes = [bytes(lb, 'ascii') for lb in cell_labels] 
-    mutation_labels_bytes = [bytes(lb, 'ascii') for lb in mutation_labels]
+    cell_labels_bytes = [bytes(lb, 'ascii') for lb in labeled_mutation_matrix.cell_labels] 
+    mutation_labels_bytes = [bytes(lb, 'ascii') for lb in labeled_mutation_matrix.mutation_labels]
     
     for i in range(N):
         arguments.cell_labels[i] = cell_labels_bytes[i]
     for i in range(M):
         arguments.mutation_labels[i] = mutation_labels_bytes[i]
     
-    # Python bools must be converted into C integers
-    arguments.single_alpha = 1 if single_alpha else 0
-    arguments.single_gamma = 1 if single_gamma else 0
-    arguments.force_monoclonal = 1 if force_monoclonal else 0
+    
     
     # Arrays with error parameters must be allocated and filled
     arguments.alphas = <double*>malloc(M * sizeof(double))
     arguments.gammas = <double*>malloc(M * sizeof(double))
 
-    print(len(alphas))
-    print(M)
+    single_alpha = isinstance(alphas, float)
+    single_gamma = isinstance(gammas, float)
+
+    # Python bools must be converted into C integers
+    arguments.single_alpha = 1 if single_alpha else 0
+    arguments.single_gamma = 1 if single_gamma else 0
+    arguments.force_monoclonal = 1 if force_monoclonal else 0
+
+    if single_alpha:
+        alphas = [alphas] * M
+    if single_gamma:
+        gammas = [gammas] * M
+
+    if len(alphas) != M:
+        raise ValueError(f'multiple alphas are specified in {alphas}, but they are more or less than the number of mutations.')
+    if len(gammas) != M:
+        raise ValueError(f'multiple gammas are specified in {gammas}, but they are more or less than the number of mutations.')
     for i in range(M):
         arguments.alphas[i] = alphas[i]
         arguments.gammas[i] = gammas[i]
@@ -111,9 +124,14 @@ def compute(
     
     unmarshal_tree(root, best_tree)
 
-    for i, cell in enumerate(cell_labels):
-        best_tree.add_node(cell, shape = 'box', label = cell, is_cell = True)
-        best_tree.add_edge(c_out.ids_of_leaves[i], cell)
+    best_tree.graph['label'] = f"Confidence score: {c_out.calculated_likelihood}"
+    best_tree.graph['labelloc'] = 't'
+
+    if get_leaves:
+        for i, cell in enumerate(cell_labels):
+            cell_id = f'cell: {cell}'
+            best_tree.add_node(cell_id, shape = 'box')
+            best_tree.add_edge(str(c_out.ids_of_leaves[i]), cell_id)
 
     sca.destroy_tree(c_out.best_tree)
     free(c_out.ids_of_leaves)
@@ -138,15 +156,16 @@ def compute(
     
     el_beta = c_out.el_beta
     
-    # Building the output 
-    out = best_tree, c_out.calculated_likelihood, expected_matrix, el_alphas, el_beta, el_gammas
+    # Building the output
+    best_tree = PhylogenyTree(best_tree)
+    expected_matrix = LabeledMutationsMatrix(expected_matrix, mutations_matrix.cell_labels, mutations_matrix.mutation_labels)
+    
+    out = best_tree, expected_matrix, el_alphas, el_beta, el_gammas
     
     # Cleanup and return
     return out
 
 
-
-    
 cdef unmarshal_tree(sca.node_t* node, G):
 
     if (node == NULL):
@@ -157,11 +176,11 @@ cdef unmarshal_tree(sca.node_t* node, G):
 
     # If the node is a deletion, color it in red.
     if (node.loss == 1):
-        G.add_node(node.id, color = 'indianred1', style = 'filled', label = str(node.label, 'ascii'))
+        G.add_node(str(node.id), color = 'indianred1', style = 'filled', label = str(node.label, 'ascii'))
     else:
-        G.add_node(node.id, label = str(node.label, 'ascii'))
+        G.add_node(str(node.id), label = str(node.label, 'ascii'))
 
     # Add the arc from the parent of the node to the node (if this is not the root node).
     if(node.parent != NULL):
-        G.add_edge(node.parent.id, node.id)
+        G.add_edge(str(node.parent.id), str(node.id))
 
