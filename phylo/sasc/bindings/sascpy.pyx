@@ -22,7 +22,7 @@ def compute(
         start_temp,
         cooling_rate,
         cores,
-        get_leaves = False
+        get_cells = False
 ):
     
     cdef sca.sasc_in_t* arguments = <sca.sasc_in_t*>malloc(sizeof(sca.sasc_in_t))
@@ -127,8 +127,8 @@ def compute(
     best_tree.graph['label'] = f"Confidence score: {c_out.calculated_likelihood}"
     best_tree.graph['labelloc'] = 't'
 
-    if get_leaves:
-        for i, cell in enumerate(cell_labels):
+    if get_cells:
+        for i, cell in enumerate(labeled_mutation_matrix.cell_labels):
             cell_id = f'cell: {cell}'
             best_tree.add_node(cell_id, shape = 'box')
             best_tree.add_edge(str(c_out.ids_of_leaves[i]), cell_id)
@@ -158,7 +158,7 @@ def compute(
     
     # Building the output
     best_tree = PhylogenyTree(best_tree)
-    expected_matrix = LabeledMutationsMatrix(expected_matrix, mutations_matrix.cell_labels, mutations_matrix.mutation_labels)
+    expected_matrix = LabeledMutationMatrix(expected_matrix, labeled_mutation_matrix.cell_labels, labeled_mutation_matrix.mutation_labels)
     
     out = best_tree, expected_matrix, el_alphas, el_beta, el_gammas
     
