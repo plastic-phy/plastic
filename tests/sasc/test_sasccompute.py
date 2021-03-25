@@ -1,21 +1,15 @@
-from sasc import compute
-from core.labeledmutationmatrix import LabeledMutationMatrix
+from phylo.sasc import compute
+from phylo.core.labeledmutationmatrix import LabeledMutationMatrix
 
-def test_dummy_input():
+def test_dummy_input(get_cells = False):
 
     inp = LabeledMutationMatrix.from_files('matrepr_files/clustered_example')
-    mat = inp.matrix()
-    M = len(mat[0])
     
     out = compute(
-        mutations_matrix = mat,
-        mutation_labels = inp.mutation_labels,
-        cell_labels = inp.cell_labels,
-        alphas = [0.1] * M,
+        labeled_mutation_matrix = inp,
+        alphas = 0.1,
         beta = 0.00001,
-        gammas = [0.2] * M,
-        single_alpha = True,
-        single_gamma = True,
+        gammas = 0.2,
         el_a_variance = 0.01,
         el_b_variance = 0.01,
         el_g_variance = 0.01,
@@ -25,16 +19,16 @@ def test_dummy_input():
         force_monoclonal = False,
         start_temp = 10**4,
         cooling_rate =  10**-2,
-        cores = 12
+        cores = 12,
+        get_cells = get_cells
     )
 
-    [print(node) for node in out[0].nodes(data = True)]
-    [print(edge) for edge in out[0].edges]
-    print(out[1])
+    [print(node) for node in out[0].as_digraph().nodes(data = True)]
+    [print(edge) for edge in out[0].as_digraph().edges]
+    [print(line) for line in out[1].matrix()]
     print(out[2])
     print(out[3])
     print(out[4])
-    print(out[5])
 
 
 if __name__ == '__main__':
