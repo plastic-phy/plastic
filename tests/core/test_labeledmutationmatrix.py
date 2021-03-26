@@ -1,4 +1,4 @@
-from core.labeledmutationmatrix import *
+from phylo.core.labeledmutationmatrix import *
 import pytest as pt
 import pandas as pd
 import numpy as np
@@ -86,12 +86,12 @@ class TestInit:
 
     def test_not_two_dimensional_matrix_arg(self):
 
-        with pt.raises(TypeError):
+        with pt.raises(ValueError):
             LabeledMutationMatrix([2])
 
     def test_ragged_matrix_arg(self):
 
-        with pt.raises(NotAMatrixError):
+        with pt.raises(ValueError):
             LabeledMutationMatrix([[0, 1, 2], [0, 1]])
 
     def test_bad_collection_arg(self):
@@ -158,4 +158,4 @@ class TestMatrixLoading:
 
     def test_plain_matrix_loading(self):
 
-        a = LabeledMutationMatrix.from_files('matrepr_files/sasc_example')
+        sasc_format_matrix = LabeledMutationMatrix.from_files('matrepr_files/sasc_example')

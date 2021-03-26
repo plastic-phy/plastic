@@ -1,12 +1,12 @@
 import setuptools as st
 from Cython.Build import cythonize
 
-sascdir = 'submodules/sasc/'
+sascdir = 'phylo/sasc/'
 
 st.setup(
     name = 'phylopipelinetestbuild',
     ext_modules = cythonize(
-        st.Extension("sasc",
+        st.Extension("phylo.sasc",
                   [sascdir + filepath for filepath in
                       ["bindings/sascpy.pyx",
                        "bindings/sasc-compute.c",
@@ -30,6 +30,8 @@ st.setup(
     ],
     install_requires = [
         'pandas',
-        'tatsu'
+        'tatsu',
+        'pydot',
+        'pygraphviz'
     ]
 )
