@@ -33,6 +33,7 @@ st.setup(
         'tatsu',
         'pydot',
         'pygraphviz',
-        'mp3treesim'
+        'mp3treesim',
+        'kmodes'
     ]
 )
