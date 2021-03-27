@@ -224,7 +224,7 @@ class LabeledMutationMatrix:
             matstring_format = matstring_format
         )
 
-    def dump_to_files(self, matrix_file, cells_file = None, mutations_file = None):
+    def to_files(self, matrix_file, cells_file = None, mutations_file = None):
         """
         Dumps a matrix to a file with a specified format. Also dumps the cell labels and the mutation labels
         if outputs are specified for them as well.
