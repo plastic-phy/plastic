@@ -6,7 +6,7 @@ sascdir = 'phylo/sasc/'
 st.setup(
     name = 'phylopipelinetestbuild',
     ext_modules = cythonize(
-        st.Extension("phylo.sascpy",
+        st.Extension("sascpy",
                   [sascdir + filepath for filepath in
                       ["bindings/sascpy.pyx",
                        "bindings/sasc-compute.c",
