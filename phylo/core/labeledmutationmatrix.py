@@ -158,12 +158,13 @@ class LabeledMutationMatrix:
           * cell_labels: the representation of the cell labels list. Labels are separated with newlines.
           * mutation_labels: the representation of the mutation labels list. Labels are separated with newlines.
         """
-        lines = ["".join([" " + str(element) for element in line]).strip() + '\n' for line in self.matrix()]
-        mutation_matrix_as_string = "".join(lines)
+        mutation_matrix_as_string = (
+            '\n' +'\n'.join([' '.join([str(el) for el in line]) for line in self.matrix()])
+        )
         out = {
             'mutation_matrix' : mutation_matrix_as_string,
-            'cell_labels' : "".join([lb + '\n' for lb in self.cell_labels]),
-            'mutation_labels' : "".join([lb + '\n' for lb in self.mutation_labels])
+            'cell_labels' : '\n' + '\n'.join(self.cell_labels),
+            'mutation_labels' : '\n' + '\n'.join(self.mutation_labels)
         }
         return out
 
@@ -222,6 +223,28 @@ class LabeledMutationMatrix:
             mutation_labels = _read_nullable(mutations_file),
             matstring_format = matstring_format
         )
+
+    def dump_to_files(self, matrix_file, cells_file = None, mutations_file = None):
+        """
+        Dumps a matrix to a file with a specified format. Also dumps the cell labels and the mutation labels
+        if outputs are specified for them as well.
+        """
+
+        output_files = [file for file in {matrix_file, cells_file, mutations_file} if file is not None]
+        if len(set(output_files)) != len(output_files):
+            raise AttributeError('the same file was specified for more than one output.')
+
+        matrix_dict = self.to_serializable_dict()
+        with open(matrix_file, 'w+') as f:
+            f.write(matrix_dict['mutation_matrix'])
+        if cells_file is not None:
+            with open(cells_file, 'w+') as f:
+                f.write(matrix_dict['cell_labels'])
+        if mutations_file is not None:
+            with open(mutations_file, 'w+') as f:
+                f.write(matrix_dict['mutation_labels'])
+
+
 
         
 class MatrixFileFormat:

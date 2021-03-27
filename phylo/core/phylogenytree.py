@@ -127,3 +127,20 @@ class PhylogenyTree():
         """
         pydot_representation = nx.drawing.nx_pydot.to_pydot(self._tree)
         return pydot_representation.to_string()
+
+    def from_file(dotfile_path):
+        """
+        Validates and loads a PhylogenyTree from the specified file path, if the file exists.
+        """
+        # Please introduce me to the art of actually checking files. Thank you!
+        with open(dotfile_path, 'r') as f:
+            return PhylogenyTree.from_dot_string(read(dotfile_path))
+
+    def to_file(self, dotfile_path):
+        """
+        Dumps a PhylogenyTree to the specified file. If the file doesn't exist, it will be created; if
+        it exists, **it will be overwritten**.
+        """
+        with open(dotfile_path, 'w+') as f:
+            tree_as_dot = self.to_dot_string()
+            f.write(tree_as_dot)
