@@ -1,8 +1,8 @@
-from .sascpy import compute
+from sascpy import compute
 from .core.labeledmutationmatrix import LabeledMutationMatrix
 from .core.phylogenytree import PhylogenyTree
 
-infer_tree = sascpy.compute
+infer_tree = compute
 
 load_matrix = LabeledMutationMatrix.from_files
 dump_matrix = LabeledMutationMatrix.to_files
