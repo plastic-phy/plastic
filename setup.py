@@ -32,6 +32,7 @@ st.setup(
         'pandas',
         'tatsu',
         'pydot',
-        'pygraphviz'
+        'pygraphviz',
+        'mp3treesim'
     ]
 )
