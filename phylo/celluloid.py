@@ -50,7 +50,7 @@ def cluster_mutations(
     # Each cluster will be labeled with the labels of its components.
     clusters_of_mutations = km.labels_
     clustered_mutation_labels = defaultdict(list)
-    for point_label, mutation_cluster in zip(mutation_labels, clusters_of_mutations):
+    for mutation_label, mutation_cluster in zip(mutation_labels, clusters_of_mutations):
         clustered_mutation_labels[mutation_cluster].append(mutation_label)
 
     nonempty_clusters = clustered_mutation_labels.keys()
