@@ -20,8 +20,7 @@ class LabeledMutationMatrix:
           bidimensional, nonempty np.ndarray of integer in which each value is either 0, 1 or 2.
         - cell_labels (list<string>?), by default None: Either None, or a list of strings with the
           same size as the height of the mutation_matrix representation as a np.ndarray. If the list exists,
-          each element must be a non-empty string which can be represented in asciz format in the space of 
-          less than 255 bytes as a zero-terminated string.
+          each element must be a non-empty string without spaces, newlines or other tabulation characters.
         - mutation_labels (lis<string>?), by default None: Either None, or a list of strings with the same
           size as the width of the mutation_matrix representation as a np.ndarray. The strings follow the same
           conventions as the ones in cell_labels.
