@@ -35,51 +35,51 @@ def compute(
     mutations_matrix = labeled_mutation_matrix.matrix()
     
     arguments.N = len(mutations_matrix)
-    arguments.M = len(mutations_matrix[0])
-    
+    arguments.M = len(mutations_matrix[0])    
     cdef int N = arguments.N
     cdef int M = arguments.M
 
 
     single_alpha = isinstance(alphas, float)
     single_gamma = isinstance(gammas, float)
-
     if single_alpha:
         alphas = [alphas] * M
     if single_gamma:
         gammas = [gammas] * M
-
     if len(alphas) != M:
         raise ValueError(f'multiple alphas are specified in {alphas}, but they are more or less than the number of mutations.')
     if len(gammas) != M:
         raise ValueError(f'multiple gammas are specified in {gammas}, but they are more or less than the number of mutations.')
+
     
     arguments.mutations_matrix = <int**>malloc(N*sizeof(int*))
     for i in range(N):
         arguments.mutations_matrix[i] = <int*>malloc(M*sizeof(int))
         for j in range(M):
             arguments.mutations_matrix[i][j] = mutations_matrix[i][j]
+
     
     # To work around the string size limitation for SASC, we pass their indexes in the lists in string form to SASC instead of the
     # labels.
-    
     arguments.mutation_labels = <char**>malloc(M * sizeof(char*))
-    
+    automatic_labels = [bytes(str(i), 'ascii') for i in range(M)]
     for i in range(M):
-        arguments.mutation_labels[i] = bytes(str(i), 'ascii')
+        arguments.mutation_labels[i] = automatic_labels[i]
+
     
     # Arrays with error parameters must be allocated and filled
     arguments.alphas = <double*>malloc(M * sizeof(double))
     arguments.gammas = <double*>malloc(M * sizeof(double))
-
     for i in range(M):
         arguments.alphas[i] = alphas[i]
         arguments.gammas[i] = gammas[i]
 
+        
     # Python bools must be converted into C integers
     arguments.single_alpha = 1 if single_alpha else 0
     arguments.single_gamma = 1 if single_gamma else 0
     arguments.monoclonal = 1 if monoclonal else 0
+
     
     # Automatic marshalling.
     arguments.beta = beta
@@ -92,6 +92,7 @@ def compute(
     arguments.start_temp = start_temp
     arguments.cooling_rate = cooling_rate
     arguments.cores = cores
+
     
     cdef sca.sasc_out_t out_struct
     cdef sca.sasc_out_t* c_out = &out_struct
@@ -99,7 +100,6 @@ def compute(
     c_out.gtp_matrix = <int**> malloc(N * sizeof(int*))
     for i in range(N):
         c_out.gtp_matrix[i] = <int*> malloc(M * sizeof(int))
-
     c_out.ids_of_leaves = <int*> malloc(N * sizeof(int));
     c_out.el_alphas = <double*> malloc(M * sizeof(double));
     c_out.el_gammas = <double*> malloc(M * sizeof(double));
@@ -119,9 +119,24 @@ def compute(
     
     unmarshal_tree(root, best_tree)
 
-    # The labels for the tree are now indexes to the original mutation labels.
-    for [node, attributes] in G.nodes(data = True):
-        node['label'] = labeled_mutation_matrix.mutation_labels[int(node['label'])]
+    # The labels for the tree are now indexes to the original mutation labels, aside from special labels that are
+    # added artificially to the tree during the execution of SASC and only need to be converted
+    # to a string.
+
+    # We assume that every label that cannot be converted to an integer needs to be left as-is
+    def converts_to_index(label):
+        try:
+            return int(label) >= 0
+        except ValueError:
+            return False
+    
+    for [node, attributes] in best_tree.nodes(data = True):
+        if 'label' in attributes:
+            if converts_to_index(attributes['label']):
+                attributes['label'] = labeled_mutation_matrix.mutation_labels[ int(attributes['label']) ]
+            else:
+                attributes['label'] = str(attributes['label'], 'ascii')
+            
 
     best_tree.graph['label'] = f"Confidence score: {c_out.calculated_likelihood}"
     best_tree.graph['labelloc'] = 't'
