@@ -1,6 +1,7 @@
 from pandas import DataFrame
 import numpy as np
 import tatsu as ts
+import re
 
 class DuplicateLabelsError(Exception): pass
 class EmptyMatrixError(Exception): pass
@@ -67,18 +68,18 @@ class LabeledMutationMatrix:
 
         def _validate_labels(label_list, expected_length):
             if not is_collection(label_list):
-                raise TypeError('mutation_labels and cell_labels must be collections, but {0} is not'.format(label_list))
+                raise TypeError('mutation_labels and cell_labels must be collections, but {label_list} is not')
             if any([isinstance(label_list, str_like_type) for str_like_type in {str, bytes}]):
-                raise TypeError('strings like {0} are not accepted as label lists'.format(label_list))
+                raise TypeError(f'strings like {label_list} are not accepted as label lists')
             
             if len(label_list) != expected_length:
-                raise MatrixLabelSizeMismatch('expected {0} labels, but found {1} in {2}.'.format(expected_length, len(label_list), label_list))
+                raise MatrixLabelSizeMismatch(f'expected {expected_length} labels, but found {len(label_list)} instead.')
             
             for label in label_list:
                 if not isinstance(label, str):
-                    raise TypeError('each label must be a string, but {0} is not.'.format(label))
-                if len(label) == 0 or len(bytes(label, 'ascii')) > 254:
-                    raise ValueError('The label "{0}" is either an empty string, or a label with more than 254 characters.'.format(label))
+                    raise TypeError(f'each label must be a string, but {label} is not.')
+                if re.match('\s', label):
+                    raise ValueError(f'labels cannot contain whitespace, newline or other tabulation characters, but {label} does.')
 
             if len(set(label_list)) != len(label_list):
                 raise DuplicateLabelsError()
