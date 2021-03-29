@@ -20,7 +20,7 @@ cdef extern from "sasc-compute.h":
         int k
         int max_deletions
         int repetitions
-        int force_monoclonal
+        int monoclonal
         double start_temp
         double cooling_rate
         int cores
@@ -28,7 +28,6 @@ cdef extern from "sasc-compute.h":
         int N
         int M
         char **mutation_labels
-        char **cell_labels
         double* alphas
         int single_alpha
         double beta

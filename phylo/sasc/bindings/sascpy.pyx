@@ -18,7 +18,7 @@ def compute(
         k,
         max_deletions,
         repetitions,
-        force_monoclonal,
+        monoclonal,
         start_temp,
         cooling_rate,
         cores,
@@ -40,12 +40,6 @@ def compute(
     cdef int N = arguments.N
     cdef int M = arguments.M
 
-    cell_labels_bytes = [bytes(lb, 'ascii') for lb in labeled_mutation_matrix.cell_labels] 
-    mutation_labels_bytes = [bytes(lb, 'ascii') for lb in labeled_mutation_matrix.mutation_labels]
-
-    for label in cell_labels_bytes + mutation_labels_bytes:
-        if len(label) > 254:
-            raise ValueError(f'all labels must be at most 254 characters long, but {label} is not.')
 
     single_alpha = isinstance(alphas, float)
     single_gamma = isinstance(gammas, float)
@@ -66,28 +60,26 @@ def compute(
         for j in range(M):
             arguments.mutations_matrix[i][j] = mutations_matrix[i][j]
     
-    # Marshalling of the cell and mutation labels. We convert the label strings into bytes assuming ASCII format.
+    # To work around the string size limitation for SASC, we pass their indexes in the lists in string form to SASC instead of the
+    # labels.
     
-    arguments.cell_labels = <char**>malloc(N * sizeof(char*))
     arguments.mutation_labels = <char**>malloc(M * sizeof(char*))
     
-    for i in range(N):
-        arguments.cell_labels[i] = cell_labels_bytes[i]
     for i in range(M):
-        arguments.mutation_labels[i] = mutation_labels_bytes[i]
+        arguments.mutation_labels[i] = bytes(str(i), 'ascii')
     
     # Arrays with error parameters must be allocated and filled
     arguments.alphas = <double*>malloc(M * sizeof(double))
     arguments.gammas = <double*>malloc(M * sizeof(double))
 
-    # Python bools must be converted into C integers
-    arguments.single_alpha = 1 if single_alpha else 0
-    arguments.single_gamma = 1 if single_gamma else 0
-    arguments.force_monoclonal = 1 if force_monoclonal else 0
-
     for i in range(M):
         arguments.alphas[i] = alphas[i]
         arguments.gammas[i] = gammas[i]
+
+    # Python bools must be converted into C integers
+    arguments.single_alpha = 1 if single_alpha else 0
+    arguments.single_gamma = 1 if single_gamma else 0
+    arguments.monoclonal = 1 if monoclonal else 0
     
     # Automatic marshalling.
     arguments.beta = beta
@@ -127,6 +119,10 @@ def compute(
     
     unmarshal_tree(root, best_tree)
 
+    # The labels for the tree are now indexes to the original mutation labels.
+    for [node, attributes] in G.nodes(data = True):
+        node['label'] = labeled_mutation_matrix.mutation_labels[int(node['label'])]
+
     best_tree.graph['label'] = f"Confidence score: {c_out.calculated_likelihood}"
     best_tree.graph['labelloc'] = 't'
 
@@ -138,6 +134,7 @@ def compute(
 
     sca.destroy_tree(c_out.best_tree)
     free(c_out.ids_of_leaves)
+    free(arguments.mutation_labels)
     
     # Unmarshalling of the expected genotype matrix
     expected_matrix = np.ndarray([N, M])
@@ -179,9 +176,9 @@ cdef unmarshal_tree(sca.node_t* node, G):
 
     # If the node is a deletion, color it in red.
     if (node.loss == 1):
-        G.add_node(str(node.id), color = 'indianred1', style = 'filled', label = str(node.label, 'ascii'))
+        G.add_node(str(node.id), label = node.label, color = 'indianred1', style = 'filled')
     else:
-        G.add_node(str(node.id), label = str(node.label, 'ascii'))
+        G.add_node(str(node.id), label = node.label)
 
     # Add the arc from the parent of the node to the node (if this is not the root node).
     if(node.parent != NULL):
