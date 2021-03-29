@@ -42,10 +42,10 @@ def tree_similarity(
     if not isinstance(tree2, PhylogenyTree):
         raise TypeError("tree2 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load().")
 
-    excluded_1 = excluded_1.split(',') + excluded_global.split(',')
-    excluded_2 = excluded2.split(',') + excluded_global.split(',')
-    tree1_as_mp3 = mp3.build_tree(tree1.as_digraph(), ignore_unlabeled_nodes, excluded_1)
-    tree2_as_mp3 = mp3.build_tree(tree2.as_digraph(), ignore_unlabeled_nodes, excluded_2)
+    excluded1 = excluded1.split(',') + excluded_global.split(',')
+    excluded2 = excluded2.split(',') + excluded_global.split(',')
+    tree1_as_mp3 = mp3.build_tree(tree1.as_digraph(), ignore_unlabeled_nodes, excluded1)
+    tree2_as_mp3 = mp3.build_tree(tree2.as_digraph(), ignore_unlabeled_nodes, excluded2)
 
     return mp3.similarity(tree1_as_mp3, tree2_as_mp3, mode = mode, cores = cores)
 
