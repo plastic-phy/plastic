@@ -22,7 +22,7 @@ typedef struct sasc_input {
     int k;
     int max_deletions;
     int repetitions;
-    int force_monoclonal;
+    int monoclonal;
     double start_temp;
     double cooling_rate;
     int cores;
@@ -31,7 +31,6 @@ typedef struct sasc_input {
     int N;
     int M;
     char **mutation_labels;
-    char **cell_labels;
 /*-------ERROR PARAMETERS-------*/
     double* alphas; int single_alpha;    // If a single alpha was specified for the input, this will be filled with that value 
     double beta;

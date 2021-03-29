@@ -61,7 +61,7 @@ int compute (sasc_in_t* arguments, sasc_out_t* out)
     int SINGLE_GAMMA = arguments->single_gamma;
     
     int MAX_LOSSES = arguments->max_deletions;
-    int MONOCLONAL = arguments->force_monoclonal;
+    int MONOCLONAL = arguments->monoclonal;
 
     printf("Starting SASC.\n");
 
@@ -70,13 +70,9 @@ int compute (sasc_in_t* arguments, sasc_out_t* out)
     
     // Read cell and mutation labels from input
     char MUT_NAMES[M][255];
-    char CELL_NAMES[N][255];
     
     for (int i = 0; i < M; i++) {
       strcpy(MUT_NAMES[i], arguments->mutation_labels[i]);
-    }
-    for (int i = 0; i < N; i++) {
-      strcpy(CELL_NAMES[i], arguments->cell_labels[i]);
     }
 
     // Get error parameters
