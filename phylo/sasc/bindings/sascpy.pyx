@@ -39,6 +39,26 @@ def compute(
     
     cdef int N = arguments.N
     cdef int M = arguments.M
+
+    cell_labels_bytes = [bytes(lb, 'ascii') for lb in labeled_mutation_matrix.cell_labels] 
+    mutation_labels_bytes = [bytes(lb, 'ascii') for lb in labeled_mutation_matrix.mutation_labels]
+
+    for label in cell_labels_bytes + mutation_labels_bytes:
+        if len(label) > 254:
+            raise ValueError(f'all labels must be at most 254 characters long, but {label} is not.')
+
+    single_alpha = isinstance(alphas, float)
+    single_gamma = isinstance(gammas, float)
+
+    if single_alpha:
+        alphas = [alphas] * M
+    if single_gamma:
+        gammas = [gammas] * M
+
+    if len(alphas) != M:
+        raise ValueError(f'multiple alphas are specified in {alphas}, but they are more or less than the number of mutations.')
+    if len(gammas) != M:
+        raise ValueError(f'multiple gammas are specified in {gammas}, but they are more or less than the number of mutations.')
     
     arguments.mutations_matrix = <int**>malloc(N*sizeof(int*))
     for i in range(N):
@@ -51,37 +71,20 @@ def compute(
     arguments.cell_labels = <char**>malloc(N * sizeof(char*))
     arguments.mutation_labels = <char**>malloc(M * sizeof(char*))
     
-    cell_labels_bytes = [bytes(lb, 'ascii') for lb in labeled_mutation_matrix.cell_labels] 
-    mutation_labels_bytes = [bytes(lb, 'ascii') for lb in labeled_mutation_matrix.mutation_labels]
-    
     for i in range(N):
         arguments.cell_labels[i] = cell_labels_bytes[i]
     for i in range(M):
         arguments.mutation_labels[i] = mutation_labels_bytes[i]
     
-    
-    
     # Arrays with error parameters must be allocated and filled
     arguments.alphas = <double*>malloc(M * sizeof(double))
     arguments.gammas = <double*>malloc(M * sizeof(double))
-
-    single_alpha = isinstance(alphas, float)
-    single_gamma = isinstance(gammas, float)
 
     # Python bools must be converted into C integers
     arguments.single_alpha = 1 if single_alpha else 0
     arguments.single_gamma = 1 if single_gamma else 0
     arguments.force_monoclonal = 1 if force_monoclonal else 0
 
-    if single_alpha:
-        alphas = [alphas] * M
-    if single_gamma:
-        gammas = [gammas] * M
-
-    if len(alphas) != M:
-        raise ValueError(f'multiple alphas are specified in {alphas}, but they are more or less than the number of mutations.')
-    if len(gammas) != M:
-        raise ValueError(f'multiple gammas are specified in {gammas}, but they are more or less than the number of mutations.')
     for i in range(M):
         arguments.alphas[i] = alphas[i]
         arguments.gammas[i] = gammas[i]
