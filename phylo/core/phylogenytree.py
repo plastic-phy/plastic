@@ -137,7 +137,7 @@ class PhylogenyTree():
         """
         # Please introduce me to the art of actually checking files. Thank you!
         with open(dotfile_path, 'r') as f:
-            return PhylogenyTree.from_dotstring(read(dotfile_path))
+            return PhylogenyTree.from_dotstring(read(f))
 
     def to_file(self, dotfile_path):
         """
