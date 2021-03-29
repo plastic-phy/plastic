@@ -54,8 +54,11 @@ class PhylogenyTree():
                 if not isinstance(value, str):
                     raise TypeError(f'{key} attribute of node {node} has non-string value {value}')
             if 'label' in attributes:
-                if len(attributes['label']) == 0:
-                    raise ValueError(f'the node {node} has an empty label.')
+                label = attributes['label']
+                if len(label) == 0:
+                    raise ValueError(f'the node {node} has an empty label list.')
+                if any([len(single_label) == 0 for single_label in label.split(',')]):
+                    raise ValueError(f'the node {node} with label list {label} has empty labels in its label list.')
             elif fully_labeled:
                 raise NotFullyLabeled()
             
@@ -134,7 +137,7 @@ class PhylogenyTree():
         """
         # Please introduce me to the art of actually checking files. Thank you!
         with open(dotfile_path, 'r') as f:
-            return PhylogenyTree.from_dot_string(read(dotfile_path))
+            return PhylogenyTree.from_dotstring(read(dotfile_path))
 
     def to_file(self, dotfile_path):
         """
@@ -142,5 +145,5 @@ class PhylogenyTree():
         it exists, **it will be overwritten**.
         """
         with open(dotfile_path, 'w+') as f:
-            tree_as_dot = self.to_dot_string()
+            tree_as_dot = self.to_dotstring()
             f.write(tree_as_dot)
