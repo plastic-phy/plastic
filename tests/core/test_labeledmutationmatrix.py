@@ -129,10 +129,10 @@ class TestInit:
         with pt.raises(TypeError):
             LabeledMutationMatrix([[0, 0]], [3], ['1', '1'])
 
-    def test_bad_length_label(self):
+    def test_label_with_bad_characters(self):
 
         with pt.raises(ValueError):
-            LabeledMutationMatrix([[0]], ['a'*255], ['a'])
+            LabeledMutationMatrix([[0]], ["the issue with Ch- \nhey, we don't do this here!"], ['a'])
 
 
 class Test_Serialization:
