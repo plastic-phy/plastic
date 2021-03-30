@@ -114,7 +114,7 @@ class PhylogenyTree():
         initializes and returns a PhylogenyTree representation if the string is valid.
         """
         
-        nx_representation = nx.nx_agraph.from_agraph(pygraphviz.AGraph(dot_string))
+        nx_representation = nx.nx_agraph.from_agraph(pygraphviz.AGraph(string = dot_string))
 
         # Converting to an AGraph adds its own set of default attributes that need
         # to be removed before conversion to a NetworkX graph.
@@ -128,8 +128,8 @@ class PhylogenyTree():
         """
         Dumps the tree to a string with its dot representation.
         """
-        pydot_representation = nx.drawing.nx_pydot.to_pydot(self._tree)
-        return pydot_representation.to_string()
+        gv_representation = nx.drawing.nx_agraph.to_agraph(self._tree)
+        return gv_representation.to_string()
 
     def from_file(dotfile_path):
         """
@@ -137,7 +137,7 @@ class PhylogenyTree():
         """
         # Please introduce me to the art of actually checking files. Thank you!
         with open(dotfile_path, 'r') as f:
-            return PhylogenyTree.from_dotstring(read(f))
+            return PhylogenyTree.from_dotstring(f.read())
 
     def to_file(self, dotfile_path):
         """
