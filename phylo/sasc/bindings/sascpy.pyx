@@ -11,19 +11,56 @@ def compute(
         labeled_mutation_matrix,
         alphas,
         beta,
-        gammas,
-        el_a_variance,
-        el_b_variance,
-        el_g_variance,
         k,
         max_deletions,
         repetitions,
-        monoclonal,
         start_temp,
         cooling_rate,
         cores,
+        el_a_variance = 0,
+        el_b_variance = 0,
+        el_g_variance = 0,
+        monoclonal = False,
+        gammas = 1,
         get_cells = False
 ):
+    """
+    Infers a tree from a matrix representing the mutations for a sample of cells using
+    simulated annealing to build the tree. More informations at !!!insert link to SASC here!!!
+
+    Parameters:
+    - labeled_mutation_matrix(LabeledMutationMatrix): The matrix from which to infer the phylogeny tree.
+    - alphas: The probability of a false negative for each mutation (that is, for each column in the matrix).
+      this can be a single float, in which case the value will be used for all mutations, or a collection of
+      floats with an element for each mutation.
+    - gammas, by default 1: The prior loss probability for each mutation. If a single float is specified, then
+      it will be used for all mutations, and if nothing is specified the used value will be 1. Otherwise, a 
+      collection of floats must be provided with a gamma value for each mutation.
+    - beta: The probability for a false positive for each mutation. A single value must be provided.
+    - k: The k used in the k-Dollo model for tree inference. This is the number of times a mutation can
+      undergo a deletion in the tree.
+    - max_deletions: The maximum amount of deletions globally allowed in the tree. 
+    - repetitions: The number of times the inference process will be repeated. The tree with the best
+      score will be used for the output.
+    - monoclonal, by default False: If this is true, then SASC will be forced to infer a monoclonal tree, 
+      with exactly one child for the germline.
+    - start_temp: The starting temperature for simulated annealing.
+    - cooling_rate: The cooling rate for simulated annealing.
+    - cores: The number of cores used by SASC. 
+    - el_a_variance, by default 0: The variance of the false negative rates for error learning.
+    - el_b_variance, by default 0: The variance of the false positive rates for error learning.
+    - el_g_variance, by default 0: The variance of the prior loss probabilities for error learning.
+    - get_cells, by default False: If this is true, the tree in the output will also include the nodes
+      for the cells in the sample.
+
+    Returns:
+    - inferred_tree (PhylogenyTree): the tree that was inferred by SASC, with its confidence score.
+    - expected_genotype_matrix (LabeledMutationMatrix): the input matrix in which the missing information
+      on the genotypes of the cells has been inferred.
+    - inferred_alphas (list(float)): the inferred false negative rates after error learning.
+    - inferred_beta (float): the inferred false positive rate after error learning.
+    - inferred_gammas (list(float)): the inferred prior loss probabilities after error learning.
+    """
     
     cdef sca.sasc_in_t* arguments = <sca.sasc_in_t*>malloc(sizeof(sca.sasc_in_t))
     # Some inputs need to be processed and marshalled "manually" before being fed to the c function.
@@ -175,7 +212,13 @@ def compute(
     best_tree = PhylogenyTree(best_tree)
     expected_matrix = LabeledMutationMatrix(expected_matrix, labeled_mutation_matrix.cell_labels, labeled_mutation_matrix.mutation_labels)
     
-    out = best_tree, expected_matrix, el_alphas, el_beta, el_gammas
+    out = {
+        'inferred_tree': best_tree,
+        'expected_genotype_matrix': expected_matrix,
+        'inferred_alphas': el_alphas,
+        'inferred_beta': el_beta,
+        'inferred_gammas': el_gammas
+    }
     
     # Cleanup and return
     return out
