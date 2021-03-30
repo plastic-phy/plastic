@@ -47,8 +47,8 @@ class LabeledMutationMatrix:
         mutation_matrix = np.array(mutation_matrix, dtype = 'int')
         if len(mutation_matrix.shape) != 2:
             raise ValueError(
-                "the input matrix should be two-dimensional, but {0} is {1}-dimensional instead.".format(mutation_matrix, len(mutation_matrix.shape))
-                )
+                f"the input matrix should be two-dimensional, but {mutation_matrix} is {len(mutation_matrix.shape)}-dimensional instead."
+            )
 
         if len(mutation_matrix.flat) == 0:
             raise EmptyMatrixError()
@@ -245,8 +245,6 @@ class LabeledMutationMatrix:
                 f.write(matrix_dict['mutation_labels'])
 
 
-
-        
 class MatrixFileFormat:
     """
     Specifications for the file formats in which matrixes can be stored.
@@ -378,7 +376,6 @@ class MatrixParser:
         self.inner_parser.parse(matrix_string, semantics = self.matrix_builder)
 
         matrix = self.matrix_builder.matrix_list[0]
-        print(matrix)
         return matrix
 
     def _from_default_format(matstring_format):
