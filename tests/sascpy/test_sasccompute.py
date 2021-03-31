@@ -11,7 +11,7 @@ def test_dummy_input(get_cells = False):
     
     out = compute(
         labeled_mutation_matrix = with_str_labels,
-        alphas = 0.1,
+        alphas = [0.1] * len(with_str_labels.mutations()),
         beta = 0.00001,
         gammas = 0.2,
         el_a_variance = 0.01,
@@ -27,13 +27,12 @@ def test_dummy_input(get_cells = False):
         get_cells = get_cells
     )
 
-    [print(node) for node in out[0].as_digraph().nodes(data = True)]
-    [print(edge) for edge in out[0].as_digraph().edges]
-    [print(line) for line in out[1].matrix()]
-    print(out[2])
-    print(out[3])
-    print(out[4])
-
+    [print(node) for node in out['inferred_tree'].as_digraph().nodes(data = True)]
+    [print(edge) for edge in out['inferred_tree'].as_digraph().edges]
+    [print(line) for line in out['expected_genotype_matrix'].matrix()]
+    print(out['inferred_alphas'])
+    print(out['inferred_beta'])
+    print(out['inferred_gammas'])
 
 if __name__ == '__main__':
     test_dummy_input()

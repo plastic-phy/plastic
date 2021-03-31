@@ -140,9 +140,9 @@ class Test_Serialization:
         a = stub_matrix()
         d = a.to_serializable_dict()
 
-        assert d['mutation_matrix'] == '0 0 0\n0 0 0\n1 0 0\n'
-        assert d['cell_labels'] == 'a\nb\nc\n'
-        assert d['mutation_labels'] == 'sabbia\npollo\nfacocero\n'
+        assert d['mutation_matrix'] == '0 0 0\n0 0 0\n1 0 0'
+        assert d['cell_labels'] == 'a\nb\nc'
+        assert d['mutation_labels'] == 'sabbia\npollo\nfacocero'
 
     def test_conversion_roundtrip(self):
         a = stub_matrix()

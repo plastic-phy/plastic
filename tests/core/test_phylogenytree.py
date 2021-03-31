@@ -5,7 +5,7 @@ import pytest as pt
 def dummy_graph(with_unlabeled_node = True):
     G = nx.DiGraph()
     G.add_node('0', label = 'sabbia')
-    G.add_node('1', label = 'pollo')
+    G.add_node('1', label = 'pollo,boh')
     G.add_node('2')
     if not with_unlabeled_node:
         G.nodes['2']['label'] = 'sBin'

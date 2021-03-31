@@ -7,5 +7,4 @@ build/
 *.egg-info*
 dist
 *#
-tests
 *sascpy.c
