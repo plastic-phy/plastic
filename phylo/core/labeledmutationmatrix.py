@@ -77,7 +77,7 @@ class LabeledMutationMatrix:
             for label in label_list:
                 if not isinstance(label, str):
                     raise TypeError(f'each label must be a string, but {label} is not.')
-                if re.match('\s', label):
+                if re.search('\s', label):
                     raise ValueError(f'labels cannot contain whitespace, newline or other tabulation characters, but {label} does.')
 
             if len(set(label_list)) != len(label_list):
@@ -159,12 +159,12 @@ class LabeledMutationMatrix:
           * mutation_labels: the representation of the mutation labels list. Labels are separated with newlines.
         """
         mutation_matrix_as_string = (
-            '\n' +'\n'.join([' '.join([str(el) for el in line]) for line in self.matrix()])
+            '\n'.join([' '.join([str(el) for el in line]) for line in self.matrix()])
         )
         out = {
             'mutation_matrix' : mutation_matrix_as_string,
-            'cell_labels' : '\n' + '\n'.join(self.cell_labels),
-            'mutation_labels' : '\n' + '\n'.join(self.mutation_labels)
+            'cell_labels' : '\n'.join(self.cell_labels),
+            'mutation_labels' : '\n'.join(self.mutation_labels)
         }
         return out
 
