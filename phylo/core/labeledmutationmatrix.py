@@ -295,7 +295,7 @@ _formats = {
             """
         ),
         value_map = {'0' : 0, '1' : 1, '2' : 2, '3' : 2},
-        transpose = False
+        transpose = True
     ),
     
     'SPHYR' : MatrixFileFormat(
@@ -313,7 +313,7 @@ _formats = {
             """
         ),
         value_map = {'0' : 0, '1': 1, '-1' : 2},
-        transpose = True
+        transpose = False
     )
 }
 
@@ -342,7 +342,7 @@ class _MatrixSemantics:
 
         matrix = np.array(self.current_matrix_rows)
         self.current_matrix_rows = []
-        if self._transpose: mutation_matrix = np.transpose(matrix)
+        if self._transpose: matrix = np.transpose(matrix)
         self.matrix_list.append(matrix)
         return ast
     
