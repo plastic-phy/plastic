@@ -1,5 +1,6 @@
 import mp3treesim as mp3
 from .core.phylogenytree import PhylogenyTree
+import re
 
 
 def tree_similarity(
@@ -37,13 +38,20 @@ def tree_similarity(
     - float: The similarity score for the tree.
     """
 
-    if not isinstance(tree1, PhylogenyTree):
-        raise TypeError("tree1 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load().")
-    if not isinstance(tree2, PhylogenyTree):
-        raise TypeError("tree2 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load().")
+    if int(cores) != cores or cores < 1:
+        raise ValueError(f'the number of cores must be a positive integer, but {cores} is not.')
 
-    excluded1 = excluded1.split(',') + excluded_global.split(',')
-    excluded2 = excluded2.split(',') + excluded_global.split(',')
+    if not isinstance(tree1, PhylogenyTree):
+        raise TypeError("tree1 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load() or make one from a networkx graph.")
+    if not isinstance(tree2, PhylogenyTree):
+        raise TypeError("tree2 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load() or make one from a networkx graph.")
+
+    excluded1 = list(set(excluded1.split(',') + excluded_global.split(',')))
+    excluded2 = list(set(excluded2.split(',') + excluded_global.split(',')))
+    for label in excluded1 + excluded2:
+        if re.search('\b', label):
+            raise ValueError(f'labels cannot contain spaces or other tabulation characters, but {label} does')
+
     tree1_as_mp3 = mp3.build_tree(tree1.as_digraph(), ignore_unlabeled_nodes, excluded1)
     tree2_as_mp3 = mp3.build_tree(tree2.as_digraph(), ignore_unlabeled_nodes, excluded2)
 

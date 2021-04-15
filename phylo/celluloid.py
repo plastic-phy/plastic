@@ -27,12 +27,17 @@ def cluster_mutations(
 
     Returns:
     - LabeledMutationMatrix: The result of the clustering process. Each column in the matrix 
-      will be a centroid of a non-empty cluster, and will be labeled accordingly. Cells are
+      will be a centroid of a non-empty cluster, and will be labeled accordingly. Cell labels are
       left unaltered.
     """
 
     # Unfortunately I had to just rip the code off from the main of the original script. 
     # I don't know how to deal with licensing yet by the way.
+
+    if int(k) != k or k < 1:
+        raise ValueError('the number of clusters must be a positive integer, but {k} is not.')
+    if int(number_of_iterations) != number_of_iterations or number_of_iterations < 1:
+        raise ValueError('the number of iterations must be a positive integer, but {number_of_iterations} is not.')
 
     mutations_as_points = np.array(mutation_matrix.matrix(), dtype = 'int').transpose()
     mutation_labels = mutation_matrix.mutation_labels
@@ -60,7 +65,6 @@ def cluster_mutations(
     clustered_mutation_labels_strings = [','.join(clustered_mutation_labels[cluster_id]) for cluster_id in sorted(nonempty_clusters)]
     out_matrix = [cluster_centroids[cluster_id] for cluster_id in sorted(nonempty_clusters)]
     
-
     # the matrix needs to be transposed back to its original orientation
     out_matrix = np.array(out_matrix).transpose()
 
