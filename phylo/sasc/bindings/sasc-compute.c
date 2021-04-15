@@ -102,10 +102,18 @@ int compute (sasc_in_t* arguments, sasc_out_t* out)
 
     // Initialize the input matrix
     int** INPUT_MATRIX = malloc(N * (sizeof *INPUT_MATRIX));
+    if (INPUT_MATRIX == NULL) {
+        printf("out of memory");
+	exit(1);
+    }
     for (int i = 0; i < N; i++) {
         INPUT_MATRIX[i] = malloc(M * (sizeof *INPUT_MATRIX[i]));
+	if (INPUT_MATRIX[i] == NULL) {
+	    printf("out of memory");
+	    exit(1);
+	}
 	for (int j = 0; j < M; j++) {
-	  INPUT_MATRIX[i][j] = arguments->mutations_matrix[i][j];
+	    INPUT_MATRIX[i][j] = arguments->mutations_matrix[i][j];
 	}
     }
 
