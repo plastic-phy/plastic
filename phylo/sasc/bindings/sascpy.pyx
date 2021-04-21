@@ -285,7 +285,7 @@ cdef unmarshal_tree(sca.node_t* node, G):
 
     # If the node is a deletion, color it in red.
     if (node.loss == 1):
-        G.add_node(str(node.id), label = node.label, color = 'indianred1', style = 'filled')
+        G.add_node(str(node.id), label = node.label, fillcolor = 'indianred1', style = 'filled')
     else:
         G.add_node(str(node.id), label = node.label)
 
