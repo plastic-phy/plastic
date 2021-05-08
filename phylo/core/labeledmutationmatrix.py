@@ -43,7 +43,6 @@ class LabeledMutationMatrix:
                 return False
         
         # Given how commonly used numpy is, we let its exceptions go through.
-        
         mutation_matrix = np.array(mutation_matrix, dtype = 'int')
         if len(mutation_matrix.shape) != 2:
             raise ValueError(
@@ -77,7 +76,7 @@ class LabeledMutationMatrix:
             for label in label_list:
                 if not isinstance(label, str):
                     raise TypeError(f'each label must be a string, but {label} is not.')
-                if re.search('\s', label):
+                if re.search(r'\s', label):
                     raise ValueError(f'labels cannot contain whitespace, newline or other tabulation characters, but {label} does.')
 
             if len(set(label_list)) != len(label_list):
@@ -191,7 +190,7 @@ class LabeledMutationMatrix:
             return [lb.strip() for lb in labels_string.splitlines() if lb.strip() != ""]
         
         return LabeledMutationMatrix(
-            MatrixParser._from_default_format(matstring_format).parse_matrix(mutation_matrix),
+            _matrix_parser_from_default_format(matstring_format).parse_matrix(mutation_matrix),
             _parse_labels(cell_labels),
             _parse_labels(mutation_labels)
         )
@@ -267,59 +266,10 @@ class MatrixFileFormat:
         self.value_map = value_map
         self.transpose = transpose
 
-# Should this go into its own file?
-_formats = {
-    'SASC' : MatrixFileFormat(
-        grammar = (
-            r"""@@grammar :: SASC
-            @@whitespace ::  /(?s)[ \t\r\f\v]+/
-            start = matrix $ ;
-            mcell = "0" ~ | "1" ~ | "2" ~ ;
-            row = { mcell };
-            matrix = ("\n").{ row } ;
-            """
-        ),
-        value_map = {'0' : 0, '1': 1, '2' : 2},
-        transpose = False
-    ),
-    
-    'SCITE' : MatrixFileFormat(
-        grammar = (
-            r"""
-            @@grammar :: SCITE
-            @@whitespace ::  /(?s)[ \t\r\f\v]+/
-            start = matrix $ ;
-            mcell = "0" ~ | "1" ~ | "2" ~ | "3" ~ ;
-            row = { mcell };
-            matrix = ("\n").{ row } ;
-            """
-        ),
-        value_map = {'0' : 0, '1' : 1, '2' : 2, '3' : 2},
-        transpose = True
-    ),
-    
-    'SPHYR' : MatrixFileFormat(
-        grammar = (
-            r"""
-            @@grammar :: SPHYR
-            @@whitespace ::  /(?s)[ \t\r\f\v]+/
-            @@eol_comments :: /#([^\n]*?)$/
-            start = cell_number_line "\n" snv_number_line "\n" matrix $ ;
-            cell_number_line = /\d+/;
-            snv_number_line = /\d+/;
-            mcell = "0" ~ | "1" ~ | "-1" ~ ;
-            row = { mcell };
-            matrix = ("\n").{ row };
-            """
-        ),
-        value_map = {'0' : 0, '1': 1, '-1' : 2},
-        transpose = False
-    )
-}
-
 
 class NotAMatrixError(Exception): pass
 class MeaninglessCellError(Exception): pass
+
 
 class _MatrixSemantics:
     """
@@ -362,6 +312,7 @@ class _MatrixSemantics:
     def default(self, ast):
         return ast
 
+
 class MatrixParser:
     """
     A parser that reads a matrix string with the specified format and outputs the first
@@ -378,5 +329,56 @@ class MatrixParser:
         matrix = self.matrix_builder.matrix_list[0]
         return matrix
 
-    def _from_default_format(matstring_format):
-        return MatrixParser(_formats[matstring_format])
+
+_formats = {
+    'SASC': MatrixFileFormat(
+        grammar=(
+            r"""@@grammar :: SASC
+            @@whitespace ::  /(?s)[ \t\r\f\v]+/
+            start = matrix $ ;
+            mcell = "0" ~ | "1" ~ | "2" ~ ;
+            row = { mcell };
+            matrix = ("\n").{ row } ;
+            """
+        ),
+        value_map={'0': 0, '1': 1, '2': 2},
+        transpose=False
+    ),
+
+    'SCITE': MatrixFileFormat(
+        grammar=(
+            r"""
+            @@grammar :: SCITE
+            @@whitespace ::  /(?s)[ \t\r\f\v]+/
+            start = matrix $ ;
+            mcell = "0" ~ | "1" ~ | "2" ~ | "3" ~ ;
+            row = { mcell };
+            matrix = ("\n").{ row } ;
+            """
+        ),
+        value_map={'0': 0, '1': 1, '2': 2, '3': 2},
+        transpose=True
+    ),
+
+    'SPHYR': MatrixFileFormat(
+        grammar=(
+            r"""
+            @@grammar :: SPHYR
+            @@whitespace ::  /(?s)[ \t\r\f\v]+/
+            @@eol_comments :: /#([^\n]*?)$/
+            start = cell_number_line "\n" snv_number_line "\n" matrix $ ;
+            cell_number_line = /\d+/;
+            snv_number_line = /\d+/;
+            mcell = "0" ~ | "1" ~ | "-1" ~ ;
+            row = { mcell };
+            matrix = ("\n").{ row };
+            """
+        ),
+        value_map={'0': 0, '1': 1, '-1': 2},
+        transpose=False
+    )
+}
+
+
+def _matrix_parser_from_default_format(matstring_format):
+    return MatrixParser(_formats[matstring_format])
