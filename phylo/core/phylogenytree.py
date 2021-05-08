@@ -1,13 +1,13 @@
 import networkx as nx
 from copy import deepcopy
 import pygraphviz
-from io import StringIO
 
 
 class NotATreeError(Exception): pass
 class NotFullyLabeled(Exception): pass
 
-class PhylogenyTree():
+
+class PhylogenyTree:
 
     def __init__(self, tree_as_nx_graph, fully_labeled = False):
         """
@@ -27,17 +27,14 @@ class PhylogenyTree():
         if not isinstance(tree_as_nx_graph, nx.DiGraph):
             raise TypeError('the input must be a networkx graph.')
 
-        if not nx.is_tree(tree_as_nx_graph):
+        if not nx.is_arborescence(tree_as_nx_graph):
             raise NotATreeError('the graph must be a tree.')
 
-        # to allow correct serialization in DOT format, all attributes and node IDS must be strings,
+        # to allow correct serialization in DOT format, all attributes and node IDs must be strings,
         # and some graph attribute names must be reserved.
-        # All of coupled with the ugly hack done during deserialization is making me think we should
-        # think about using a different format.
-
         if any([attribute in tree_as_nx_graph.graph for attribute in {'edge', 'node', 'graph'}]):
             bad_keys = set(tree_as_nx_graph.graph.keys()).intersection({'edge', 'node', 'graph'})
-            raise ValueError(f'graph attributes with keys "edge", "node" or "graph", are not allowed, but {bad_keys} were present')
+            raise ValueError(f'graph attributes with keys "edge", "node" or "graph" are not allowed, but {bad_keys} are present')
         for (key, value) in tree_as_nx_graph.graph.items():
             if not isinstance(value, str):
                 raise TypeError(f'graph attribute {key} has non-string value {value}')
@@ -61,7 +58,6 @@ class PhylogenyTree():
                     raise ValueError(f'the node {node} with label list {label} has empty labels in its label list.')
             elif fully_labeled:
                 raise NotFullyLabeled()
-            
 
         # In order to ensure the object's immutability, everything is copied over.
         self._tree = deepcopy(tree_as_nx_graph)
@@ -102,10 +98,7 @@ class PhylogenyTree():
                 attributes['label'] = f'no label for node with ID: {node}'
 
         drawtree = nx.nx_agraph.to_agraph(drawtree)
-        try:
-            drawtree.layout(prog = 'dot')
-        except:
-            raise Exception('This feature requires a GraphViz installation.')
+        drawtree.layout(prog = 'dot')
         drawtree.draw(file_path)
 
     def from_dotstring(dot_string):
@@ -117,8 +110,7 @@ class PhylogenyTree():
         nx_representation = nx.nx_agraph.from_agraph(pygraphviz.AGraph(string = dot_string))
 
         # Converting to an AGraph adds its own set of default attributes that need
-        # to be removed before conversion to a NetworkX graph.
-        # Still, this is quite the weird hack and I'd much rather not do it.
+        # to be removed before conversion to a networkx graph.
         del nx_representation.graph['graph']
         del nx_representation.graph['node']
         del nx_representation.graph['edge']
@@ -131,19 +123,19 @@ class PhylogenyTree():
         gv_representation = nx.drawing.nx_agraph.to_agraph(self._tree)
         return gv_representation.to_string()
 
-    def from_file(dotfile_path):
+    def from_file(file_path):
         """
         Validates and loads a PhylogenyTree from the specified file path, if the file exists.
         """
         # Please introduce me to the art of actually checking files. Thank you!
-        with open(dotfile_path, 'r') as f:
+        with open(file_path, 'r') as f:
             return PhylogenyTree.from_dotstring(f.read())
 
-    def to_file(self, dotfile_path):
+    def to_file(self, file_path):
         """
         Dumps a PhylogenyTree to the specified file. If the file doesn't exist, it will be created; if
         it exists, **it will be overwritten**.
         """
-        with open(dotfile_path, 'w+') as f:
+        with open(file_path, 'w+') as f:
             tree_as_dot = self.to_dotstring()
             f.write(tree_as_dot)
