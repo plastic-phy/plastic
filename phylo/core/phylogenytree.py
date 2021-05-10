@@ -15,14 +15,20 @@ class PhylogenyTree:
         it creates a PhylogenyTree instance for that graph.
 
         Parameters:
-        - tree_as_nx_graph(networkx.DiGraph): a graph that represents a tree (a completely connected,
-          acyclic and directed graph), and where for each node that has a label attribute the label is
-          a non-empty string. 
-        - fully_labeled(boolean), by default False: if this is true, initialization will fail if 
-          the tree has unlabeled nodes.
+            tree_as_nx_graph(networkx.DiGraph):
+                A networkx graph that represents a directed tree.
+                Each node attribute must be a string, and graph attribute keys "node", "edge" and
+                "graph" are reserved.
+                If a node has the "label" attribute, then it must be a comma-separated list of
+                non-empty strings.
+            fully_labeled(bool), by default False:
+                If this is true, initialization will fail if the tree has unlabeled nodes.
 
         Returns:
-          PhylogenyTree: the object that has been initialized with tree_as_nx_graph if the tree is valid.
+            PhylogenyTree:
+                The object that has been initialized with tree_as_nx_graph if the tree is valid.
+                Its internal state is fully independent from the tree that was used for the
+                initialization, so subsequent alteration to it won't alter this object.
         """
         if not isinstance(tree_as_nx_graph, nx.DiGraph):
             raise TypeError('the input must be a networkx graph.')
@@ -30,8 +36,9 @@ class PhylogenyTree:
         if not nx.is_arborescence(tree_as_nx_graph):
             raise NotATreeError('the graph must be a tree.')
 
-        # to allow correct serialization in DOT format, all attributes and node IDs must be strings,
-        # and some graph attribute names must be reserved.
+        # To allow correct serialization in DOT format, all attributes and node IDs must be strings.
+        # The graph attributes "node", "edge" and "graph" are reserved due to oddities with networkx
+        # to AGraph conversion.
         if any([attribute in tree_as_nx_graph.graph for attribute in {'edge', 'node', 'graph'}]):
             bad_keys = set(tree_as_nx_graph.graph.keys()).intersection({'edge', 'node', 'graph'})
             raise ValueError(f'graph attributes with keys "edge", "node" or "graph" are not allowed, but {bad_keys} are present')
@@ -66,7 +73,8 @@ class PhylogenyTree:
     def as_digraph(self):
         """
         Returns a networkx representation of the tree as a networkx digraph.
-        The returned tree is independent from the internal representation.
+        The returned tree is independent from the internal representation, so subsequent
+        changes to it don't alter the state of this object.
         """
         out = deepcopy(self._tree)
         
@@ -76,20 +84,19 @@ class PhylogenyTree:
         """
         Draws the tree to a file using a dot layout. Requires a Graphviz installation.
 
-        Parameters: 
-        - file_path(string): The file in which the tree will be drawn. The tested use cases are drawing the tree
-          as an image (file with .png extension) or as a PDF (file with .pdf extension).
+        Parameters:
+            file_path(string):
+                The file in which the tree will be drawn. The tested use cases are drawing the tree
+                as an image or as a PDF (file with .pdf extension).
 
         Returns: nothing.
 
-        Side effects: 
-        - Draws the tree to the file using a dot layout. Reserved dot attributes will work as specified.
-          If a node is not labeled, then its ID will be used as a label (alongside with a warning). If the file 
-          specified by file_path doesn't exist, it will be created; if it exists, **its content will be overwritten**.
+        Side effects:
+            Draws the tree to the file using a dot layout. Reserved dot attributes will work as specified.
+            If a node is not labeled, then its ID will be used as a label (alongside with a warning).
+            If the file specified by file_path doesn't exist, it will be created; if it exists,
+            its content will be overwritten.
         """
-
-        # Should this depend from mp3 instead? I think it would be a fine idea to let it be 
-        # available from SASC as well.
         drawtree = self.as_digraph()
 
         # The nodes will be labeled with their numerical ID if a label isn't present.
@@ -118,7 +125,7 @@ class PhylogenyTree:
 
     def to_dotstring(self):
         """
-        Dumps the tree to a string with its dot representation.
+        Dumps the tree to a DOT representation string.
         """
         gv_representation = nx.drawing.nx_agraph.to_agraph(self._tree)
         return gv_representation.to_string()
@@ -133,8 +140,8 @@ class PhylogenyTree:
 
     def to_file(self, file_path):
         """
-        Dumps a PhylogenyTree to the specified file. If the file doesn't exist, it will be created; if
-        it exists, **it will be overwritten**.
+        Dumps a PhylogenyTree to the specified file in DOT format.
+        If the file doesn't exist, it will be created; if it exists, **it will be overwritten**.
         """
         with open(file_path, 'w+') as f:
             tree_as_dot = self.to_dotstring()
