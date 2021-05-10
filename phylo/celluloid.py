@@ -70,9 +70,3 @@ def cluster_mutations(
     out_matrix = np.array(out_matrix).transpose()
 
     return GenotypeMatrix(out_matrix, cell_labels = genotype_matrix.cell_labels, mutation_labels = clustered_mutation_labels_strings)
-
-load_matrix = GenotypeMatrix.from_files
-
-dump_matrix = GenotypeMatrix.to_files
-
-clusters = GenotypeMatrix.mutations

@@ -3,15 +3,15 @@ from phylo.core.genotypematrix import GenotypeMatrix
 
 # Let's parse a matrix and cluster it to different degrees
 
-matrix = cd.load_matrix('example_in')
+matrix = cd.GenotypeMatrix.from_files('example_in')
 
 print('starting clustering process')
 
 clustered1 = cd.cluster_mutations(matrix, k = 150, number_of_iterations = 1, verbose = True)
 clustered2 = cd.cluster_mutations(matrix, k = 100, number_of_iterations = 1, verbose = True)
 
-cd.dump_matrix(clustered1, 'clust/clustered1')
-cd.dump_matrix(clustered2, 'clust/clustered2')
+clustered1.to_files('clust/clustered1')
+clustered2.to_files('clust/clustered2')
 
 print('starting SASC')
 
@@ -43,8 +43,8 @@ out2 = sc.infer_tree(
     cores = 16
 )
 
-sc.draw_tree(out1['inferred_tree'], 'trees/tree1.pdf')
-sc.draw_tree(out2['inferred_tree'], 'trees/tree2.png')
+out1['inferred_tree'].draw_to_file('trees/tree1.pdf')
+out2['inferred_tree'].draw_to_file('trees/tree2.png')
 
 similarity = mp3.tree_similarity(out1['inferred_tree'], out2['inferred_tree'])
 

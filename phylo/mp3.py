@@ -56,7 +56,3 @@ def tree_similarity(
 
     # mp3 will handle bad values for the mode
     return mp3.similarity(tree1_as_mp3, tree2_as_mp3, mode = mode, cores = cores)
-
-load_tree = PhylogenyTree.from_file
-
-dump_tree = PhylogenyTree.to_file
