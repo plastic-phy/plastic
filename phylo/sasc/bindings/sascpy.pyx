@@ -17,8 +17,8 @@ def compute(
         max_deletions = INT_MAX,
         repetitions = 5,
         start_temp = 10**4,
-        cooling_rate = 0.01, #this cannot be written as 10**-2, otherwise Cython builds it from 10L and assigns 0 to it.
-	cores = 1,
+        cooling_rate = 0.01, #this cannot be written as 10**-2, otherwise Cython builds it from 10L and assigns 0 to it
+	    cores = 1,
         el_a_variance = 0,
         el_b_variance = 0,
         el_g_variance = 0,
@@ -28,40 +28,66 @@ def compute(
 ):
     """
     Infers a tree from a matrix representing the mutations for a sample of cells using
-    simulated annealing to build the tree. More informations at !!!insert link to SASC here!!!
+    simulated annealing to build a phylogeny using a k-Dollo model.
 
     Parameters:
-    - labeled_mutation_matrix(LabeledMutationMatrix): The matrix from which to infer the phylogeny tree.
-    - alphas(float or list(float)): The probability of a false negative for each mutation (that is, for each column in the matrix).
-      this can be a single float, in which case the value will be used for all mutations, or a collection of
-      floats with an element for each mutation.
-    - gammas(float or list(float)), by default 1: The prior loss probability for each mutation. If a single float is specified, then
-      it will be used for all mutations, and if nothing is specified the used value will be 1. Otherwise, a 
-      collection of floats must be provided with a gamma value for each mutation.
-    - beta(float): The probability for a false positive for each mutation. A single value must be provided.
-    - k: The k used in the k-Dollo model for tree inference. This is the number of times a mutation can
-      undergo a deletion in the tree.
-    - max_deletions(int), by default infinity: The maximum amount of deletions globally allowed in the tree. 
-    - repetitions(int), by default 5: The number of times the inference process will be repeated. 
-      The tree with the best score will be used for the output.
-    - monoclonal(bool), by default False: If this is true, then SASC will be forced to infer a monoclonal tree, 
-      with exactly one child for the germline.
-    - start_temp(float), by default 10**4: The starting temperature for simulated annealing.
-    - cooling_rate(float), by default 10**2: The cooling rate for simulated annealing.
-    - cores, by default 1: The number of cores used by SASC. 
-    - el_a_variance(float), by default 0: The variance of the false negative rates for error learning.
-    - el_b_variance(float), by default 0: The variance of the false positive rates for error learning.
-    - el_g_variance(float), by default 0: The variance of the prior loss probabilities for error learning.
-    - get_cells(bool), by default False: If this is true, the tree in the output will also include the nodes
-      for the cells in the sample.
+        labeled_mutation_matrix(LabeledMutationMatrix):
+            The mutation matrix from which to infer the phylogeny tree.
+        alphas(float or list(float)):
+            The probability of a false negative for each mutation (that is, for each column in the matrix).
+            this can be a single float that will be used for all mutations, or a list of floats
+            with an element for each mutation.
+        gammas(float or list(float)), by default 1:
+            The prior loss probability for each mutation. If a single float is specified,
+            then it will be used for all mutations, and if nothing is specified the used value will be 1.
+            Otherwise, a list of floats must be provided with a gamma value for each mutation.
+        beta(float):
+            The probability for a false positive for each mutation. A single value must be provided.
+        k(int):
+            The k used in the k-Dollo model for tree inference. This is the maximum amount of times
+            each mutation can be lost after being acquired in the phylogeny tree.
+        max_deletions(int), by default MAX_INT:
+            The maximum amount of deletions globally allowed in the tree.
+        repetitions(int), by default 5:
+            The number of times the inference process will be repeated.
+            The inferred tree with the best score will be used for the output.
+        monoclonal(bool), by default False:
+            If this is true, then SASC will be forced to infer a monoclonal tree,
+            with exactly one child for the germline.
+        start_temp(float), by default 10000:
+            The starting temperature for simulated annealing.
+        cooling_rate(float), by default 0.01:
+            The cooling rate for simulated annealing.
+        cores, by default 1:
+            The number of cores used by SASC.
+        el_a_variance(float), by default 0:
+            The variance of the false negative rates for error learning.
+            If a single alpha was specified, then all the false negative rates will be adjusted
+            simultaneously. Otherwise, each alpha will change independently from the others.
+        el_b_variance(float), by default 0:
+            The variance of the false positive rates for error learning.
+            If a single gamma was specified, then all the prior loss probabilities will be adjusted
+            simultaneously. Otherwise, each gamma will change independently from the others.
+        el_g_variance(float), by default 0:
+            The variance of the prior loss probabilities for error learning.
+        get_cells(bool), by default False:
+            If this is true, the tree in the output will also include the nodes
+            for the cells in the sample.
 
     Returns:
-    - inferred_tree (PhylogenyTree): the tree that was inferred by SASC, with its confidence score.
-    - expected_genotype_matrix (LabeledMutationMatrix): the input matrix in which the missing information
-      on the genotypes of the cells has been inferred.
-    - inferred_alphas (list(float)): the inferred false negative rates after error learning.
-    - inferred_beta (float): the inferred false positive rate after error learning.
-    - inferred_gammas (list(float)): the inferred prior loss probabilities after error learning.
+        dict:
+            A dictionary with the following key-value pairs:
+            * inferred_tree (PhylogenyTree):
+                The tree that was inferred by SASC, with its confidence score.
+            * expected_genotype_matrix (LabeledMutationMatrix):
+                A matrix where the missing information about the mutations has been inferred
+                starting from the tree.
+            * inferred_alphas (list(float)):
+                The false negative rates inferred through error learning.
+            * inferred_beta (float):
+                The false positive rate inferred through error learning.
+            * inferred_gammas (list(float)):
+                The prior loss probabilities inferred through error learning.
     """
 
 
@@ -73,8 +99,7 @@ def compute(
     arguments.M = len(mutations_matrix[0])    
     cdef int N = arguments.N
     cdef int M = arguments.M
-    
-    
+
     #input validation
     if beta < 0 or beta > 1:
         raise ValueError(f'beta must be within 0 and 1, but {beta} is not')
@@ -104,33 +129,29 @@ def compute(
     if len(gammas) != M:
         raise ValueError(f'multiple gammas are specified in {gammas}, but they are more or less than the number of mutations.')
     if any([alpha < 0 or alpha > 1 for alpha in alphas]):
-        raise ValueError(f'all alpha values must be within 0 and 1, but at least one in {alphas} is not')
+        raise ValueError(f'all alpha values must be within 0 and 1, but at least one in {alphas} is not.')
     if any([gamma < 0 or gamma > 1 for gamma in gammas]):
-        raise ValueError(f'all gamma values must be within 0 and 1, but at least one in {gammas} is not')
+        raise ValueError(f'all gamma values must be within 0 and 1, but at least one in {gammas} is not.')
 
-    
     # Some inputs need to be processed and marshalled "manually" before being fed to the c function.
     # Let Cython handle the rest of them by itself.
-
     
     # Automatic marshalling.
     arguments.beta = beta #;print(beta)
-    arguments.el_a_variance = el_a_variance #;print(el_a_variance) 
-    arguments.el_b_variance = el_b_variance #;print(el_b_variance)
-    arguments.el_g_variance = el_g_variance #;print(el_g_variance)
+    arguments.el_a_variance = el_a_variance
+    arguments.el_b_variance = el_b_variance
+    arguments.el_g_variance = el_g_variance
     if k == 0 or max_deletions == 0:
         k = 0
         max_deletions = 0
-    arguments.k = k #;print(k)
-    arguments.max_deletions = max_deletions #;print(max_deletions)
-    arguments.repetitions = repetitions #;print(repetitions)
-    arguments.start_temp = start_temp #;print(start_temp)
-    arguments.cooling_rate = cooling_rate #;print(cooling_rate)
-    arguments.cores = cores #;print(cores)
+    arguments.k = k
+    arguments.max_deletions = max_deletions
+    arguments.repetitions = repetitions
+    arguments.start_temp = start_temp
+    arguments.cooling_rate = cooling_rate
+    arguments.cores = cores
 
-    
     # Marshalling of the matrix
-    
     arguments.mutations_matrix = <int**>malloc(N*sizeof(int*))
     if arguments.mutations_matrix == NULL:
         raise Exception('out of memory')
@@ -141,15 +162,13 @@ def compute(
         for j in range(M):
             arguments.mutations_matrix[i][j] = mutations_matrix[i][j]
 
-    
-    # To work around the string size limitation for SASC, we pass their indexes in the lists in string form to SASC instead of the
-    # labels.
+    # To work around the string size limitation for SASC, we pass their indexes in the lists in string form to SASC
+    # instead of the labels.
     arguments.mutation_labels = <char**>malloc(M * sizeof(char*))
     automatic_labels = [bytes(str(i), 'ascii') for i in range(M)]
     for i in range(M):
         arguments.mutation_labels[i] = automatic_labels[i]
 
-    
     # Arrays with error parameters must be allocated and filled
     arguments.alphas = <double*>malloc(M * sizeof(double))
     arguments.gammas = <double*>malloc(M * sizeof(double))
@@ -163,12 +182,12 @@ def compute(
         arguments.alphas[i] = alphas[i]
         arguments.gammas[i] = gammas[i]
 
-        
     # Python bools must be converted into C integers
     arguments.single_alpha = 1 if single_alpha else 0
     arguments.single_gamma = 1 if single_gamma else 0
     arguments.monoclonal = 1 if monoclonal else 0
 
+    # The output structure is created beforehand to avoid memory allocations inside the c call.
     cdef sca.sasc_out_t out_struct
     cdef sca.sasc_out_t* c_out = &out_struct
 
@@ -194,7 +213,6 @@ def compute(
     cdef sca.node_t* root
 
     try:
-        
         # THE C A L L
         with nogil:
             comp_result = sca.compute(arguments, c_out)
@@ -202,15 +220,14 @@ def compute(
         # And now for the unmarshalling. We'll output a tuple with the tree as a networkx graph, the matrix as
         # a numpy array, and the rest of the values as simple ints/doubles/strings.
     
-        # Unmarshalling of the tree.
+        # Unmarshalling the tree.
         best_tree = nx.DiGraph()
         unmarshal_tree(c_out.best_tree, best_tree)
 
         # The labels for the tree are now indexes to the original mutation labels, aside from special labels that are
         # added artificially to the tree during the execution of SASC and only need to be converted
         # to a string.
-
-        # We assume that every label that cannot be converted to an integer needs to be left as-is
+        # We assume that every label that cannot be converted to an integer needs to be left as-is.
         def converts_to_index(label):
             try:
                 return int(label) >= 0
@@ -232,27 +249,28 @@ def compute(
                 cell_id = f'cell: {cell}'
                 best_tree.add_node(cell_id, shape = 'box')
                 best_tree.add_edge(str(c_out.ids_of_leaves[i]), cell_id)
-
-        sca.destroy_tree(c_out.best_tree)
     
-        # Unmarshalling of the expected genotype matrix
+        # Unmarshalling the expected genotype matrix
         expected_matrix = np.ndarray([N, M])
         for i in range(N):
             for j in range(M):
                 expected_matrix[i][j] = c_out.gtp_matrix[i][j]
     
-        # Unmarshalling of the error learning parameters
+        # Unmarshalling the error learning parameters
         el_alphas = [None] * M
         el_gammas = [None] * M
         for i in range(M):
             el_gammas[i] = c_out.el_gammas[i]
             el_alphas[i] = c_out.el_alphas[i]
-    
         el_beta = c_out.el_beta
     
         # Building the output
         best_tree = PhylogenyTree(best_tree)
-        expected_matrix = LabeledMutationMatrix(expected_matrix, labeled_mutation_matrix.cell_labels, labeled_mutation_matrix.mutation_labels)
+        expected_matrix = LabeledMutationMatrix(
+            expected_matrix,
+            labeled_mutation_matrix.cell_labels,
+            labeled_mutation_matrix.mutation_labels
+        )
     
         out = {
             'inferred_tree': best_tree,
@@ -261,11 +279,11 @@ def compute(
             'inferred_beta': el_beta,
             'inferred_gammas': el_gammas
         }
-    
-        # Cleanup and return
+
         return out
     
     finally:
+        # We do the memory cleanup after everything is done to avoid memory leaks.
         free(c_out.el_alphas)
         free(c_out.el_gammas)
         for i in range(N):
@@ -273,13 +291,14 @@ def compute(
         free(c_out.gtp_matrix)
         free(c_out.ids_of_leaves)
         free(arguments.mutation_labels)
+        sca.destroy_tree(c_out.best_tree)
 
 
 cdef unmarshal_tree(sca.node_t* node, G):
-
     if (node == NULL):
-        return;
+        return
 
+    # Recursion if the node has children and/or siblings.
     unmarshal_tree(node.next_sibling, G)
     unmarshal_tree(node.first_child, G)
 
