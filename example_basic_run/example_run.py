@@ -1,5 +1,5 @@
 from phylo import sasc as sc, celluloid as cd, mp3
-from phylo.core.labeledmutationmatrix import LabeledMutationMatrix
+from phylo.core.genotypematrix import GenotypeMatrix
 
 # Let's parse a matrix and cluster it to different degrees
 
@@ -16,7 +16,7 @@ cd.dump_matrix(clustered2, 'clust/clustered2')
 print('starting SASC')
 
 out1 = sc.infer_tree(
-    LabeledMutationMatrix(clustered1.matrix()),
+    GenotypeMatrix(clustered1.matrix()),
     alphas = 0.1,
     beta = 0.001,
     gammas = 0.2,
@@ -30,7 +30,7 @@ out1 = sc.infer_tree(
 )
 
 out2 = sc.infer_tree(
-    LabeledMutationMatrix(clustered2.matrix()),
+    GenotypeMatrix(clustered2.matrix()),
     alphas = 0.1,
     beta = 0.001,
     gammas = 0.2,

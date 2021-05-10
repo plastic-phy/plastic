@@ -1,16 +1,16 @@
 from sascpy import compute
-from phylo.core.labeledmutationmatrix import LabeledMutationMatrix
+from phylo.core.genotypematrix import GenotypeMatrix
 
 def test_dummy_input(get_cells = False):
 
-    parsed = LabeledMutationMatrix.from_files('matrepr_files/clustered_example')
-    with_str_labels = LabeledMutationMatrix(
-        mutation_matrix = parsed.matrix(),
+    parsed = GenotypeMatrix.from_files('matrepr_files/clustered_example')
+    with_str_labels = GenotypeMatrix(
+        genotype_matrix = parsed.matrix(),
         mutation_labels = [f'm_{lb}' for lb in parsed.mutation_labels]
     )
     
     out = compute(
-        labeled_mutation_matrix = with_str_labels,
+        labeled_genotype_matrix = with_str_labels,
         alphas = [0.1] * len(with_str_labels.mutations()),
         beta = 0.00001,
         gammas = 0.2,

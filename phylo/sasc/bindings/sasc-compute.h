@@ -27,7 +27,7 @@ typedef struct sasc_input {
     double cooling_rate;
     int cores;
 /*-------MUTATIONS MATRIX-------*/
-    int** mutations_matrix;
+    int** genotype_matrix;
     int N;
     int M;
     char **mutation_labels;

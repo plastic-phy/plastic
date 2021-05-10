@@ -1,4 +1,4 @@
-from .core.labeledmutationmatrix import LabeledMutationMatrix
+from .core.genotypematrix import GenotypeMatrix
 import numpy as np
 from kmodes.kmodes import KModes
 from collections import defaultdict
@@ -9,16 +9,16 @@ def _conflict_dissim(a, b, **_) :
     return np.sum(v(a,b), axis = 1)
 
 def cluster_mutations(
-    mutation_matrix,
+    genotype_matrix,
     k,
     number_of_iterations = 10,
     verbose = False
 ):
     """
-    Clusters the mutations in a mutation matrix by applying kmodes
+    Clusters the mutations in a genotype matrix by applying kmodes
 
     Parameters:
-        mutation_matrix(LabeledMutationMatrix):
+        genotype_matrix(GenotypeMatrix):
             A matrix representing the results of single-cell sequencing.
         k(int):
             The number of clustered mutations in the output matrix.
@@ -28,7 +28,7 @@ def cluster_mutations(
         verbose (bool)
 
     Returns:
-        LabeledMutationMatrix:
+        GenotypeMatrix:
             The result of the clustering process. Each column in the matrix
             will be the centroid of a non-empty cluster, and will be labeled with
             a comma-separated list of the labels of the mutations within the cluster.
@@ -40,8 +40,8 @@ def cluster_mutations(
     if int(number_of_iterations) != number_of_iterations or number_of_iterations < 1:
         raise ValueError(f'the number of iterations must be a positive integer, but {number_of_iterations} is not.')
 
-    mutations_as_points = np.array(mutation_matrix.matrix(), dtype = 'int').transpose()
-    mutation_labels = mutation_matrix.mutation_labels
+    mutations_as_points = np.array(genotype_matrix.matrix(), dtype = 'int').transpose()
+    mutation_labels = genotype_matrix.mutation_labels
     
     km = KModes(
             n_clusters = k,
@@ -69,10 +69,10 @@ def cluster_mutations(
     # the matrix needs to be transposed back to its original orientation
     out_matrix = np.array(out_matrix).transpose()
 
-    return LabeledMutationMatrix(out_matrix, cell_labels = mutation_matrix.cell_labels, mutation_labels = clustered_mutation_labels_strings)
+    return GenotypeMatrix(out_matrix, cell_labels = genotype_matrix.cell_labels, mutation_labels = clustered_mutation_labels_strings)
 
-load_matrix = LabeledMutationMatrix.from_files
+load_matrix = GenotypeMatrix.from_files
 
-dump_matrix = LabeledMutationMatrix.to_files
+dump_matrix = GenotypeMatrix.to_files
 
-clusters = LabeledMutationMatrix.mutations
+clusters = GenotypeMatrix.mutations

@@ -1,10 +1,10 @@
-from phylo.core.labeledmutationmatrix import *
+from phylo.core.genotypematrix import *
 import pytest as pt
 import pandas as pd
 import numpy as np
 
 def stub_matrix():
-    return LabeledMutationMatrix([[0, 0, 0], [0, 0, 0], [1, 0, 0]], ['a', 'b', 'c'], ('sabbia', 'pollo', 'facocero'))
+    return GenotypeMatrix([[0, 0, 0], [0, 0, 0], [1, 0, 0]], ['a', 'b', 'c'], ('sabbia', 'pollo', 'facocero'))
 
 class Test_Accessors:
     def test_cells(self):
@@ -23,13 +23,13 @@ class Test_Immutability:
     
     def test_matrix_immutability_after_init_parameter_modification(self):
         mutable_init_matrix = np.array([[0, 0, 0], [1, 0, 1]])
-        a = LabeledMutationMatrix(mutable_init_matrix)
+        a = GenotypeMatrix(mutable_init_matrix)
         mutable_init_matrix[0, 0] = 69
         assert a.matrix()[0][0] == 0
 
     def test_labels_immutability_after_init_parameter_modification(self):
         mutable_init_labels = ['sabbia', 'polloplex']
-        a = LabeledMutationMatrix([[0, 0]], mutation_labels = mutable_init_labels)
+        a = GenotypeMatrix([[0, 0]], mutation_labels = mutable_init_labels)
         mutable_init_labels[0] = 'you_thought_it_would_be_sabbia_but_it_is_me_dio'
         assert set(a.mutation_labels) == {'sabbia', 'polloplex'} 
         
@@ -64,75 +64,75 @@ class TestInit:
 
     def test_init_without_explicit_labels(self):
 
-        a = LabeledMutationMatrix([[0, 0, 0], [0, 0, 0]])
+        a = GenotypeMatrix([[0, 0, 0], [0, 0, 0]])
         assert a.matrix() == [[0, 0, 0], [0, 0, 0]]
         assert a.cell_labels == ['1', '2']
         assert a.mutation_labels == ['1', '2', '3']
 
     def test_init_with_numpy_matrix(self):
     
-        a = LabeledMutationMatrix(np.array([[0, 0, 0]]))
+        a = GenotypeMatrix(np.array([[0, 0, 0]]))
         assert a.matrix() == [[0, 0, 0]]
 
     def test_init_with_doubles_in_matrix(self):
 
-        a =LabeledMutationMatrix(np.array([[0.0, 0, 0]]))
+        a =GenotypeMatrix(np.array([[0.0, 0, 0]]))
         assert str(a.matrix()) == '[[0, 0, 0]]'
 
     def test_noncollection_matrix_arg(self):
 
         with pt.raises(TypeError):
-            LabeledMutationMatrix(None)
+            GenotypeMatrix(None)
 
     def test_not_two_dimensional_matrix_arg(self):
 
         with pt.raises(ValueError):
-            LabeledMutationMatrix([2])
+            GenotypeMatrix([2])
 
     def test_ragged_matrix_arg(self):
 
         with pt.raises(ValueError):
-            LabeledMutationMatrix([[0, 1, 2], [0, 1]])
+            GenotypeMatrix([[0, 1, 2], [0, 1]])
 
     def test_bad_collection_arg(self):
         
         with pt.raises(ValueError):
-            LabeledMutationMatrix("pollo")
+            GenotypeMatrix("pollo")
 
     def test_bad_values_in_matrix_arg(self):
         
         with pt.raises(ValueError):
-            LabeledMutationMatrix([[69]])
+            GenotypeMatrix([[69]])
 
     def test_noncollection_label_arg(self):
 
         with pt.raises(TypeError):
-            LabeledMutationMatrix([[0]], 3, ['a'])
+            GenotypeMatrix([[0]], 3, ['a'])
 
     def test_string_label_arg(self):
 
         with pt.raises(TypeError):
-            LabeledMutationMatrix([[0]], ['1'], 'polloplex')
+            GenotypeMatrix([[0]], ['1'], 'polloplex')
 
     def test_wrong_length_label_arg(self):
 
         with pt.raises(MatrixLabelSizeMismatch):
-            LabeledMutationMatrix([[0]], ['1', '2'], ['a'])
+            GenotypeMatrix([[0]], ['1', '2'], ['a'])
 
     def test_duplicate_labels(self):
 
         with pt.raises(DuplicateLabelsError):
-            LabeledMutationMatrix([[0, 0]], ['1'], ['1', '1'])
+            GenotypeMatrix([[0, 0]], ['1'], ['1', '1'])
 
     def test_bad_label(self):
 
         with pt.raises(TypeError):
-            LabeledMutationMatrix([[0, 0]], [3], ['1', '1'])
+            GenotypeMatrix([[0, 0]], [3], ['1', '1'])
 
     def test_label_with_bad_characters(self):
 
         with pt.raises(ValueError):
-            LabeledMutationMatrix([[0]], ["the issue with Ch- \nhey, we don't do this here!"], ['a'])
+            GenotypeMatrix([[0]], ["the issue with Ch- \nhey, we don't do this here!"], ['a'])
 
 
 class Test_Serialization:
@@ -140,14 +140,14 @@ class Test_Serialization:
         a = stub_matrix()
         d = a.to_serializable_dict()
 
-        assert d['mutation_matrix'] == '0 0 0\n0 0 0\n1 0 0'
+        assert d['genotype_matrix'] == '0 0 0\n0 0 0\n1 0 0'
         assert d['cell_labels'] == 'a\nb\nc'
         assert d['mutation_labels'] == 'sabbia\npollo\nfacocero'
 
     def test_conversion_roundtrip(self):
         a = stub_matrix()
         d = a.to_serializable_dict()
-        a_after_rt = LabeledMutationMatrix.from_serializable_dict(d)
+        a_after_rt = GenotypeMatrix.from_serializable_dict(d)
 
         assert a.matrix() == a_after_rt.matrix()
         assert a.cell_labels == a_after_rt.cell_labels
@@ -158,4 +158,4 @@ class TestMatrixLoading:
 
     def test_plain_matrix_loading(self):
 
-        sasc_format_matrix = LabeledMutationMatrix.from_files('matrepr_files/sasc_example')
+        sasc_format_matrix = GenotypeMatrix.from_files('matrepr_files/sasc_example')

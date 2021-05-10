@@ -5,12 +5,12 @@ cimport sascpycapi as sca
 from libc.limits cimport INT_MAX
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
-from phylo.core.labeledmutationmatrix import LabeledMutationMatrix
+from phylo.core.genotypematrix import GenotypeMatrix
 from phylo.core.phylogenytree import PhylogenyTree
 
 
 def compute(
-        labeled_mutation_matrix,
+        labeled_genotype_matrix,
         alphas,
         beta,
         k,
@@ -31,8 +31,8 @@ def compute(
     simulated annealing to build a phylogeny using a k-Dollo model.
 
     Parameters:
-        labeled_mutation_matrix(LabeledMutationMatrix):
-            The mutation matrix from which to infer the phylogeny tree.
+        labeled_genotype_matrix(GenotypeMatrix):
+            The genotype matrix from which to infer the phylogeny tree.
         alphas(float or list(float)):
             The probability of a false negative for each mutation (that is, for each column in the matrix).
             this can be a single float that will be used for all mutations, or a list of floats
@@ -79,7 +79,7 @@ def compute(
             A dictionary with the following key-value pairs:
             * inferred_tree (PhylogenyTree):
                 The tree that was inferred by SASC, with its confidence score.
-            * expected_genotype_matrix (LabeledMutationMatrix):
+            * expected_genotype_matrix (GenotypeMatrix):
                 A matrix where the missing information about the mutations has been inferred
                 starting from the tree.
             * inferred_alphas (list(float)):
@@ -94,9 +94,9 @@ def compute(
     cdef sca.sasc_in_t args_struct
     cdef sca.sasc_in_t* arguments = &args_struct
 
-    mutations_matrix = labeled_mutation_matrix.matrix()
-    arguments.N = len(mutations_matrix)
-    arguments.M = len(mutations_matrix[0])    
+    genotype_matrix = labeled_genotype_matrix.matrix()
+    arguments.N = len(genotype_matrix)
+    arguments.M = len(genotype_matrix[0])    
     cdef int N = arguments.N
     cdef int M = arguments.M
 
@@ -152,15 +152,15 @@ def compute(
     arguments.cores = cores
 
     # Marshalling of the matrix
-    arguments.mutations_matrix = <int**>malloc(N*sizeof(int*))
-    if arguments.mutations_matrix == NULL:
+    arguments.genotype_matrix = <int**>malloc(N*sizeof(int*))
+    if arguments.genotype_matrix == NULL:
         raise Exception('out of memory')
     for i in range(N):
-        arguments.mutations_matrix[i] = <int*>malloc(M*sizeof(int))
-        if arguments.mutations_matrix[i] == NULL:
+        arguments.genotype_matrix[i] = <int*>malloc(M*sizeof(int))
+        if arguments.genotype_matrix[i] == NULL:
             raise Exception('out of memory')
         for j in range(M):
-            arguments.mutations_matrix[i][j] = mutations_matrix[i][j]
+            arguments.genotype_matrix[i][j] = genotype_matrix[i][j]
 
     # To work around the string size limitation for SASC, we pass their indexes in the lists in string form to SASC
     # instead of the labels.
@@ -237,7 +237,7 @@ def compute(
         for [node, attributes] in best_tree.nodes(data = True):
             if 'label' in attributes:
                 if converts_to_index(attributes['label']):
-                    attributes['label'] = labeled_mutation_matrix.mutation_labels[ int(attributes['label']) ]
+                    attributes['label'] = labeled_genotype_matrix.mutation_labels[ int(attributes['label']) ]
                 else:
                     attributes['label'] = str(attributes['label'], 'ascii')
     
@@ -245,7 +245,7 @@ def compute(
         best_tree.graph['labelloc'] = 't'
 
         if get_cells:
-            for i, cell in enumerate(labeled_mutation_matrix.cell_labels):
+            for i, cell in enumerate(labeled_genotype_matrix.cell_labels):
                 cell_id = f'cell: {cell}'
                 best_tree.add_node(cell_id, shape = 'box')
                 best_tree.add_edge(str(c_out.ids_of_leaves[i]), cell_id)
@@ -266,10 +266,10 @@ def compute(
     
         # Building the output
         best_tree = PhylogenyTree(best_tree)
-        expected_matrix = LabeledMutationMatrix(
+        expected_matrix = GenotypeMatrix(
             expected_matrix,
-            labeled_mutation_matrix.cell_labels,
-            labeled_mutation_matrix.mutation_labels
+            labeled_genotype_matrix.cell_labels,
+            labeled_genotype_matrix.mutation_labels
         )
     
         out = {

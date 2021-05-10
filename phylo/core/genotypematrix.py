@@ -9,34 +9,34 @@ class EmptyMatrixError(Exception): pass
 class MatrixLabelSizeMismatch(Exception): pass
 
 
-class LabeledMutationMatrix:
+class GenotypeMatrix:
 
-    def __init__(self, mutation_matrix, cell_labels = None, mutation_labels = None):
+    def __init__(self, genotype_matrix, cell_labels = None, mutation_labels = None):
         """
         Validates a matrix that describes the results of an analysis of the mutations that have
         occurred in a sample of cells.
 
         Parameters:
-                mutation_matrix:
+                genotype_matrix:
                     Any twice-subscriptable collection of values that can be converted to a
                     bidimensional, nonempty np.ndarray of integer in which each value is either 0, 1 or 2.
                     Each field in the matrix represents information on whether if a mutation has or hasn't occurred
                     in a certain cell. 0 = no mutation, 1 = mutation, 2 = unknown.
                 cell_labels (list<string>?), by default None:
-                    Either None, or a list of strings with the same size as the height of the mutation matrix.
+                    Either None, or a list of strings with the same size as the height of the genotype matrix.
                     If the list exists, each element must be a non-empty string without spaces, newlines
                     or other tabulation characters.
                     If a list is provided, then the cells will be labeled in that order. Otherwise, an incremental
                     labeling scheme will be used.
                 mutation_labels (list<string>?), by default None:
-                    Either None, or a list of strings with the same size as the width of the mutation matrix.
+                    Either None, or a list of strings with the same size as the width of the genotype matrix.
                     If the list exists, each element must be a non-empty string without spaces, newlines
                     or other tabulation characters.
                     If a list is provided, then the mutations will be labeled in that order. Otherwise, an incremental
                     labeling scheme will be used.
 
         Returns:
-            LabeledMutationMatrix:
+            GenotypeMatrix:
                 An object representing the matrix, labeled as specified above. The object's internal state
                 is completely independent from the objects used for its initialization.
         """
@@ -49,20 +49,20 @@ class LabeledMutationMatrix:
                 return False
         
         # Given how commonly used numpy is, we let its exceptions go through.
-        mutation_matrix = np.array(mutation_matrix, dtype = 'int')
-        if len(mutation_matrix.shape) != 2:
+        genotype_matrix = np.array(genotype_matrix, dtype = 'int')
+        if len(genotype_matrix.shape) != 2:
             raise ValueError(
-                f"the input matrix should be two-dimensional, but {mutation_matrix} is {len(mutation_matrix.shape)}-dimensional instead."
+                f"the input matrix should be two-dimensional, but {genotype_matrix} is {len(genotype_matrix.shape)}-dimensional instead."
             )
 
-        if len(mutation_matrix.flat) == 0:
+        if len(genotype_matrix.flat) == 0:
             raise EmptyMatrixError()
 
         allowed_values = {1, 2, 0}
-        for element in mutation_matrix.flat:
+        for element in genotype_matrix.flat:
             if element not in allowed_values:
                 raise ValueError(element)
-        height, width = tuple(mutation_matrix.shape)
+        height, width = tuple(genotype_matrix.shape)
         
         # Automatically make the labels if none are specified.
         if cell_labels is None:
@@ -91,7 +91,7 @@ class LabeledMutationMatrix:
         _validate_labels(cell_labels, height)
         _validate_labels(mutation_labels, width)
         
-        self._data = DataFrame(mutation_matrix, index = cell_labels, columns = mutation_labels, dtype = int, copy = True)
+        self._data = DataFrame(genotype_matrix, index = cell_labels, columns = mutation_labels, dtype = int, copy = True)
 
     # The initial choice is to make the matrix immutable and to use external representations that are as general
     # as possible.
@@ -161,24 +161,24 @@ class LabeledMutationMatrix:
         Dumps the matrix into a dictionary-of-strings representation. The matrix is represented in SASC format,
         while the label lists are represented as newline-separated string.
         """
-        mutation_matrix_as_string = (
+        genotype_matrix_as_string = (
             '\n'.join([' '.join([str(el) for el in line]) for line in self.matrix()])
         )
         out = {
-            'mutation_matrix' : mutation_matrix_as_string,
+            'genotype_matrix' : genotype_matrix_as_string,
             'cell_labels' : '\n'.join(self.cell_labels),
             'mutation_labels' : '\n'.join(self.mutation_labels)
         }
         return out
 
-    def _from_strings(mutation_matrix, cell_labels = None, mutation_labels = None, matstring_format = "SASC", **kwargs):
+    def _from_strings(genotype_matrix, cell_labels = None, mutation_labels = None, matstring_format = "SASC", **kwargs):
         """
-        Builds a LabeledMutationMatrix from the string representation of its components, if the representations
+        Builds a GenotypeMatrix from the string representation of its components, if the representations
         are valid.
 
         Parameters:
-            mutation_matrix(string):
-                Represents a mutation matrix in SASC, SCITE or SPHYR format.
+            genotype_matrix(string):
+                Represents a genotype matrix in SASC, SCITE or SPHYR format.
             cell_labels(string?), by default None:
                 Represents the labels for the cells as a string in which the labels are separated by newlines.
                 If the string isn't specified the labels will be generated as described in the __init__.
@@ -189,7 +189,7 @@ class LabeledMutationMatrix:
                 The specification for the format of the matrix string.
 
         Returns:
-            LabeledMutationMatrix:
+            GenotypeMatrix:
                 The object representation of the input; refer to the initializer for the
                 validation conditions and the behaviour if label files are omitted.
         """
@@ -198,22 +198,22 @@ class LabeledMutationMatrix:
                 return None
             return [lb.strip() for lb in labels_string.splitlines() if lb.strip() != ""]
         
-        return LabeledMutationMatrix(
-            _matrix_parser_from_default_format(matstring_format).parse_matrix(mutation_matrix),
+        return GenotypeMatrix(
+            _matrix_parser_from_default_format(matstring_format).parse_matrix(genotype_matrix),
             _parse_labels(cell_labels),
             _parse_labels(mutation_labels)
         )
 
     def from_serializable_dict(dict_representation):
         """
-        Builds a LabeledMutationMatrix from its dict form as it'd be obtained from to_serializable_dict.
+        Builds a GenotypeMatrix from its dict form as it'd be obtained from to_serializable_dict.
         """
-        return LabeledMutationMatrix._from_strings(matstring_format = 'SASC', **dict_representation)
+        return GenotypeMatrix._from_strings(matstring_format = 'SASC', **dict_representation)
 
     def from_files(matrix_file, matstring_format = 'SASC', cells_file = None, mutations_file = None):
         """
         Reads a matrix file and (facultatively) label files, then uses their content as strings to build
-        a LabeledMutationMatrix with the same behaviour as read_from_strings.
+        a GenotypeMatrix with the same behaviour as read_from_strings.
         """
         def _read_nullable(file_name, default_output = None):
             if file_name is None:
@@ -223,10 +223,10 @@ class LabeledMutationMatrix:
                     return f.read()
 
         with open(matrix_file, 'r') as f:
-            mutation_matrix = f.read()
+            genotype_matrix = f.read()
 
-        return LabeledMutationMatrix._from_strings(
-            mutation_matrix = mutation_matrix,
+        return GenotypeMatrix._from_strings(
+            genotype_matrix = genotype_matrix,
             cell_labels = _read_nullable(cells_file),
             mutation_labels = _read_nullable(mutations_file),
             matstring_format = matstring_format
@@ -244,7 +244,7 @@ class LabeledMutationMatrix:
 
         matrix_dict = self.to_serializable_dict()
         with open(matrix_file, 'w+') as f:
-            f.write(matrix_dict['mutation_matrix'])
+            f.write(matrix_dict['genotype_matrix'])
         if cells_file is not None:
             with open(cells_file, 'w+') as f:
                 f.write(matrix_dict['cell_labels'])
@@ -272,7 +272,7 @@ class MatrixFileFormat:
                 The usual convention is used: 0 = no mutation, 1 = mutation, 2 = unknown.
             transpose(boolean):
                 If true, then the matrix that is obtained by parsing the file
-                will have to be transposed before being fed to the LabeledMutationMatrix initializer.
+                will have to be transposed before being fed to the GenotypeMatrix initializer.
         """
         self.grammar = grammar
         self.value_map = value_map

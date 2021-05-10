@@ -24,7 +24,7 @@ cdef extern from "sasc-compute.h":
         double start_temp
         double cooling_rate
         int cores
-        int** mutations_matrix
+        int** genotype_matrix
         int N
         int M
         char **mutation_labels

@@ -113,7 +113,7 @@ int compute (sasc_in_t* arguments, sasc_out_t* out)
 	    exit(1);
 	}
 	for (int j = 0; j < M; j++) {
-	    INPUT_MATRIX[i][j] = arguments->mutations_matrix[i][j];
+	    INPUT_MATRIX[i][j] = arguments->genotype_matrix[i][j];
 	}
     }
 
