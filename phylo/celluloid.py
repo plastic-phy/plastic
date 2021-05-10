@@ -18,26 +18,27 @@ def cluster_mutations(
     Clusters the mutations in a mutation matrix by applying kmodes
 
     Parameters:
-    - mutation_matrix (LabeledMutationMatrix): The input matrix with the results of the
-      sequencing, describing which mutations have been found in the sampled cells.
-    - k (int): The number of clustered mutations in the output matrix. Note that empty clusters
-      will be discarded after clustering.
-    - number_of_iterations (int): The number of iterations in the clustering process.
-    - verbose (bool)
+        mutation_matrix(LabeledMutationMatrix):
+            A matrix representing the results of single-cell sequencing.
+        k(int):
+            The number of clustered mutations in the output matrix.
+            Note that empty clusters will be discarded after clustering.
+        number_of_iterations(int):
+            The number of iterations in the clustering process.
+        verbose (bool)
 
     Returns:
-    - LabeledMutationMatrix: The result of the clustering process. Each column in the matrix 
-      will be a centroid of a non-empty cluster, and will be labeled accordingly. Cell labels are
-      left unaltered.
+        LabeledMutationMatrix:
+            The result of the clustering process. Each column in the matrix
+            will be the centroid of a non-empty cluster, and will be labeled with
+            a comma-separated list of the labels of the mutations within the cluster.
+            Cell labels are left unaltered.
     """
 
-    # Unfortunately I had to just rip the code off from the main of the original script. 
-    # I don't know how to deal with licensing yet by the way.
-
     if int(k) != k or k < 1:
-        raise ValueError('the number of clusters must be a positive integer, but {k} is not.')
+        raise ValueError(f'the number of clusters must be a positive integer, but {k} is not.')
     if int(number_of_iterations) != number_of_iterations or number_of_iterations < 1:
-        raise ValueError('the number of iterations must be a positive integer, but {number_of_iterations} is not.')
+        raise ValueError(f'the number of iterations must be a positive integer, but {number_of_iterations} is not.')
 
     mutations_as_points = np.array(mutation_matrix.matrix(), dtype = 'int').transpose()
     mutation_labels = mutation_matrix.mutation_labels
