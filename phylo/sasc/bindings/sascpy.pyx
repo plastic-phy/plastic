@@ -6,7 +6,7 @@ from libc.limits cimport INT_MAX
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 from phylo.core.genotypematrix import GenotypeMatrix
-from phylo.core.phylogenytree import PhylogenyTree
+from phylo.core.phylogenytree import SASCPhylogeny
 
 
 def compute(
@@ -265,7 +265,7 @@ def compute(
         el_beta = c_out.el_beta
     
         # Building the output
-        best_tree = PhylogenyTree(best_tree)
+        best_tree = SASCPhylogeny(best_tree)
         expected_matrix = GenotypeMatrix(
             expected_matrix,
             labeled_genotype_matrix.cell_labels,

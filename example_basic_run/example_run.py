@@ -40,10 +40,12 @@ out2 = sc.infer_tree(
     monoclonal = False,
     start_temp = 10**4,
     cooling_rate = 10**-2,
-    cores = 16
+    cores = 16,
+    get_cells = True
 )
 
 out1['inferred_tree'].draw_to_file('trees/tree1.pdf')
+out2['inferred_tree'] = out2['inferred_tree'].with_visualization_features(collapse_simple_paths = True)
 out2['inferred_tree'].draw_to_file('trees/tree2.png')
 
 similarity = mp3.tree_similarity(out1['inferred_tree'], out2['inferred_tree'])
