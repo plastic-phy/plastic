@@ -61,7 +61,7 @@ class Node:
         except:
             return 0
 
-    def calc_cumalitve_sup(self):
+    def calc_cumulative_sup(self):
         if self.parent:
             self.cumulative_support = self.parent.cumulative_support + self.support
         else:
@@ -197,10 +197,10 @@ def calc_supports(node, level_count):
         node.depth = node.parent.depth + 1
     level_count[node.depth] += 1
     if len(node.children) == 0:
-        node.calc_cumalitve_sup()
+        node.calc_cumulative_sup()
         node.downstream_support = node.support
     else:
-        node.calc_cumalitve_sup()
+        node.calc_cumulative_sup()
         for child in node.children:
             calc_supports(child, level_count)
         node.downstream_support = sum([x.downstream_support for x in node.children]) + node.support

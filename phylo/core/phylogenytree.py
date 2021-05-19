@@ -7,6 +7,8 @@ import pygraphviz
 
 
 class NotATreeError(Exception): pass
+
+
 class GVNotInstalled(Exception): pass
 
 
@@ -44,13 +46,14 @@ class PhylogenyTree:
             tree_as_nx_graph.graph[key] = str(tree_as_nx_graph.graph[key])
         if any([attribute in tree_as_nx_graph.graph for attribute in {'edge', 'node', 'graph'}]):
             bad_keys = set(tree_as_nx_graph.graph.keys()).intersection({'edge', 'node', 'graph'})
-            raise ValueError(f'graph attributes with keys "edge", "node" or "graph" are not allowed, but {bad_keys} are present')
-            
-        for [u, v, attributes] in tree_as_nx_graph.edges(data = True):
+            raise ValueError(
+                f'graph attributes with keys "edge", "node" or "graph" are not allowed, but {bad_keys} are present')
+
+        for [u, v, attributes] in tree_as_nx_graph.edges(data=True):
             for key in attributes:
                 attributes[key] = str(attributes[key])
-                
-        for (node, attributes) in tree_as_nx_graph.nodes(data = True):
+
+        for (node, attributes) in tree_as_nx_graph.nodes(data=True):
             if not isinstance(node, str):
                 raise TypeError(f'all nodes must be identified by strings, but {node} is not')
             for key in attributes:
@@ -73,7 +76,7 @@ class PhylogenyTree:
         changes to it don't alter the state of this object.
         """
         out = deepcopy(self._tree)
-        
+
         return out
 
     def draw_to_file(self, file_path):
@@ -96,12 +99,12 @@ class PhylogenyTree:
         drawtree = self.as_digraph()
 
         # The nodes will be labeled with their numerical ID if a label isn't present.
-        for [node, attributes] in drawtree.nodes(data = True):
+        for [node, attributes] in drawtree.nodes(data=True):
             if 'label' not in attributes:
                 attributes['label'] = f'no label for node with ID: {node}'
 
         drawtree = nx.nx_agraph.to_agraph(drawtree)
-        drawtree.layout(prog = 'dot')
+        drawtree.layout(prog='dot')
         drawtree.draw(file_path)
 
     @classmethod
@@ -112,8 +115,8 @@ class PhylogenyTree:
         Extra arguments will pe passed to the underlying initializer, if
         it can accept them.
         """
-        
-        nx_representation = nx.nx_agraph.from_agraph(pygraphviz.AGraph(string = dot_string))
+
+        nx_representation = nx.nx_agraph.from_agraph(pygraphviz.AGraph(string=dot_string))
 
         # Converting to an AGraph adds its own set of default attributes that need
         # to be removed before conversion to a networkx graph.
@@ -150,7 +153,7 @@ class PhylogenyTree:
             f.write(tree_as_dot)
 
 
-class UncomputableSupportError(Exception):pass
+class UncomputableSupportError(Exception): pass
 
 
 class SASCPhylogeny(PhylogenyTree):
@@ -186,11 +189,12 @@ class SASCPhylogeny(PhylogenyTree):
                 if self._tree.out_degree(node) != 0:
                     raise ValueError('All the inner nodes of a SASCPhylogeny must be labeled.')
                 elif self._tree.nodes[node].get('shape') != 'box':
-                    raise ValueError('If a leaf node is unlabeled, then it must be a cell, marked by a box shape attribute.')
+                    raise ValueError(
+                        'If a leaf node is unlabeled, then it must be a cell, marked by a box shape attribute.')
                 else:
                     self._has_cells = True
 
-    def with_visualization_features(self, support_threshold = None, collapse_simple_paths = False):
+    def with_visualization_features(self, support_threshold=None, collapse_simple_paths=False):
         """
         Creates a modified tree that can be used to get a clearer visualization for the phylogeny.
 
@@ -227,7 +231,7 @@ class SASCPhylogeny(PhylogenyTree):
                 tree.remove_node(node)
         return SASCPhylogeny(tree)
 
-    def draw_to_file(self, file_path, show_support = True, show_color = True):
+    def draw_to_file(self, file_path, show_support=True, show_color=True):
         """
         Draws the tree to a file using a dot layout. Requires a Graphviz installation.
 
@@ -268,7 +272,7 @@ class SASCPhylogeny(PhylogenyTree):
                     else c_red if drawtree.nodes[node]['support'] == 0
                     else c_gradient[int(drawtree.nodes[node]['support']) - 1]
                 )
-                
+
         PhylogenyTree(drawtree).draw_to_file(file_path)
 
     def _to_sv_tree(self):
@@ -299,7 +303,7 @@ class SASCPhylogeny(PhylogenyTree):
 
                 else:
                     curr_node.support += 1
-        
+
         sv.calc_supports(out.root, defaultdict(int, {root: 1}))
         return out
 
@@ -331,4 +335,3 @@ class SASCPhylogeny(PhylogenyTree):
         out.graph['penwidth'] = 2
 
         return cls(out)
-

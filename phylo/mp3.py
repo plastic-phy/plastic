@@ -32,21 +32,20 @@ with open('similarity.txt', w+) as f:
     f.write(similarity)
 """
 
-
 import mp3treesim as mp3
 from .core.phylogenytree import PhylogenyTree
 
 
 def tree_similarity(
-    tree1,
-    tree2,
-    excluded1 = '',
-    excluded2 = '',
-    excluded_global = '',
-    ignore_unlabeled_nodes = False,
-    mode = 'sigmoid',
-    cores = 1
-    ):
+        tree1,
+        tree2,
+        excluded1='',
+        excluded2='',
+        excluded_global='',
+        ignore_unlabeled_nodes=False,
+        mode='sigmoid',
+        cores=1
+):
     """
     Computes the similarity score between two trees. The score ranges from 0 to 1, with
     higher scores implying higher similarity.
@@ -78,9 +77,13 @@ def tree_similarity(
         raise ValueError(f'the number of cores must be a positive integer, but {cores} is not.')
 
     if not isinstance(tree1, PhylogenyTree):
-        raise TypeError("tree1 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load() or make one from a networkx graph.")
+        raise TypeError(
+            "tree1 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load()"
+            "or make one from a networkx graph.")
     if not isinstance(tree2, PhylogenyTree):
-        raise TypeError("tree2 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load() or make one from a networkx graph.")
+        raise TypeError(
+            "tree2 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load()"
+            "or make one from a networkx graph.")
 
     excluded1 = list(set(excluded1.split(',') + excluded_global.split(',')))
     excluded2 = list(set(excluded2.split(',') + excluded_global.split(',')))
@@ -89,4 +92,4 @@ def tree_similarity(
     tree2_as_mp3 = mp3.build_tree(tree2.as_digraph(), ignore_unlabeled_nodes, excluded2)
 
     # mp3 will handle bad values for the mode
-    return mp3.similarity(tree1_as_mp3, tree2_as_mp3, mode = mode, cores = cores)
+    return mp3.similarity(tree1_as_mp3, tree2_as_mp3, mode=mode, cores=cores)

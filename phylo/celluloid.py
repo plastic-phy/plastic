@@ -21,22 +21,22 @@ muts = clustered.mutations()
 # Save the matrix or use it for some intensive computation
 """
 
-
 from .core.genotypematrix import GenotypeMatrix
 import numpy as np
 from kmodes.kmodes import KModes
 from collections import defaultdict
 
 
-def _conflict_dissim(a, b, **_) :
-    v = np.vectorize(lambda ai, bi : ai != 2 and bi != 2 and ai != bi)
-    return np.sum(v(a,b), axis = 1)
+def _conflict_dissim(a, b, **_):
+    v = np.vectorize(lambda ai, bi: ai != 2 and bi != 2 and ai != bi)
+    return np.sum(v(a, b), axis=1)
+
 
 def cluster_mutations(
-    genotype_matrix,
-    k,
-    number_of_iterations = 10,
-    verbose = False
+        genotype_matrix,
+        k,
+        number_of_iterations=10,
+        verbose=False
 ):
     """
     Clusters the mutations in a genotype matrix by applying kmodes
@@ -64,16 +64,16 @@ def cluster_mutations(
     if int(number_of_iterations) != number_of_iterations or number_of_iterations < 1:
         raise ValueError(f'the number of iterations must be a positive integer, but {number_of_iterations} is not.')
 
-    mutations_as_points = np.array(genotype_matrix.matrix(), dtype = 'int').transpose()
+    mutations_as_points = np.array(genotype_matrix.matrix(), dtype='int').transpose()
     mutation_labels = genotype_matrix.mutation_labels
-    
+
     km = KModes(
-            n_clusters = k,
-            cat_dissim = _conflict_dissim,
-            init = 'huang',
-            n_init = number_of_iterations,
-            verbose = 1 if verbose else 0
-        )
+        n_clusters=k,
+        cat_dissim=_conflict_dissim,
+        init='huang',
+        n_init=number_of_iterations,
+        verbose=(1 if verbose else 0)
+    )
 
     clusters = km.fit_predict(mutations_as_points)
 
@@ -87,10 +87,12 @@ def cluster_mutations(
 
     # build the output matrix and the mutation labels as strings
     cluster_centroids = km.cluster_centroids_
-    clustered_mutation_labels_strings = [','.join(clustered_mutation_labels[cluster_id]) for cluster_id in sorted(nonempty_clusters)]
+    clustered_mutation_labels_strings = [','.join(clustered_mutation_labels[cluster_id]) for cluster_id in
+                                         sorted(nonempty_clusters)]
     out_matrix = [cluster_centroids[cluster_id] for cluster_id in sorted(nonempty_clusters)]
-    
+
     # the matrix needs to be transposed back to its original orientation
     out_matrix = np.array(out_matrix).transpose()
 
-    return GenotypeMatrix(out_matrix, cell_labels = genotype_matrix.cell_labels, mutation_labels = clustered_mutation_labels_strings)
+    return GenotypeMatrix(out_matrix, cell_labels=genotype_matrix.cell_labels,
+                          mutation_labels=clustered_mutation_labels_strings)
