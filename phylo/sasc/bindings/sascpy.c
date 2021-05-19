@@ -3,30 +3,15 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "depends": [],
-        "extra_compile_args": [
-            "-O3",
-            "-fopenmp",
-            "-DNDEBUG"
-        ],
-        "extra_link_args": [
-            "-O3",
-            "-fopenmp",
-            "-DNDEBUG"
+        "depends": [
+            "sasc-compute.h"
         ],
         "include_dirs": [
-            "phylo/sasc/bindings",
-            "phylo/sasc/sasc"
+            "."
         ],
         "name": "sascpy",
         "sources": [
-            "phylo/sasc/bindings/sascpy.pyx",
-            "phylo/sasc/bindings/sasc-compute.c",
-            "phylo/sasc/sasc/tree.c",
-            "phylo/sasc/sasc/mt19937ar.c",
-            "phylo/sasc/sasc/vector.c",
-            "phylo/sasc/sasc/utils.c",
-            "phylo/sasc/sasc/sastep.c"
+            "/home/pollo/Desktop/testing-branch/phylo/sasc/bindings/sascpy.pyx"
         ]
     },
     "module_name": "sascpy"
@@ -852,7 +837,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "phylo/sasc/bindings/sascpy.pyx",
+  "sascpy.pyx",
 };
 /* NoFastGil.proto */
 #define __Pyx_PyGILState_Ensure PyGILState_Ensure
@@ -1477,6 +1462,7 @@ static const char __pyx_k_attributes[] = "attributes";
 static const char __pyx_k_indianred1[] = "indianred1";
 static const char __pyx_k_monoclonal[] = "monoclonal";
 static const char __pyx_k_out_struct[] = "out_struct";
+static const char __pyx_k_sascpy_pyx[] = "sascpy.pyx";
 static const char __pyx_k_start_temp[] = "start_temp";
 static const char __pyx_k_args_struct[] = "args_struct";
 static const char __pyx_k_cell_labels[] = "cell_labels";
@@ -1508,7 +1494,6 @@ static const char __pyx_k_expected_genotype_matrix[] = "expected_genotype_matrix
 static const char __pyx_k_phylo_core_phylogenytree[] = "phylo.core.phylogenytree";
 static const char __pyx_k_phylo_core_genotypematrix[] = "phylo.core.genotypematrix";
 static const char __pyx_k_but_they_are_more_or_less_than[] = ", but they are more or less than the number of mutations.";
-static const char __pyx_k_phylo_sasc_bindings_sascpy_pyx[] = "phylo/sasc/bindings/sascpy.pyx";
 static const char __pyx_k_all_alpha_values_must_be_within[] = "all alpha values must be within 0 and 1, but at least one in ";
 static const char __pyx_k_all_gamma_values_must_be_within[] = "all gamma values must be within 0 and 1, but at least one in ";
 static const char __pyx_k_beta_must_be_within_0_and_1_but[] = "beta must be within 0 and 1, but ";
@@ -1614,11 +1599,11 @@ static PyObject *__pyx_n_s_pandas;
 static PyObject *__pyx_n_s_pd;
 static PyObject *__pyx_n_s_phylo_core_genotypematrix;
 static PyObject *__pyx_n_s_phylo_core_phylogenytree;
-static PyObject *__pyx_kp_s_phylo_sasc_bindings_sascpy_pyx;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_repetitions;
 static PyObject *__pyx_n_s_root;
 static PyObject *__pyx_n_s_sascpy;
+static PyObject *__pyx_kp_s_sascpy_pyx;
 static PyObject *__pyx_n_s_shape;
 static PyObject *__pyx_n_s_single_alpha;
 static PyObject *__pyx_n_s_single_gamma;
@@ -1693,19 +1678,19 @@ static PyObject *__pyx_pw_6sascpy_1compute(PyObject *__pyx_self, PyObject *__pyx
     values[11] = ((PyObject *)__pyx_int_0);
 
     /* "sascpy.pyx":25
- *         el_b_variance = 0,
- *         el_g_variance = 0,
- *         monoclonal = False,             # <<<<<<<<<<<<<<
- *         gammas = 1,
- *         get_cells = False
+ *         el_b_variance=0,
+ *         el_g_variance=0,
+ *         monoclonal=False,             # <<<<<<<<<<<<<<
+ *         gammas=1,
+ *         get_cells=False
  */
     values[12] = ((PyObject *)Py_False);
     values[13] = ((PyObject *)__pyx_int_1);
 
     /* "sascpy.pyx":27
- *         monoclonal = False,
- *         gammas = 1,
- *         get_cells = False             # <<<<<<<<<<<<<<
+ *         monoclonal=False,
+ *         gammas=1,
+ *         get_cells=False             # <<<<<<<<<<<<<<
  * ):
  *     """
  */
@@ -5933,11 +5918,11 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_pd, __pyx_k_pd, sizeof(__pyx_k_pd), 0, 0, 1, 1},
   {&__pyx_n_s_phylo_core_genotypematrix, __pyx_k_phylo_core_genotypematrix, sizeof(__pyx_k_phylo_core_genotypematrix), 0, 0, 1, 1},
   {&__pyx_n_s_phylo_core_phylogenytree, __pyx_k_phylo_core_phylogenytree, sizeof(__pyx_k_phylo_core_phylogenytree), 0, 0, 1, 1},
-  {&__pyx_kp_s_phylo_sasc_bindings_sascpy_pyx, __pyx_k_phylo_sasc_bindings_sascpy_pyx, sizeof(__pyx_k_phylo_sasc_bindings_sascpy_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_repetitions, __pyx_k_repetitions, sizeof(__pyx_k_repetitions), 0, 0, 1, 1},
   {&__pyx_n_s_root, __pyx_k_root, sizeof(__pyx_k_root), 0, 0, 1, 1},
   {&__pyx_n_s_sascpy, __pyx_k_sascpy, sizeof(__pyx_k_sascpy), 0, 0, 1, 1},
+  {&__pyx_kp_s_sascpy_pyx, __pyx_k_sascpy_pyx, sizeof(__pyx_k_sascpy_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_shape, __pyx_k_shape, sizeof(__pyx_k_shape), 0, 0, 1, 1},
   {&__pyx_n_s_single_alpha, __pyx_k_single_alpha, sizeof(__pyx_k_single_alpha), 0, 0, 1, 1},
   {&__pyx_n_s_single_gamma, __pyx_k_single_gamma, sizeof(__pyx_k_single_gamma), 0, 0, 1, 1},
@@ -5987,7 +5972,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__3 = PyTuple_Pack(1, __pyx_n_s_label); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 231, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_phylo_sasc_bindings_sascpy_pyx, __pyx_n_s_converts_to_index, 231, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 231, __pyx_L1_error)
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sascpy_pyx, __pyx_n_s_converts_to_index, 231, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 231, __pyx_L1_error)
 
   /* "sascpy.pyx":12
  * 
@@ -5999,7 +5984,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__5 = PyTuple_Pack(44, __pyx_n_s_labeled_genotype_matrix, __pyx_n_s_alphas, __pyx_n_s_beta, __pyx_n_s_k, __pyx_n_s_max_deletions, __pyx_n_s_repetitions, __pyx_n_s_start_temp, __pyx_n_s_cooling_rate, __pyx_n_s_cores, __pyx_n_s_el_a_variance, __pyx_n_s_el_b_variance, __pyx_n_s_el_g_variance, __pyx_n_s_monoclonal, __pyx_n_s_gammas, __pyx_n_s_get_cells, __pyx_n_s_args_struct, __pyx_n_s_arguments, __pyx_n_s_genotype_matrix, __pyx_n_s_N, __pyx_n_s_M, __pyx_n_s_single_alpha, __pyx_n_s_single_gamma, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_automatic_labels, __pyx_n_s_out_struct, __pyx_n_s_c_out, __pyx_n_s_comp_result, __pyx_n_s_root, __pyx_n_s_best_tree, __pyx_n_s_converts_to_index, __pyx_n_s_converts_to_index, __pyx_n_s_node, __pyx_n_s_attributes, __pyx_n_s_cell_2, __pyx_n_s_cell_id, __pyx_n_s_expected_matrix, __pyx_n_s_el_alphas, __pyx_n_s_el_gammas, __pyx_n_s_el_beta, __pyx_n_s_out, __pyx_n_s_alpha, __pyx_n_s_gamma, __pyx_n_s_i); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(15, 0, 44, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_phylo_sasc_bindings_sascpy_pyx, __pyx_n_s_compute, 12, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(15, 0, 44, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sascpy_pyx, __pyx_n_s_compute, 12, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -6364,9 +6349,9 @@ if (!__Pyx_RefNanny) {
   /* "sascpy.pyx":17
  *         beta,
  *         k,
- *         max_deletions = INT_MAX,             # <<<<<<<<<<<<<<
- *         repetitions = 5,
- *         start_temp = 10**4,
+ *         max_deletions=INT_MAX,             # <<<<<<<<<<<<<<
+ *         repetitions=5,
+ *         start_temp=10**4,
  */
   __pyx_t_1 = __Pyx_PyInt_From_int(INT_MAX); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
