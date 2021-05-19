@@ -243,7 +243,8 @@ class GenotypeMatrix:
     def to_files(self, matrix_file, cells_file=None, mutations_file=None):
         """
         Dumps a matrix to a file with a specified format. Also dumps the cell labels and the mutation labels
-        if outputs are specified for them as well.
+        if outputs are specified for them as well. The files will be created if they don't exist,
+        but only if the target directory already exists. If the files already exist, **they will be overwritten**.
         """
 
         output_files = [file for file in {matrix_file, cells_file, mutations_file} if file is not None]
@@ -251,13 +252,13 @@ class GenotypeMatrix:
             raise AttributeError('the same file was specified for more than one output.')
 
         matrix_dict = self.to_serializable_dict()
-        with open(matrix_file, 'w+') as f:
+        with open(matrix_file, 'w') as f:
             f.write(matrix_dict['genotype_matrix'])
         if cells_file is not None:
-            with open(cells_file, 'w+') as f:
+            with open(cells_file, 'w') as f:
                 f.write(matrix_dict['cell_labels'])
         if mutations_file is not None:
-            with open(mutations_file, 'w+') as f:
+            with open(mutations_file, 'w') as f:
                 f.write(matrix_dict['mutation_labels'])
 
 

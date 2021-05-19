@@ -43,6 +43,7 @@ out2 = sc.infer_tree(
 )
 
 out1['inferred_tree'].draw_to_file('trees/tree1.pdf')
+out2['inferred_tree'].to_file('trees/tree2.gv')
 out2['inferred_tree'].with_visualization_features(collapse_simple_paths = True) \
                      .draw_to_file('trees/tree2.png', show_color = False)
 
