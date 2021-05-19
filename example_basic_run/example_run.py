@@ -7,11 +7,9 @@ matrix = cd.GenotypeMatrix.from_files('example_in')
 
 print('starting clustering process')
 
-clustered1 = cd.cluster_mutations(matrix, k = 150, number_of_iterations = 1, verbose = True)
-clustered2 = cd.cluster_mutations(matrix, k = 100, number_of_iterations = 1, verbose = True)
+clustered1 = cd.cluster_mutations(matrix, k = 100, number_of_iterations = 1, verbose = True)
 
-clustered1.to_files('clust/clustered1')
-clustered2.to_files('clust/clustered2')
+clustered1.to_files('clust/clustered1', mutations_file = 'mut_clusters')
 
 print('starting SASC')
 
@@ -30,7 +28,7 @@ out1 = sc.infer_tree(
 )
 
 out2 = sc.infer_tree(
-    GenotypeMatrix(clustered2.matrix()),
+    GenotypeMatrix(clustered1.matrix()),
     alphas = 0.1,
     beta = 0.001,
     gammas = 0.2,
@@ -45,10 +43,10 @@ out2 = sc.infer_tree(
 )
 
 out1['inferred_tree'].draw_to_file('trees/tree1.pdf')
-out2['inferred_tree'] = out2['inferred_tree'].with_visualization_features(collapse_simple_paths = True)
-out2['inferred_tree'].draw_to_file('trees/tree2.png')
+out2['inferred_tree'].with_visualization_features(collapse_simple_paths = True) \
+                     .draw_to_file('trees/tree2.png', show_color = False)
 
-similarity = mp3.tree_similarity(out1['inferred_tree'], out2['inferred_tree'])
+similarity = mp3.tree_similarity(out1['inferred_tree'], out2['inferred_tree'], ignore_unlabeled_nodes = True)
 
 print(similarity)
     

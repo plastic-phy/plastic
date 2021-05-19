@@ -1,3 +1,27 @@
+"""
+For more informations on the contents of this module:
+- help(celluloid.GenotypeMatrix)
+- help(celluloid.cluster_mutations)
+
+--------
+
+Module that exposes the clustering algorithm presented in the celluloid
+research paper. Here's an example workflow.
+
+from phylo import celluloid as cl
+
+to_cluster = cl.GenotypeMatrix.from_files('to_cluster.txt', mutations_file = 'mutations.txt')
+# Reduce the size of the input down to 50 to speed up some complex computation
+# (for instance SASC tree inference)
+clustered = cl.cluster_mutations(to_cluster, k = 50)
+
+# Get the clustered mutations as comma separated lists of simple mutations
+muts = clustered.mutations()
+
+# Save the matrix or use it for some intensive computation
+"""
+
+
 from .core.genotypematrix import GenotypeMatrix
 import numpy as np
 from kmodes.kmodes import KModes

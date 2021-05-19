@@ -1,6 +1,40 @@
+"""
+
+For more info about the components:
+- help(mp3.PhylogenyTree)
+- help(mp3.tree_similarity)
+
+---------
+
+Module to compute the similarity between two trees.
+A simple workflow for this module could be:
+
+from phylo import mp3
+import networkx as nx
+
+# load a tree from a file in DOT format.
+tree1 = mp3.PhylogenyTree.from_file('tree1.gv')
+
+# build the other from a networkx graph.
+tree2 = nx.DiGraph()
+tree2.add_node('0', label = 'some,comma,separated,label,list')
+...
+tree2 = mp3.PhylogenyTree(tree2)
+
+# compute similarity
+similarity = tree_similarity(tree1, tree2, ...)
+
+# store the second tree given that it wasn't stored and then
+# visualize the results
+tree2.to_file('tree2.gv')
+tree1.draw_to_file('tree1.pdf'); tree2.draw_to_file('tree2.pdf')
+with open('similarity.txt', w+) as f:
+    f.write(similarity)
+"""
+
+
 import mp3treesim as mp3
 from .core.phylogenytree import PhylogenyTree
-import re
 
 
 def tree_similarity(
@@ -18,11 +52,11 @@ def tree_similarity(
     higher scores implying higher similarity.
 
     Parameters:
-        tree_1(PhylogenyTree),
-        tree_2(PhylogenyTree):
+        tree1(PhylogenyTree),
+        tree2(PhylogenyTree):
             The trees that need to be compared.
-        excluded_1(str) by default '',
-        excluded_2(str) by default '',
+        excluded1(str) by default '',
+        excluded2(str) by default '',
         excluded_global(str) by default '':
             Comma-separated sets of labels that will be ignored while reading the trees.
             excluded_1 and excluded_2 refer to the respective trees, excluded_global to both of them.

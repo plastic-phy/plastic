@@ -17,23 +17,23 @@ class GenotypeMatrix:
         occurred in a sample of cells.
 
         Parameters:
-                genotype_matrix:
-                    Any twice-subscriptable collection of values that can be converted to a
-                    bidimensional, nonempty np.ndarray of integer in which each value is either 0, 1 or 2.
-                    Each field in the matrix represents information on whether if a mutation has or hasn't occurred
-                    in a certain cell. 0 = no mutation, 1 = mutation, 2 = unknown.
-                cell_labels (list<string>?), by default None:
-                    Either None, or a list of strings with the same size as the height of the genotype matrix.
-                    If the list exists, each element must be a non-empty string without spaces, newlines
-                    or other tabulation characters.
-                    If a list is provided, then the cells will be labeled in that order. Otherwise, an incremental
-                    labeling scheme will be used.
-                mutation_labels (list<string>?), by default None:
-                    Either None, or a list of strings with the same size as the width of the genotype matrix.
-                    If the list exists, each element must be a non-empty string without spaces, newlines
-                    or other tabulation characters.
-                    If a list is provided, then the mutations will be labeled in that order. Otherwise, an incremental
-                    labeling scheme will be used.
+            genotype_matrix:
+                Any twice-subscriptable collection of values that can be converted to a
+                bidimensional, nonempty np.ndarray of integer in which each value is either 0, 1 or 2.
+                Each field in the matrix represents information on whether if a mutation has or hasn't occurred
+                in a certain cell. 0 = no mutation, 1 = mutation, 2 = unknown.
+            cell_labels (list<string>?), by default None:
+                Either None, or a list of strings with the same size as the height of the genotype matrix.
+                If the list exists, each element must be a non-empty string without spaces, newlines
+                or other tabulation characters.
+                If a list is provided, then the cells will be labeled in that order. Otherwise, an incremental
+                labeling scheme will be used.
+            mutation_labels (list<string>?), by default None:
+                Either None, or a list of strings with the same size as the width of the genotype matrix.
+                If the list exists, each element must be a non-empty string without spaces, newlines
+                or other tabulation characters.
+                If a list is provided, then the mutations will be labeled in that order. Otherwise, an incremental
+                labeling scheme will be used.
 
         Returns:
             GenotypeMatrix:
@@ -93,9 +93,6 @@ class GenotypeMatrix:
         
         self._data = DataFrame(genotype_matrix, index = cell_labels, columns = mutation_labels, dtype = int, copy = True)
 
-    # The initial choice is to make the matrix immutable and to use external representations that are as general
-    # as possible.
-        
     def matrix(self):
         """
         Returns a copy of the matrix that was used to initialize the object as a list of lists, where each list is a row 

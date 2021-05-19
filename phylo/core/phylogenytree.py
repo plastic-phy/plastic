@@ -3,6 +3,7 @@ from copy import deepcopy
 from collections import defaultdict, deque
 from colour import Color
 import phylo.core.sascviz as sv
+import pygraphviz
 
 
 class NotATreeError(Exception): pass
@@ -23,8 +24,6 @@ class PhylogenyTree:
                 "graph" are reserved.
                 If a node has the "label" attribute, then it must be a comma-separated list of
                 non-empty strings.
-            fully_labeled(bool), by default False:
-                If this is true, initialization will fail if the tree has unlabeled nodes.
 
         Returns:
             PhylogenyTree:
@@ -121,7 +120,7 @@ class PhylogenyTree:
         del nx_representation.graph['graph']
         del nx_representation.graph['node']
         del nx_representation.graph['edge']
-        return cls(nx_representation, *args, *kwargs)
+        return cls(nx_representation, *args, **kwargs)
 
     def to_dotstring(self):
         """
@@ -172,8 +171,6 @@ class SASCPhylogeny(PhylogenyTree):
                 A node in the tree can be a cell node (unlabeled and with a box shape), or a mutation
                 node (labeled). Mutation nodes can be deletion nodes (with fillcolor = indianred1).
                 All the inner nodes in the tree must be mutation nodes.
-            with_cells(bool), by default False:
-                If this is False, then cells cannot be present in the tree.
 
         Returns:
             SASCPhylogeny:
@@ -186,7 +183,7 @@ class SASCPhylogeny(PhylogenyTree):
 
         for node in self._tree:
             if 'label' not in self._tree.nodes[node]:
-                if self._tree.out_degree[node] != 0:
+                if self._tree.out_degree(node) != 0:
                     raise ValueError('All the inner nodes of a SASCPhylogeny must be labeled.')
                 elif self._tree.nodes[node].get('shape') != 'box':
                     raise ValueError('If a leaf node is unlabeled, then it must be a cell, marked by a box shape attribute.')
@@ -260,13 +257,15 @@ class SASCPhylogeny(PhylogenyTree):
                     drawtree.nodes[node]['label'] += '\n[s = {0}%]'.format(drawtree.nodes[node]['support'])
 
         if show_color:
+            c_black = Color("#000000")
             c_red = Color("#FF1919")
             c_green = Color("#397D02")
             c_blue = Color("#3270FC")
             c_gradient = list(c_blue.range_to(c_green, 100))
             for node in drawtree:
                 drawtree.nodes[node]['color'] = (
-                    c_red if 'support' not in drawtree.nodes[node] or drawtree.nodes[node]['support'] == 0
+                    c_black if 'support' not in drawtree.nodes[node]
+                    else c_red if drawtree.nodes[node]['support'] == 0
                     else c_gradient[int(drawtree.nodes[node]['support']) - 1]
                 )
                 
@@ -277,8 +276,8 @@ class SASCPhylogeny(PhylogenyTree):
 
         curr_node = sv.Node(root)
         out = sv.Tree(curr_node)
-        out.confidence_score = (
-            self._tree.graph['Confidence score'] if 'Confidence score' in self._tree.graph
+        out.tree_label = (
+            self._tree.graph['label'] if 'label' in self._tree.graph
             else None
         )
 
@@ -326,8 +325,8 @@ class SASCPhylogeny(PhylogenyTree):
 
                 out.add_edge(curr_node.id, child.id)
 
-        if svtree.confidence_score is not None:
-            out.graph['Confidence score'] = svtree.confidence_score
+        if svtree.tree_label is not None:
+            out.graph['label'] = svtree.tree_label
         out.graph['labelloc'] = 't'
         out.graph['penwidth'] = 2
 

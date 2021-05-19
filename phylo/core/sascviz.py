@@ -21,84 +21,8 @@
 #     SOFTWARE.
 #
 
-import argparse
-from colour import Color
-import re
 import sys
 
-def load_from_sasc(filepath, cell_labels, show_support=False, score=True, show_color=True):
-    tree = []
-    with open(filepath, 'r') as f:
-        tree = f.readlines()
-
-    tot_cells = 0
-
-    ROOT = Node(0)
-    ROOT.tot_cells = len(cell_labels) + 1
-    TREE = Tree(ROOT)
-    if score:
-        gv = tree[1:-3]
-    else:
-        gv = tree[1:-1]
-
-    for line in gv:
-        line = line.strip()[:-1]
-        if ' -> ' in line:
-            s, e = line.split(' -> ')
-            
-            s = s.replace('"', '')
-            e = e.replace('"', '')
-
-            if e in cell_labels:
-                # this is a cell name
-                s = int(s)
-                x = TREE.get_node(s)
-                x.support += 1
-                continue
-            
-            s = int(s)
-            try:
-                e = int(e)
-            except:
-                sys.exit('The node "{}" is probably a cell, but it was not found in the labels provided. Please check the input'.format(e))
-
-            x = TREE.get_node(s)
-            if not x:
-                x = Node(s)
-                x.tot_cells = len(cell_labels) + 1
-                x.show_support = show_support
-                x.show_color = show_color
-                TREE.add_node(x)
-
-            y = TREE.get_node(e)
-            if not y:
-                y = Node(e)
-                y.tot_cells = len(cell_labels) + 1
-                y.show_support = show_support
-                y.show_color = show_color
-                TREE.add_node(y)
-
-            TREE.add_edge(s, e)
-
-        if 'label' in line:
-            id, label = line.split(' [')
-
-            id = int(id.replace('"', '').strip())
-            label = label[: -1]
-            if 'color=indianred1' in label:
-                m = re.search(r'label="(.+)"', label)
-                mut = str(m.group(1))
-                TREE.set_deletion(id)
-                TREE.set_mutations(id, [mut])
-            else:
-                if id != 0:
-                    m = re.search(r'label="(.+)"', label)
-                    mut = str(m.group(1))
-                else:
-                    mut = 'germline'
-                TREE.set_mutations(id, [mut])
-
-    return TREE
 
 class Node:
     def __init__(self, id):
@@ -137,68 +61,12 @@ class Node:
         except:
             return 0
 
-    def print_node_dot(self, sep=','):
-        c_red = Color("#FF1919")
-        c_green = Color("#397D02")
-        c_blue = Color("#3270FC")
-        c_gradient = list(c_blue.range_to(c_green, 100))
-        # print(c_gradient)
-
-        if self.parent:
-            print('\t"%s" -> "%s";' % (self.parent.id, self.id))
-
-            # s = int((self.downstream_support / (self.tot_cells - self.parent.cumulative_support))*100)
-            s = self.get_s()
-            # print(s)
-            # if self.parent.parent:
-            #     # parent_s = self.parent.c_grad
-            #     # increment = int((100 - parent_s) * (s / 100.0))
-            #     # color = c_gradient[parent_s + increment]
-            #     # self.c_grad = parent_s + increment
-            #     color = c_gradient[s]
-            #     self.c_grad = s
-            # else:
-            #     # print(s)
-            #     color = c_gradient[s]
-            #     self.c_grad = s
-            if s == 0:
-                color = c_red
-            else:
-                color = c_gradient[s-1]
-                self.c_grad = s
-
-            print_label = None
-            if self.show_support:
-                print_label = '{} [s={}%]'.format(
-                    self.get_name(sep=sep),
-                    s
-                )
-            else:
-                print_label = self.get_name(sep=sep)
-
-            if self.show_color:
-                color_label = ', color="{}"'.format(color)
-            else:
-                color_label = ''
-
-            if not self.deletion:
-                print('\t"{0}" [label="{1}"{2}];'.format(
-                    self.id, 
-                    print_label,
-                    color_label
-                    ))
-            else:
-                print('\t"{0}" [label="{1}"{2}, fillcolor=indianred1, style=filled];'.format(
-                    self.id, 
-                    print_label,
-                    color_label
-                    ))
-    
     def calc_cumalitve_sup(self):
         if self.parent:
             self.cumulative_support = self.parent.cumulative_support + self.support
         else:
             self.cumulative_support = self.support
+
 
 class Tree:
     def __init__(self, root):
@@ -207,6 +75,7 @@ class Tree:
         self.mut_to_node = {}
         self.deletions = []
         self.edges = []
+        self.tree_label = None
 
         self.add_node(root)
     
@@ -243,7 +112,6 @@ class Tree:
             self.mut_to_node[m] = merged
         
         merged.support += to_merge.support
-
 
     def get_node(self, id):
         try:
@@ -288,6 +156,7 @@ class Tree:
             ret.append(d.get_name())
         return ret
 
+
 def collapse_simple_paths(tree, node):
     if len(node.children) == 0:
         return
@@ -302,6 +171,7 @@ def collapse_simple_paths(tree, node):
         for child in node.children:
             collapse_simple_paths(tree, child)
 
+
 def collapse_low_support(tree, node, support_th):
     if node.parent and not node.deletion and not node.parent.deletion:
         if node.get_s() < support_th and not node.parent == tree.root:
@@ -312,6 +182,7 @@ def collapse_low_support(tree, node, support_th):
     for child in node.children:
         collapse_low_support(tree, child, support_th)
 
+
 def delete_subtree(tree, node):
     if len(node.children) == 0:
         tree.pop_node(node)
@@ -320,26 +191,6 @@ def delete_subtree(tree, node):
             delete_subtree(tree, child)
         tree.pop_node(node)
 
-def __print_tree(node, ds_filter=0, sep=','):
-    if len(node.children) == 0:
-        if node.cumulative_support >= ds_filter:
-            node.print_node_dot(sep=sep)
-    else:
-        if node.cumulative_support >= ds_filter:
-            node.print_node_dot(sep=sep)
-        for child in node.children:
-            __print_tree(child, ds_filter=ds_filter, sep=sep)
-
-def print_dot_tree(node, ds_filter=0, sep=',', show_support=False):
-    print('digraph phylogeny {')
-    print('\tnode [penwidth=2];')
-    if show_support:
-        support = ' [{} cells]'.format(node.support)
-    else:
-        support = ''
-    print('\t"{0}" [label="{1}{2}"];'.format(node.id, ','.join(node.mutations), support))
-    __print_tree(node, ds_filter=ds_filter, sep=sep)
-    print('}')
 
 def calc_supports(node, level_count):
     if node.parent:
@@ -353,7 +204,3 @@ def calc_supports(node, level_count):
         for child in node.children:
             calc_supports(child, level_count)
         node.downstream_support = sum([x.downstream_support for x in node.children]) + node.support
-
-
-
-
