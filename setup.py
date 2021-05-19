@@ -31,9 +31,10 @@ st.setup(
     install_requires = [
         'pandas',
         'tatsu',
-        'pydot',
-        'pygraphviz',
         'mp3treesim',
-        'kmodes'
+        'pygraphviz',
+        'kmodes',
+        'networkx',
+        'color'
     ]
 )

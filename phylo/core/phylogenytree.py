@@ -1,12 +1,12 @@
 import networkx as nx
 from copy import deepcopy
 from collections import defaultdict, deque
-import pygraphviz
 from colour import Color
 import phylo.core.sascviz as sv
 
 
 class NotATreeError(Exception): pass
+class GVNotInstalled(Exception): pass
 
 
 class PhylogenyTree:
@@ -131,7 +131,7 @@ class PhylogenyTree:
         return gv_representation.to_string()
 
     @classmethod
-    def from_file(cls, file_path, **kwargs):
+    def from_file(cls, file_path, *args, **kwargs):
         """
         Validates and loads a tree from the specified file path, if the file exists.
         Extra arguments will be passed to the underlying initializer, if 

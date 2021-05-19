@@ -171,7 +171,8 @@ class GenotypeMatrix:
         }
         return out
 
-    def _from_strings(genotype_matrix, cell_labels = None, mutation_labels = None, matstring_format = "SASC", **kwargs):
+    @classmethod
+    def _from_strings(cls, genotype_matrix, cell_labels = None, mutation_labels = None, matstring_format = "SASC"):
         """
         Builds a GenotypeMatrix from the string representation of its components, if the representations
         are valid.
@@ -198,19 +199,21 @@ class GenotypeMatrix:
                 return None
             return [lb.strip() for lb in labels_string.splitlines() if lb.strip() != ""]
         
-        return GenotypeMatrix(
+        return cls(
             _matrix_parser_from_default_format(matstring_format).parse_matrix(genotype_matrix),
             _parse_labels(cell_labels),
             _parse_labels(mutation_labels)
         )
 
-    def from_serializable_dict(dict_representation):
+    @classmethod
+    def from_serializable_dict(cls, dict_representation):
         """
         Builds a GenotypeMatrix from its dict form as it'd be obtained from to_serializable_dict.
         """
-        return GenotypeMatrix._from_strings(matstring_format = 'SASC', **dict_representation)
+        return cls._from_strings(matstring_format = 'SASC', **dict_representation)
 
-    def from_files(matrix_file, matstring_format = 'SASC', cells_file = None, mutations_file = None):
+    @classmethod
+    def from_files(cls, matrix_file, matstring_format = 'SASC', cells_file = None, mutations_file = None):
         """
         Reads a matrix file and (facultatively) label files, then uses their content as strings to build
         a GenotypeMatrix with the same behaviour as read_from_strings.
@@ -225,7 +228,7 @@ class GenotypeMatrix:
         with open(matrix_file, 'r') as f:
             genotype_matrix = f.read()
 
-        return GenotypeMatrix._from_strings(
+        return cls._from_strings(
             genotype_matrix = genotype_matrix,
             cell_labels = _read_nullable(cells_file),
             mutation_labels = _read_nullable(mutations_file),
