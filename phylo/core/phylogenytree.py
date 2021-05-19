@@ -7,12 +7,11 @@ import phylo.core.sascviz as sv
 
 
 class NotATreeError(Exception): pass
-class NotFullyLabeled(Exception): pass
 
 
 class PhylogenyTree:
 
-    def __init__(self, tree_as_nx_graph, fully_labeled = False, separator = ','):
+    def __init__(self, tree_as_nx_graph):
         """
         Verifies that a networkx graph is a tree and validates its attributes, then
         it creates a PhylogenyTree instance for that graph.
@@ -26,8 +25,6 @@ class PhylogenyTree:
                 non-empty strings.
             fully_labeled(bool), by default False:
                 If this is true, initialization will fail if the tree has unlabeled nodes.
-            separator(str), by default ',':
-                the separator for the lists of labels in the tree.
 
         Returns:
             PhylogenyTree:
@@ -63,10 +60,8 @@ class PhylogenyTree:
                 label = attributes['label']
                 if len(label) == 0:
                     raise ValueError(f'the node {node} has an empty label list.')
-                if any([len(single_label) == 0 for single_label in label.split(separator)]):
+                if any([len(single_label) == 0 for single_label in label.split(',')]):
                     raise ValueError(f'the node {node} with label list {label} has empty labels in its label list.')
-            elif fully_labeled:
-                raise NotFullyLabeled()
 
         # In order to ensure the object's immutability, everything is copied over.
         self._tree = deepcopy(tree_as_nx_graph)
@@ -111,10 +106,12 @@ class PhylogenyTree:
         drawtree.draw(file_path)
 
     @classmethod
-    def from_dotstring(cls, dot_string):
+    def from_dotstring(cls, dot_string, *args, **kwargs):
         """
         Validates the content of a string representing a graph in dot format, then
         initializes and returns a tree representation if the string is valid.
+        Extra arguments will pe passed to the underlying initializer, if
+        it can accept them.
         """
         
         nx_representation = nx.nx_agraph.from_agraph(pygraphviz.AGraph(string = dot_string))
@@ -124,7 +121,7 @@ class PhylogenyTree:
         del nx_representation.graph['graph']
         del nx_representation.graph['node']
         del nx_representation.graph['edge']
-        return cls(nx_representation)
+        return cls(nx_representation, *args, *kwargs)
 
     def to_dotstring(self):
         """
@@ -134,13 +131,15 @@ class PhylogenyTree:
         return gv_representation.to_string()
 
     @classmethod
-    def from_file(cls, file_path):
+    def from_file(cls, file_path, **kwargs):
         """
         Validates and loads a tree from the specified file path, if the file exists.
+        Extra arguments will be passed to the underlying initializer, if 
+        it can accept them.
         """
         # Please introduce me to the art of actually checking files. Thank you!
         with open(file_path, 'r') as f:
-            return cls.from_dotstring(f.read())
+            return cls.from_dotstring(f.read(), *args, **kwargs)
 
     def to_file(self, file_path):
         """
@@ -152,7 +151,7 @@ class PhylogenyTree:
             f.write(tree_as_dot)
 
 
-class MergingRootError(Exception): pass
+class UncomputableSupportError(Exception):pass
 
 
 class SASCPhylogeny(PhylogenyTree):
@@ -182,7 +181,7 @@ class SASCPhylogeny(PhylogenyTree):
                 a PhylogenyTree instance.
         """
 
-        super().__init__(tree_as_nx_graph, fully_labeled = False, separator = ',')
+        super().__init__(tree_as_nx_graph)
         self._has_cells = False
 
         for node in self._tree:
@@ -194,13 +193,13 @@ class SASCPhylogeny(PhylogenyTree):
                 else:
                     self._has_cells = True
 
-    def with_visualization_features(self, support_threshold = 0, collapse_simple_paths = False):
+    def with_visualization_features(self, support_threshold = None, collapse_simple_paths = False):
         """
         Creates a modified tree that can be used to get a clearer visualization for the phylogeny.
 
         Parameters:
-            support_threshold(int) by default 0:
-                If this is set to anything but 0, then mutation nodes with a lower support
+            support_threshold(int?) by default None:
+                If this is set, then mutation nodes with a lower support
                 than the threshold will be collapsed into their parents until only nodes with
                 a large enough support remain.
             collapse_simple_paths(bool) by default False:
@@ -213,13 +212,16 @@ class SASCPhylogeny(PhylogenyTree):
                 A SASCPhylogeny in which the support has been computed for each mutation node, with
                 the desired modifications applied to it. The leaves will be removed.
         """
+        if not self._has_cells:
+            raise UncomputableSupportError('this function cannot be called on a tree without cells')
 
-        svtree = self.to_sv_tree()
-        sv.collapse_low_support(svtree, svtree.root, support_threshold)
+        svtree = self._to_sv_tree()
+        if support_threshold is not None:
+            sv.collapse_low_support(svtree, svtree.root, support_threshold)
         sv.collapse_simple_paths(svtree, svtree.root)
 
         sv.calc_supports(svtree.root, defaultdict(int, {svtree.root.id: 1}))
-        return SASCPhylogeny.from_sv_tree(svtree)
+        return SASCPhylogeny._from_sv_tree(svtree)
 
     def without_cells(self):
         tree = self.as_digraph()
@@ -229,26 +231,48 @@ class SASCPhylogeny(PhylogenyTree):
         return SASCPhylogeny(tree)
 
     def draw_to_file(self, file_path, show_support = True, show_color = True):
-
         """
-        Works the same as PhylogenyTree.draw_to_file, but with the options to show/hide node colors
-        that visualize how much support a mutation has, and to show/hide the support for each node
-        in its label. Said information will only be shown if present in the tree.
+        Draws the tree to a file using a dot layout. Requires a Graphviz installation.
+
+        Parameters:
+            file_path(string):
+                The file in which the tree will be drawn. The tested use cases are drawing the tree
+                as an image or as a PDF (file with .pdf extension).
+            show_support(bool), by default True:
+                If this is true, then the nodes will have a [s = x%] tag added to their label in the
+                tree visualization. Refer to the SASC readme for more info.
+            show_color(bool), by default True:
+                If this is true, then the nodes will be visualized with a contour the color of which
+                gets closer to green and further away from blue the more the node's support increases.
+
+        Returns: nothing.
+
+        Side effects:
+            Draws the tree to the file using a dot layout. Reserved dot attributes will work as specified.
+            If a node is not labeled, then its ID will be used as a label (alongside with a warning).
+            If the file specified by file_path doesn't exist, it will be created; if it exists,
+            its content will be overwritten.
         """
         drawtree = self.as_digraph()
         if show_support:
             for node in drawtree:
                 if 'support' in drawtree.nodes[node] and 'label' in drawtree.nodes[node]:
-                    drawtree.nodes[node]['label'] += '\n[s = {0}]'.format(drawtree.nodes[node]['support'])
+                    drawtree.nodes[node]['label'] += '\n[s = {0}%]'.format(drawtree.nodes[node]['support'])
 
-        if not show_color:
+        if show_color:
+            c_red = Color("#FF1919")
+            c_green = Color("#397D02")
+            c_blue = Color("#3270FC")
+            c_gradient = list(c_blue.range_to(c_green, 100))
             for node in drawtree:
-                if 'color' in drawtree.nodes[node]:
-                    del drawtree.nodes[node]['color']
-
+                drawtree.nodes[node]['color'] = (
+                    c_red if 'support' not in drawtree.nodes[node] or drawtree.nodes[node]['support'] == 0
+                    else c_gradient[int(drawtree.nodes[node]['support']) - 1]
+                )
+                
         PhylogenyTree(drawtree).draw_to_file(file_path)
 
-    def to_sv_tree(self):
+    def _to_sv_tree(self):
         root = [node for node, degree in self._tree.in_degree() if degree == 0][0]
 
         curr_node = sv.Node(root)
@@ -281,13 +305,7 @@ class SASCPhylogeny(PhylogenyTree):
         return out
 
     @classmethod
-    def from_sv_tree(cls, svtree):
-
-        c_red = Color("#FF1919")
-        c_green = Color("#397D02")
-        c_blue = Color("#3270FC")
-        c_gradient = list(c_blue.range_to(c_green, 100))
-        
+    def _from_sv_tree(cls, svtree):
         out = nx.DiGraph()
         out.add_node(svtree.root.id)
 
@@ -301,10 +319,6 @@ class SASCPhylogeny(PhylogenyTree):
                 data['style'] = 'filled'
             data['support'] = curr_node.get_s()
             data['label'] = ','.join(curr_node.mutations)
-            data['color'] = (
-                c_red if data['support'] == 0
-                else c_gradient[data['support'] - 1]
-            )
             out.nodes[curr_node.id].update(**data)
 
             for child in curr_node.children:
