@@ -14,17 +14,17 @@ def compute(
         alphas,
         beta,
         k,
-        max_deletions = INT_MAX,
-        repetitions = 5,
-        start_temp = 10**4,
-        cooling_rate = 0.01, #this cannot be written as 10**-2, otherwise Cython builds it from 10L and assigns 0 to it
-	cores = 1,
-        el_a_variance = 0,
-        el_b_variance = 0,
-        el_g_variance = 0,
-        monoclonal = False,
-        gammas = 1,
-        get_cells = False
+        max_deletions=INT_MAX,
+        repetitions=5,
+        start_temp=10**4,
+        cooling_rate=0.01, #this cannot be written as 10**-2, otherwise Cython builds it from 10L and assigns 0 to it
+	cores=1,
+        el_a_variance=0,
+        el_b_variance=0,
+        el_g_variance=0,
+        monoclonal=False,
+        gammas=1,
+        get_cells=False
 ):
     """
     Infers a tree from a matrix representing the mutations for a sample of cells using

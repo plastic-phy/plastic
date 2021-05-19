@@ -28,7 +28,7 @@ out['inferred_tree'].with_visualization_features() \
 out['expected_genotype_matrix'].to_files('expected_genotype.txt')
 """
 
-from sascpy import compute as infer_tree
+from phylo.sascpy import compute as infer_tree
 from .core.genotypematrix import GenotypeMatrix
 from .core.phylogenytree import SASCPhylogeny
 

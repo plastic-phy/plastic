@@ -5,13 +5,17 @@ import re
 
 
 class DuplicateLabelsError(Exception): pass
+
+
 class EmptyMatrixError(Exception): pass
+
+
 class MatrixLabelSizeMismatch(Exception): pass
 
 
 class GenotypeMatrix:
 
-    def __init__(self, genotype_matrix, cell_labels = None, mutation_labels = None):
+    def __init__(self, genotype_matrix, cell_labels=None, mutation_labels=None):
         """
         Validates a matrix that describes the results of an analysis of the mutations that have
         occurred in a sample of cells.
@@ -47,9 +51,9 @@ class GenotypeMatrix:
                 return True
             except TypeError:
                 return False
-        
+
         # Given how commonly used numpy is, we let its exceptions go through.
-        genotype_matrix = np.array(genotype_matrix, dtype = 'int')
+        genotype_matrix = np.array(genotype_matrix, dtype='int')
         if len(genotype_matrix.shape) != 2:
             raise ValueError(
                 f"the input matrix should be two-dimensional, but {genotype_matrix} is {len(genotype_matrix.shape)}-dimensional instead."
@@ -63,7 +67,7 @@ class GenotypeMatrix:
             if element not in allowed_values:
                 raise ValueError(element)
         height, width = tuple(genotype_matrix.shape)
-        
+
         # Automatically make the labels if none are specified.
         if cell_labels is None:
             cell_labels = [str(i) for i in range(1, height + 1)]
@@ -75,23 +79,25 @@ class GenotypeMatrix:
                 raise TypeError('mutation_labels and cell_labels must be collections, but {label_list} is not')
             if any([isinstance(label_list, str_like_type) for str_like_type in {str, bytes}]):
                 raise TypeError(f'strings like {label_list} are not accepted as label lists')
-            
+
             if len(label_list) != expected_length:
-                raise MatrixLabelSizeMismatch(f'expected {expected_length} labels, but found {len(label_list)} instead.')
-            
+                raise MatrixLabelSizeMismatch(
+                    f'expected {expected_length} labels, but found {len(label_list)} instead.')
+
             for label in label_list:
                 if not isinstance(label, str):
                     raise TypeError(f'each label must be a string, but {label} is not.')
                 if re.search(r'\s', label):
-                    raise ValueError(f'labels cannot contain whitespace, newline or other tabulation characters, but {label} does.')
+                    raise ValueError(
+                        f'labels cannot contain whitespace, newline or other tabulation characters, but {label} does.')
 
             if len(set(label_list)) != len(label_list):
                 raise DuplicateLabelsError()
 
         _validate_labels(cell_labels, height)
         _validate_labels(mutation_labels, width)
-        
-        self._data = DataFrame(genotype_matrix, index = cell_labels, columns = mutation_labels, dtype = int, copy = True)
+
+        self._data = DataFrame(genotype_matrix, index=cell_labels, columns=mutation_labels, dtype=int, copy=True)
 
     def matrix(self):
         """
@@ -108,14 +114,14 @@ class GenotypeMatrix:
                 in the analysis. The returned object is independent from the internal representation.
         """
         return self._data.to_numpy().tolist()
-    
+
     @property
     def cell_labels(self):
         """
         Returns an ordered list of the labels for the cells in the matrix.
         """
         return list(self._data.index)
-    
+
     @property
     def mutation_labels(self):
         """
@@ -136,7 +142,7 @@ class GenotypeMatrix:
                 the matrix that represents the information about each mutation for the cell with that label;
                 the coefficients of the list are in the same order as the labels in mutation_labels.
         """
-        return {lb : list(self._data.loc[lb, :]) for lb in self.cell_labels}
+        return {lb: list(self._data.loc[lb, :]) for lb in self.cell_labels}
 
     def mutations(self):
         """
@@ -151,7 +157,7 @@ class GenotypeMatrix:
                 the matrix that represents the information for the mutation in each cell of the sample;
                 the coefficients of the list are in the same order as the labels in  cell_labels.
         """
-        return {lb : list(self._data.loc[:, lb]) for lb in self.mutation_labels}
+        return {lb: list(self._data.loc[:, lb]) for lb in self.mutation_labels}
 
     def to_serializable_dict(self):
         """
@@ -162,14 +168,14 @@ class GenotypeMatrix:
             '\n'.join([' '.join([str(el) for el in line]) for line in self.matrix()])
         )
         out = {
-            'genotype_matrix' : genotype_matrix_as_string,
-            'cell_labels' : '\n'.join(self.cell_labels),
-            'mutation_labels' : '\n'.join(self.mutation_labels)
+            'genotype_matrix': genotype_matrix_as_string,
+            'cell_labels': '\n'.join(self.cell_labels),
+            'mutation_labels': '\n'.join(self.mutation_labels)
         }
         return out
 
     @classmethod
-    def _from_strings(cls, genotype_matrix, cell_labels = None, mutation_labels = None, matstring_format = "SASC"):
+    def _from_strings(cls, genotype_matrix, cell_labels=None, mutation_labels=None, matstring_format="SASC"):
         """
         Builds a GenotypeMatrix from the string representation of its components, if the representations
         are valid.
@@ -191,11 +197,12 @@ class GenotypeMatrix:
                 The object representation of the input; refer to the initializer for the
                 validation conditions and the behaviour if label files are omitted.
         """
+
         def _parse_labels(labels_string):
             if labels_string is None:
                 return None
             return [lb.strip() for lb in labels_string.splitlines() if lb.strip() != ""]
-        
+
         return cls(
             _matrix_parser_from_default_format(matstring_format).parse_matrix(genotype_matrix),
             _parse_labels(cell_labels),
@@ -207,15 +214,16 @@ class GenotypeMatrix:
         """
         Builds a GenotypeMatrix from its dict form as it'd be obtained from to_serializable_dict.
         """
-        return cls._from_strings(matstring_format = 'SASC', **dict_representation)
+        return cls._from_strings(matstring_format='SASC', **dict_representation)
 
     @classmethod
-    def from_files(cls, matrix_file, matstring_format = 'SASC', cells_file = None, mutations_file = None):
+    def from_files(cls, matrix_file, matstring_format='SASC', cells_file=None, mutations_file=None):
         """
         Reads a matrix file and (facultatively) label files, then uses their content as strings to build
         a GenotypeMatrix with the same behaviour as read_from_strings.
         """
-        def _read_nullable(file_name, default_output = None):
+
+        def _read_nullable(file_name, default_output=None):
             if file_name is None:
                 return default_output
             else:
@@ -226,13 +234,13 @@ class GenotypeMatrix:
             genotype_matrix = f.read()
 
         return cls._from_strings(
-            genotype_matrix = genotype_matrix,
-            cell_labels = _read_nullable(cells_file),
-            mutation_labels = _read_nullable(mutations_file),
-            matstring_format = matstring_format
+            genotype_matrix=genotype_matrix,
+            cell_labels=_read_nullable(cells_file),
+            mutation_labels=_read_nullable(mutations_file),
+            matstring_format=matstring_format
         )
 
-    def to_files(self, matrix_file, cells_file = None, mutations_file = None):
+    def to_files(self, matrix_file, cells_file=None, mutations_file=None):
         """
         Dumps a matrix to a file with a specified format. Also dumps the cell labels and the mutation labels
         if outputs are specified for them as well.
@@ -257,7 +265,8 @@ class MatrixFileFormat:
     """
     Specifications for the file formats in which matrixes can be stored.
     """
-    def __init__(self, grammar, value_map, transpose = False):
+
+    def __init__(self, grammar, value_map, transpose=False):
         """
         Parameters:
             grammar(string):
@@ -280,6 +289,8 @@ class MatrixFileFormat:
 
 
 class NotAMatrixError(Exception): pass
+
+
 class MeaninglessCellError(Exception): pass
 
 
@@ -290,13 +301,14 @@ class _MatrixSemantics:
     the semantics rely on the names for the rules as specified in the documentation
     for MatrixFileFormat, so new grammars will have to follow them as well.
     """
+
     def __init__(self, value_map, transpose):
         self.matrix_list = []
         self.current_matrix_rows = []
         self.current_row = []
         self._value_map = value_map.copy()
         self._transpose = transpose
-    
+
     def matrix(self, ast):
         matrix_width = len(self.current_matrix_rows[0])
         if any([len(row) != matrix_width for row in self.current_matrix_rows]):
@@ -307,13 +319,13 @@ class _MatrixSemantics:
         if self._transpose: matrix = np.transpose(matrix)
         self.matrix_list.append(matrix)
         return ast
-    
+
     def row(self, ast):
         if self.current_row != []:
             self.current_matrix_rows.append(self.current_row.copy())
         self.current_row = []
         return ast
-    
+
     def mcell(self, ast):
         try:
             self.current_row.append(self._value_map[ast])
@@ -330,13 +342,13 @@ class MatrixParser:
     A parser that reads a matrix string with the specified format and outputs the first
     matrix that is found in the parsed string.
     """
+
     def __init__(self, file_format):
         self.inner_parser = ts.compile(file_format.grammar)
         self.matrix_builder = _MatrixSemantics(file_format.value_map, file_format.transpose)
 
     def parse_matrix(self, matrix_string):
-        
-        self.inner_parser.parse(matrix_string, semantics = self.matrix_builder)
+        self.inner_parser.parse(matrix_string, semantics=self.matrix_builder)
 
         matrix = self.matrix_builder.matrix_list[0]
         return matrix
