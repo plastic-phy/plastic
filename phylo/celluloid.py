@@ -5,8 +5,10 @@ For more informations on the contents of this module:
 
 --------
 
-Module that exposes the clustering algorithm presented in the celluloid
-research paper. Here's an example workflow.
+Module that exposes the clustering algorithm presented at
+https://github.com/AlgoLab/celluloid
+
+Example workflow:
 
 from phylo import celluloid as cl
 
@@ -18,10 +20,13 @@ clustered = cl.cluster_mutations(to_cluster, k = 50)
 # Get the clustered mutations as comma separated lists of simple mutations
 muts = clustered.mutations()
 
-# Save the matrix or use it for some intensive computation
+# Save the matrix and use it for some intensive computation
+cl.GenotypeMatrix.to_files('clustered.txt', mutations_file = 'clustered_mutations.txt')
+from phylo import sasc as sc
+tree = sc.infer_tree(clustered, ...)['inferred_tree']
 """
 
-from .core.genotypematrix import GenotypeMatrix
+from ._core.genotypematrix import GenotypeMatrix
 import numpy as np
 from kmodes.kmodes import KModes
 from collections import defaultdict

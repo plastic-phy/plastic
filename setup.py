@@ -16,10 +16,8 @@ st.setup(
     url="https://github.com/AlgoLab/phylo-pipeline/",
     packages=st.find_packages(),
     classifiers=[
-        "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
-        "Natural Language :: English",
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: CPython",
@@ -38,9 +36,9 @@ st.setup(
     python_requires=">=3.8",
     ext_modules=[
         st.Extension(
-            "phylo.sascpy",
+            "phylo.sasc",
             [sascdir + filepath for filepath in
-             ["bindings/sascpy.c",
+             ["bindings/sasc.c",
               "bindings/sasc-compute.c",
               "sasc/tree.c",
               "sasc/mt19937ar.c",

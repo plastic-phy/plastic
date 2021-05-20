@@ -1,0 +1,435 @@
+strict digraph "" {
+	graph [label="Confidence score: -572.5204940845987",
+		labelloc=t
+	];
+	node [label="\N"];
+	16	[label=23];
+	"cell: 84"	[shape=box];
+	16 -> "cell: 84";
+	15	[label=35];
+	15 -> 16;
+	17	[label=57];
+	15 -> 17;
+	18	[fillcolor=indianred1,
+		label=6,
+		style=filled];
+	"cell: 91"	[shape=box];
+	18 -> "cell: 91";
+	17 -> 18;
+	19	[fillcolor=indianred1,
+		label=49,
+		style=filled];
+	17 -> 19;
+	"cell: 34"	[shape=box];
+	17 -> "cell: 34";
+	20	[fillcolor=indianred1,
+		label=30,
+		style=filled];
+	19 -> 20;
+	"cell: 28"	[shape=box];
+	19 -> "cell: 28";
+	"cell: 50"	[shape=box];
+	19 -> "cell: 50";
+	14	[label=47];
+	14 -> 15;
+	21	[label=21];
+	14 -> 21;
+	"cell: 56"	[shape=box];
+	14 -> "cell: 56";
+	"cell: 21"	[shape=box];
+	21 -> "cell: 21";
+	"cell: 35"	[shape=box];
+	21 -> "cell: 35";
+	"cell: 62"	[shape=box];
+	21 -> "cell: 62";
+	13	[label=41];
+	13 -> 14;
+	22	[fillcolor=indianred1,
+		label=55,
+		style=filled];
+	13 -> 22;
+	24	[fillcolor=indianred1,
+		label=41,
+		style=filled];
+	23	[label=4];
+	23 -> 24;
+	22 -> 23;
+	12	[label=55];
+	12 -> 13;
+	11	[label=2];
+	11 -> 12;
+	10	[label=40];
+	10 -> 11;
+	25	[label=29];
+	10 -> 25;
+	"cell: 23"	[shape=box];
+	10 -> "cell: 23";
+	"cell: 44"	[shape=box];
+	10 -> "cell: 44";
+	"cell: 51"	[shape=box];
+	10 -> "cell: 51";
+	27	[fillcolor=indianred1,
+		label=40,
+		style=filled];
+	"cell: 72"	[shape=box];
+	27 -> "cell: 72";
+	26	[label=28];
+	26 -> 27;
+	"cell: 15"	[shape=box];
+	26 -> "cell: 15";
+	"cell: 38"	[shape=box];
+	26 -> "cell: 38";
+	"cell: 53"	[shape=box];
+	26 -> "cell: 53";
+	"cell: 97"	[shape=box];
+	26 -> "cell: 97";
+	25 -> 26;
+	28	[fillcolor=indianred1,
+		label=10,
+		style=filled];
+	25 -> 28;
+	"cell: 18"	[shape=box];
+	25 -> "cell: 18";
+	"cell: 22"	[shape=box];
+	25 -> "cell: 22";
+	"cell: 95"	[shape=box];
+	25 -> "cell: 95";
+	"cell: 9"	[shape=box];
+	28 -> "cell: 9";
+	"cell: 75"	[shape=box];
+	28 -> "cell: 75";
+	"cell: 85"	[shape=box];
+	28 -> "cell: 85";
+	"cell: 90"	[shape=box];
+	28 -> "cell: 90";
+	9	[label=6];
+	9 -> 10;
+	"cell: 37"	[shape=box];
+	9 -> "cell: 37";
+	8	[label=10];
+	8 -> 9;
+	"cell: 1"	[shape=box];
+	8 -> "cell: 1";
+	"cell: 11"	[shape=box];
+	8 -> "cell: 11";
+	"cell: 13"	[shape=box];
+	8 -> "cell: 13";
+	"cell: 40"	[shape=box];
+	8 -> "cell: 40";
+	"cell: 79"	[shape=box];
+	8 -> "cell: 79";
+	"cell: 80"	[shape=box];
+	8 -> "cell: 80";
+	7	[label=49];
+	7 -> 8;
+	6	[label=30];
+	6 -> 7;
+	"cell: 14"	[shape=box];
+	6 -> "cell: 14";
+	5	[label=27];
+	5 -> 6;
+	29	[fillcolor=indianred1,
+		label=27,
+		style=filled];
+	5 -> 29;
+	84	[label=19];
+	5 -> 84;
+	39	[label=38];
+	"cell: 39"	[shape=box];
+	39 -> "cell: 39";
+	"cell: 46"	[shape=box];
+	39 -> "cell: 46";
+	38	[fillcolor=indianred1,
+		label=46,
+		style=filled];
+	38 -> 39;
+	37	[label=16];
+	37 -> 38;
+	"cell: 68"	[shape=box];
+	37 -> "cell: 68";
+	36	[label=11];
+	36 -> 37;
+	35	[label=25];
+	35 -> 36;
+	40	[fillcolor=indianred1,
+		label=32,
+		style=filled];
+	35 -> 40;
+	41	[label=42];
+	35 -> 41;
+	"cell: 61"	[shape=box];
+	35 -> "cell: 61";
+	"cell: 65"	[shape=box];
+	35 -> "cell: 65";
+	"cell: 94"	[shape=box];
+	35 -> "cell: 94";
+	"cell: 12"	[shape=box];
+	40 -> "cell: 12";
+	"cell: 16"	[shape=box];
+	40 -> "cell: 16";
+	47	[label=5];
+	"cell: 26"	[shape=box];
+	47 -> "cell: 26";
+	"cell: 64"	[shape=box];
+	47 -> "cell: 64";
+	46	[label=44];
+	46 -> 47;
+	48	[fillcolor=indianred1,
+		label=25,
+		style=filled];
+	46 -> 48;
+	54	[label=26];
+	46 -> 54;
+	51	[label=60];
+	"cell: 93"	[shape=box];
+	51 -> "cell: 93";
+	50	[label=62];
+	50 -> 51;
+	52	[fillcolor=indianred1,
+		label=51,
+		style=filled];
+	50 -> 52;
+	"cell: 99"	[shape=box];
+	50 -> "cell: 99";
+	53	[fillcolor=indianred1,
+		label=39,
+		style=filled];
+	52 -> 53;
+	"cell: 77"	[shape=box];
+	52 -> "cell: 77";
+	49	[label=51];
+	49 -> 50;
+	48 -> 49;
+	55	[fillcolor=indianred1,
+		label=18,
+		style=filled];
+	54 -> 55;
+	56	[fillcolor=indianred1,
+		label=36,
+		style=filled];
+	54 -> 56;
+	57	[fillcolor=indianred1,
+		label=3,
+		style=filled];
+	56 -> 57;
+	45	[fillcolor=indianred1,
+		label=42,
+		style=filled];
+	45 -> 46;
+	"cell: 43"	[shape=box];
+	45 -> "cell: 43";
+	44	[label=3];
+	44 -> 45;
+	43	[label=36];
+	43 -> 44;
+	42	[label=18];
+	42 -> 43;
+	41 -> 42;
+	58	[label=8];
+	41 -> 58;
+	62	[fillcolor=indianred1,
+		label=17,
+		style=filled];
+	61	[fillcolor=indianred1,
+		label=53,
+		style=filled];
+	61 -> 62;
+	"cell: 73"	[shape=box];
+	61 -> "cell: 73";
+	60	[label=48];
+	60 -> 61;
+	"cell: 5"	[shape=box];
+	60 -> "cell: 5";
+	59	[fillcolor=indianred1,
+		label=52,
+		style=filled];
+	59 -> 60;
+	"cell: 10"	[shape=box];
+	59 -> "cell: 10";
+	58 -> 59;
+	"cell: 70"	[shape=box];
+	58 -> "cell: 70";
+	"cell: 89"	[shape=box];
+	58 -> "cell: 89";
+	34	[label=32];
+	34 -> 35;
+	"cell: 69"	[shape=box];
+	34 -> "cell: 69";
+	"cell: 74"	[shape=box];
+	34 -> "cell: 74";
+	33	[label=17];
+	33 -> 34;
+	32	[label=52];
+	32 -> 33;
+	31	[label=46];
+	31 -> 32;
+	30	[label=39];
+	30 -> 31;
+	29 -> 30;
+	63	[label=20];
+	29 -> 63;
+	68	[label=50];
+	29 -> 68;
+	65	[label=31];
+	"cell: 58"	[shape=box];
+	65 -> "cell: 58";
+	64	[fillcolor=indianred1,
+		label=13,
+		style=filled];
+	64 -> 65;
+	66	[label=33];
+	64 -> 66;
+	67	[fillcolor=indianred1,
+		label=45,
+		style=filled];
+	"cell: 6"	[shape=box];
+	67 -> "cell: 6";
+	"cell: 60"	[shape=box];
+	67 -> "cell: 60";
+	66 -> 67;
+	63 -> 64;
+	75	[label=22];
+	"cell: 2"	[shape=box];
+	75 -> "cell: 2";
+	"cell: 8"	[shape=box];
+	75 -> "cell: 8";
+	"cell: 17"	[shape=box];
+	75 -> "cell: 17";
+	"cell: 25"	[shape=box];
+	75 -> "cell: 25";
+	"cell: 31"	[shape=box];
+	75 -> "cell: 31";
+	"cell: 32"	[shape=box];
+	75 -> "cell: 32";
+	"cell: 52"	[shape=box];
+	75 -> "cell: 52";
+	"cell: 54"	[shape=box];
+	75 -> "cell: 54";
+	"cell: 55"	[shape=box];
+	75 -> "cell: 55";
+	"cell: 66"	[shape=box];
+	75 -> "cell: 66";
+	"cell: 81"	[shape=box];
+	75 -> "cell: 81";
+	"cell: 92"	[shape=box];
+	75 -> "cell: 92";
+	74	[label=54];
+	74 -> 75;
+	76	[fillcolor=indianred1,
+		label=58,
+		style=filled];
+	74 -> 76;
+	"cell: 4"	[shape=box];
+	74 -> "cell: 4";
+	"cell: 71"	[shape=box];
+	74 -> "cell: 71";
+	"cell: 87"	[shape=box];
+	74 -> "cell: 87";
+	"cell: 100"	[shape=box];
+	74 -> "cell: 100";
+	"cell: 47"	[shape=box];
+	76 -> "cell: 47";
+	"cell: 96"	[shape=box];
+	76 -> "cell: 96";
+	73	[label=34];
+	73 -> 74;
+	"cell: 82"	[shape=box];
+	73 -> "cell: 82";
+	"cell: 83"	[shape=box];
+	73 -> "cell: 83";
+	72	[label=61];
+	72 -> 73;
+	"cell: 48"	[shape=box];
+	72 -> "cell: 48";
+	71	[label=58];
+	71 -> 72;
+	70	[label=56];
+	70 -> 71;
+	77	[label=7];
+	70 -> 77;
+	78	[label=12];
+	70 -> 78;
+	"cell: 41"	[shape=box];
+	70 -> "cell: 41";
+	"cell: 76"	[shape=box];
+	70 -> "cell: 76";
+	"cell: 24"	[shape=box];
+	77 -> "cell: 24";
+	"cell: 67"	[shape=box];
+	77 -> "cell: 67";
+	82	[label=43];
+	"cell: 30"	[shape=box];
+	82 -> "cell: 30";
+	"cell: 78"	[shape=box];
+	82 -> "cell: 78";
+	81	[label=14];
+	81 -> 82;
+	83	[label=1];
+	81 -> 83;
+	"cell: 33"	[shape=box];
+	81 -> "cell: 33";
+	"cell: 59"	[shape=box];
+	81 -> "cell: 59";
+	80	[label=9];
+	80 -> 81;
+	79	[fillcolor=indianred1,
+		label=12,
+		style=filled];
+	79 -> 80;
+	78 -> 79;
+	69	[label=59];
+	69 -> 70;
+	"cell: 19"	[shape=box];
+	69 -> "cell: 19";
+	68 -> 69;
+	87	[fillcolor=indianred1,
+		label=37,
+		style=filled];
+	"cell: 42"	[shape=box];
+	87 -> "cell: 42";
+	86	[fillcolor=indianred1,
+		label=19,
+		style=filled];
+	86 -> 87;
+	85	[label=15];
+	85 -> 86;
+	"cell: 63"	[shape=box];
+	85 -> "cell: 63";
+	"cell: 88"	[shape=box];
+	85 -> "cell: 88";
+	84 -> 85;
+	4	[label=45];
+	4 -> 5;
+	"cell: 49"	[shape=box];
+	4 -> "cell: 49";
+	"cell: 57"	[shape=box];
+	4 -> "cell: 57";
+	3	[label=13];
+	3 -> 4;
+	2	[label=37];
+	2 -> 3;
+	88	[label=24];
+	2 -> 88;
+	"cell: 20"	[shape=box];
+	2 -> "cell: 20";
+	"cell: 27"	[shape=box];
+	2 -> "cell: 27";
+	"cell: 29"	[shape=box];
+	2 -> "cell: 29";
+	"cell: 45"	[shape=box];
+	2 -> "cell: 45";
+	"cell: 3"	[shape=box];
+	88 -> "cell: 3";
+	"cell: 86"	[shape=box];
+	88 -> "cell: 86";
+	"cell: 98"	[shape=box];
+	88 -> "cell: 98";
+	1	[label=53];
+	1 -> 2;
+	"cell: 7"	[shape=box];
+	1 -> "cell: 7";
+	"cell: 36"	[shape=box];
+	1 -> "cell: 36";
+	0	[label=germline];
+	0 -> 1;
+}

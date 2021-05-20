@@ -1,5 +1,5 @@
 import networkx as nx
-from phylo.core.phylogenytree import SASCPhylogeny
+from phylo._core.phylogenytree import SASCPhylogeny
 import pytest as pt
 
 class TestInit:

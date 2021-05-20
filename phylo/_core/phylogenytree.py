@@ -2,7 +2,7 @@ import networkx as nx
 from copy import deepcopy
 from collections import defaultdict, deque
 from colour import Color
-import phylo.core.sascviz as sv
+import phylo._core.sascviz as sv
 import pygraphviz
 
 
@@ -81,20 +81,10 @@ class PhylogenyTree:
 
     def draw_to_file(self, file_path):
         """
-        Draws the tree to a file using a dot layout. Requires a Graphviz installation.
-
-        Parameters:
-            file_path(string):
-                The file in which the tree will be drawn. The tested use cases are drawing the tree
-                as an image or as a PDF (file with .pdf extension).
-
-        Returns: nothing.
-
-        Side effects:
-            Draws the tree to the file using a dot layout. Reserved dot attributes will work as specified.
-            If a node is not labeled, then its ID will be used as a label (alongside with a warning).
-            If the file specified by file_path doesn't exist, it will be created; if it exists,
-            its content will be overwritten.
+        Draws the tree to the file using a dot layout. Reserved dot attributes will work as specified.
+        If a node is not labeled, then its ID will be used as a label (alongside with a warning).
+        If the file specified by file_path doesn't exist, it will be created, but only if the target
+        directory already exists. If the file already exists, **it will be overwritten**.
         """
         drawtree = self.as_digraph()
 
@@ -146,9 +136,10 @@ class PhylogenyTree:
     def to_file(self, file_path):
         """
         Dumps the tree to the specified file using DOT format.
-        If the file doesn't exist, it will be created; if it exists, **it will be overwritten**.
+        If the file doesn't exist, it will be created, but only if the target directory already exists.
+        If the file already exists, **it will be overwritten**.
         """
-        with open(file_path, 'w+') as f:
+        with open(file_path, 'w') as f:
             tree_as_dot = self.to_dotstring()
             f.write(tree_as_dot)
 
