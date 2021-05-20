@@ -6,8 +6,10 @@ For more info about the components:
 
 ---------
 
-Module to compute the similarity between two trees.
-A simple workflow for this module could be:
+Module that exposes the tree similarity measure presented at
+https://github.com/AlgoLab/mp3treesim
+
+Simple example workflow:
 
 from phylo import mp3
 import networkx as nx

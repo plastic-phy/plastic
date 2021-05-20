@@ -8,7 +8,7 @@ For more informations on the contents of this module:
 Module that exposes the clustering algorithm presented at
 https://github.com/AlgoLab/celluloid
 
-Example workflow:
+Simple example workflow:
 
 from phylo import celluloid as cl
 
