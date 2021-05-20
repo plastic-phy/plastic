@@ -1,15 +1,47 @@
+"""
+For more info about this module's functionalities:
+- help(sasc.SASCPhylogeny)
+- help(sasc.GenotypeMatrix)
+- help(sasc.infer_tree)
+
+---------
+
+A module that exposes the phylogeny inference algorithm 
+explained in the SASC paper. 
+An example workflow with this module could be:
+
+from phylo import sasc as sc
+from multiprocessing import cpu_count
+
+# load the matrix and the mutation labels
+gmat = sc.GenotypeMatrix.from_files(
+    matrix_file = 'genotype.txt', 
+    mutations_file = 'mutation_labels.txt', 
+    matstring_format = 'SCITE', # SASC, SCITE and SPHYR formats are supported 
+    get_cells = True
+)
+
+# infer a tree and get the expected genotype matrix for it, then store these to files.
+out = sc.infer_tree(gmat, alphas = 0.3, beta = 0.1, k = 1, cores = cpu_count())
+out['inferred_tree'].to_file('tree.gv')
+out['inferred_tree'].with_visualization_features() \
+    .draw_to_file('tree.png', show_support = True, show_color = False)
+out['expected_genotype_matrix'].to_files('expected_genotype.txt')
+"""
+
+
+from libc.stdlib cimport malloc, free
+from libc.stdio cimport printf
+from phylo.core.genotypematrix import GenotypeMatrix
+from phylo.core.phylogenytree import SASCPhylogeny
 import numpy as np
 import pandas as pd
 import networkx as nx
 cimport sascpycapi as sca
 from libc.limits cimport INT_MAX
-from libc.stdlib cimport malloc, free
-from libc.stdio cimport printf
-from phylo.core.genotypematrix import GenotypeMatrix
-from phylo.core.phylogenytree import SASCPhylogeny
 
 
-def compute(
+def infer_tree(
         labeled_genotype_matrix,
         alphas,
         beta,
@@ -222,7 +254,7 @@ def compute(
     
         # Unmarshalling the tree.
         best_tree = nx.DiGraph()
-        unmarshal_tree(c_out.best_tree, best_tree)
+        _unmarshal_tree(c_out.best_tree, best_tree)
 
         # The labels for the tree are now indexes to the original mutation labels, aside from special labels that are
         # added artificially to the tree during the execution of SASC and only need to be converted
@@ -294,13 +326,13 @@ def compute(
         sca.destroy_tree(c_out.best_tree)
 
 
-cdef unmarshal_tree(sca.node_t* node, G):
+cdef _unmarshal_tree(sca.node_t* node, G):
     if (node == NULL):
         return
 
     # Recursion if the node has children and/or siblings.
-    unmarshal_tree(node.next_sibling, G)
-    unmarshal_tree(node.first_child, G)
+    _unmarshal_tree(node.next_sibling, G)
+    _unmarshal_tree(node.first_child, G)
 
     # If the node is a deletion, color it in red.
     if (node.loss == 1):
