@@ -32,8 +32,8 @@ out['expected_genotype_matrix'].to_files('expected_genotype.txt')
 
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
-from phylo.core.genotypematrix import GenotypeMatrix
-from phylo.core.phylogenytree import SASCPhylogeny
+from ._core.genotypematrix import GenotypeMatrix
+from ._core.phylogenytree import SASCPhylogeny
 import numpy as np
 import pandas as pd
 import networkx as nx
@@ -246,8 +246,7 @@ def infer_tree(
 
     try:
         # THE C A L L
-        with nogil:
-            comp_result = sca.compute(arguments, c_out)
+        comp_result = sca.compute(arguments, c_out)
     
         # And now for the unmarshalling. We'll output a tuple with the tree as a networkx graph, the matrix as
         # a numpy array, and the rest of the values as simple ints/doubles/strings.

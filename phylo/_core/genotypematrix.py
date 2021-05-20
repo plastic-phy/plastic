@@ -159,6 +159,27 @@ class GenotypeMatrix:
         """
         return {lb: list(self._data.loc[:, lb]) for lb in self.mutation_labels}
 
+    def with_automatic_mutation_labels(self):
+        """
+        Returns a copy of the matrix where the mutation labels are replaced
+        by a range from 1 to the number of mutations. Useful after mutation
+        clusterization if there is a need to shorten the labels and/or to
+        ignore their cluster structure.
+        """
+        return self.with_mutation_labels(None)
+
+    def with_mutation_labels(self, new_mutation_labels):
+        """
+        Returns a copy of the matrix with a new set of mutation labels.
+        """
+        return GenotypeMatrix(self.matrix(), cell_labels=self.cell_labels, mutation_labels=new_mutation_labels)
+
+    def with_cell_labels(self, new_cell_labels):
+        """
+        Returns the same matrix with a new set of cell labels
+        """
+        return GenotypeMatrix(self.matrix(), cell_labels=new_cell_labels, mutation_labels=self.mutation_labels)
+
     def to_serializable_dict(self):
         """
         Dumps the matrix into a dictionary-of-strings representation. The matrix is represented in SASC format,

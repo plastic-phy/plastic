@@ -1,4 +1,4 @@
-from phylo.core.genotypematrix import *
+from phylo._core.genotypematrix import *
 import pytest as pt
 import pandas as pd
 import numpy as np

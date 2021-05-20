@@ -1,5 +1,4 @@
-from sascpy import compute
-from phylo.core.genotypematrix import GenotypeMatrix
+from phylo.sasc import infer_tree, GenotypeMatrix
 
 def test_dummy_input(get_cells = False):
 
@@ -9,7 +8,7 @@ def test_dummy_input(get_cells = False):
         mutation_labels = [f'm_{lb}' for lb in parsed.mutation_labels]
     )
     
-    out = compute(
+    out = infer_tree(
         labeled_genotype_matrix = with_str_labels,
         alphas = [0.1] * len(with_str_labels.mutations()),
         beta = 0.00001,

@@ -33,7 +33,7 @@ with open('similarity.txt', w+) as f:
 """
 
 import mp3treesim as mp3
-from .core.phylogenytree import PhylogenyTree
+from ._core.phylogenytree import PhylogenyTree
 
 
 def tree_similarity(
@@ -66,7 +66,8 @@ def tree_similarity(
             or 'geometric'.
         cores(int), by default 1:
             The number of cores that will be used in the computation.
-            Set this to 0 to use all the available cores.
+            For now in order to avoid a fatal bug in the mp3treesim module, this function will behave
+            as if the specified number was always 1.
 
     Returns:
         float:
@@ -75,6 +76,9 @@ def tree_similarity(
 
     if int(cores) != cores or cores < 1:
         raise ValueError(f'the number of cores must be a positive integer, but {cores} is not.')
+    # HACK DUE TO MP3TREESIM BUG, REMOVE WHEN SOLVED
+    cores = 1
+    # END HACK
 
     if not isinstance(tree1, PhylogenyTree):
         raise TypeError(
