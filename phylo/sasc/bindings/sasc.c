@@ -1385,6 +1385,7 @@ int __pyx_module_is_main_sasc = 0;
 /* Implementation of 'sasc' */
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_any;
+static PyObject *__pyx_builtin_exit;
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_enumerate;
 static const char __pyx_k_M[] = "M";
@@ -1402,6 +1403,7 @@ static const char __pyx_k_out[] = "out";
 static const char __pyx_k_beta[] = "beta";
 static const char __pyx_k_cell[] = "cell: ";
 static const char __pyx_k_data[] = "data";
+static const char __pyx_k_exit[] = "exit";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_node[] = "node";
@@ -1482,7 +1484,7 @@ static const char __pyx_k_core_genotypematrix[] = "_core.genotypematrix";
 static const char __pyx_k_labeled_genotype_matrix[] = "labeled_genotype_matrix";
 static const char __pyx_k_expected_genotype_matrix[] = "expected_genotype_matrix";
 static const char __pyx_k_but_they_are_more_or_less_than[] = ", but they are more or less than the number of mutations.";
-static const char __pyx_k_For_more_info_about_this_module[] = "\nFor more info about this module's functionalities:\n- help(sasc.SASCPhylogeny)\n- help(sasc.GenotypeMatrix)\n- help(sasc.infer_tree)\n\n---------\n\nA module that exposes the phylogeny inference algorithm \nexplained in the SASC paper. \nAn example workflow with this module could be:\n\nfrom phylo import sasc as sc\nfrom multiprocessing import cpu_count\n\n# load the matrix and the mutation labels\ngmat = sc.GenotypeMatrix.from_files(\n    matrix_file = 'genotype.txt', \n    mutations_file = 'mutation_labels.txt', \n    matstring_format = 'SCITE', # SASC, SCITE and SPHYR formats are supported \n    get_cells = True\n)\n\n# infer a tree and get the expected genotype matrix for it, then store these to files.\nout = sc.infer_tree(gmat, alphas = 0.3, beta = 0.1, k = 1, cores = cpu_count())\nout['inferred_tree'].to_file('tree.gv')\nout['inferred_tree'].with_visualization_features()     .draw_to_file('tree.png', show_support = True, show_color = False)\nout['expected_genotype_matrix'].to_files('expected_genotype.txt')\n";
+static const char __pyx_k_For_more_info_about_this_module[] = "\nFor more info about this module's functionalities:\n- help(sasc.SASCPhylogeny)\n- help(sasc.GenotypeMatrix)\n- help(sasc.infer_tree)\n\n---------\n\nModule that exposes the phylogeny inference algorithm presented at\nhttps://github.com/sciccolella/sasc\n\nSimple example workflow:\nfrom phylo import sasc as sc\nfrom multiprocessing import cpu_count\n\n# load the matrix and the mutation labels\ngmat = sc.GenotypeMatrix.from_files(\n    matrix_file = 'genotype.txt', \n    mutations_file = 'mutation_labels.txt', \n    matstring_format = 'SCITE', # SASC, SCITE and SPHYR formats are supported \n    get_cells = True\n)\n\n# infer a tree and get the expected genotype matrix for it, then store these to files.\nout = sc.infer_tree(gmat, alphas = 0.3, beta = 0.1, k = 1, cores = cpu_count())\nout['inferred_tree'].to_file('tree.gv')\nout['inferred_tree'].with_visualization_features()     .draw_to_file('tree.png', show_support = True, show_color = False)\nout['expected_genotype_matrix'].to_files('expected_genotype.txt')\n";
 static const char __pyx_k_all_alpha_values_must_be_within[] = "all alpha values must be within 0 and 1, but at least one in ";
 static const char __pyx_k_all_gamma_values_must_be_within[] = "all gamma values must be within 0 and 1, but at least one in ";
 static const char __pyx_k_beta_must_be_within_0_and_1_but[] = "beta must be within 0 and 1, but ";
@@ -1541,6 +1543,7 @@ static PyObject *__pyx_n_s_el_g_variance;
 static PyObject *__pyx_n_s_el_gammas;
 static PyObject *__pyx_n_s_enumerate;
 static PyObject *__pyx_kp_u_error_learning_parameters_must_b;
+static PyObject *__pyx_n_s_exit;
 static PyObject *__pyx_n_u_expected_genotype_matrix;
 static PyObject *__pyx_n_s_expected_matrix;
 static PyObject *__pyx_n_s_fillcolor;
@@ -1606,7 +1609,7 @@ static PyObject *__pyx_kp_u_the_number_of_cores_must_be_a_po;
 static PyObject *__pyx_kp_u_the_number_of_repetitions_must_b;
 static PyObject *__pyx_kp_u_the_starting_temperature_must_be;
 static PyObject *__pyx_pf_4sasc_10infer_tree_converts_to_index(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_label); /* proto */
-static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_labeled_genotype_matrix, PyObject *__pyx_v_alphas, PyObject *__pyx_v_beta, PyObject *__pyx_v_k, PyObject *__pyx_v_max_deletions, PyObject *__pyx_v_repetitions, PyObject *__pyx_v_start_temp, PyObject *__pyx_v_cooling_rate, PyObject *__pyx_v_cores, PyObject *__pyx_v_el_a_variance, PyObject *__pyx_v_el_b_variance, PyObject *__pyx_v_el_g_variance, PyObject *__pyx_v_monoclonal, PyObject *__pyx_v_gammas, PyObject *__pyx_v_get_cells); /* proto */
+static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_labeled_genotype_matrix, PyObject *__pyx_v_alphas, PyObject *__pyx_v_beta, PyObject *__pyx_v_k, PyObject *__pyx_v_max_deletions, PyObject *__pyx_v_repetitions, PyObject *__pyx_v_start_temp, PyObject *__pyx_v_cores, PyObject *__pyx_v_el_a_variance, PyObject *__pyx_v_el_b_variance, PyObject *__pyx_v_el_g_variance, PyObject *__pyx_v_monoclonal, PyObject *__pyx_v_gammas, PyObject *__pyx_v_get_cells, PyObject *__pyx_v_cooling_rate); /* proto */
 static PyObject *__pyx_float_0_01;
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
@@ -1630,7 +1633,7 @@ static PyObject *__pyx_codeobj__6;
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4sasc_1infer_tree(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4sasc_infer_tree[] = "\n    Infers a tree from a matrix representing the mutations for a sample of cells using\n    simulated annealing to build a phylogeny using a k-Dollo model.\n\n    Parameters:\n        labeled_genotype_matrix(GenotypeMatrix):\n            The genotype matrix from which to infer the phylogeny tree.\n        alphas(float or list(float)):\n            The probability of a false negative for each mutation (that is, for each column in the matrix).\n            this can be a single float that will be used for all mutations, or a list of floats\n            with an element for each mutation.\n        gammas(float or list(float)), by default 1:\n            The prior loss probability for each mutation. If a single float is specified,\n            then it will be used for all mutations, and if nothing is specified the used value will be 1.\n            Otherwise, a list of floats must be provided with a gamma value for each mutation.\n        beta(float):\n            The probability for a false positive for each mutation. A single value must be provided.\n        k(int):\n            The k used in the k-Dollo model for tree inference. This is the maximum amount of times\n            each mutation can be lost after being acquired in the phylogeny tree.\n        max_deletions(int), by default MAX_INT:\n            The maximum amount of deletions globally allowed in the tree.\n        repetitions(int), by default 5:\n            The number of times the inference process will be repeated.\n            The inferred tree with the best score will be used for the output.\n        monoclonal(bool), by default False:\n            If this is true, then SASC will be forced to infer a monoclonal tree,\n            with exactly one child for the germline.\n        start_temp(float), by default 10000:\n            The starting temperature for simulated annealing.\n        cooling_rate(float), by default 0.01:\n            The cooling rate for simulated annealing.\n        cores, by defau""lt 1:\n            The number of cores used by SASC.\n        el_a_variance(float), by default 0:\n            The variance of the false negative rates for error learning.\n            If a single alpha was specified, then all the false negative rates will be adjusted\n            simultaneously. Otherwise, each alpha will change independently from the others.\n        el_b_variance(float), by default 0:\n            The variance of the false positive rates for error learning.\n            If a single gamma was specified, then all the prior loss probabilities will be adjusted\n            simultaneously. Otherwise, each gamma will change independently from the others.\n        el_g_variance(float), by default 0:\n            The variance of the prior loss probabilities for error learning.\n        get_cells(bool), by default False:\n            If this is true, the tree in the output will also include the nodes\n            for the cells in the sample.\n\n    Returns:\n        dict:\n            A dictionary with the following key-value pairs:\n            * inferred_tree (PhylogenyTree):\n                The tree that was inferred by SASC, with its confidence score.\n            * expected_genotype_matrix (GenotypeMatrix):\n                A matrix where the missing information about the mutations has been inferred\n                starting from the tree.\n            * inferred_alphas (list(float)):\n                The false negative rates inferred through error learning.\n            * inferred_beta (float):\n                The false positive rate inferred through error learning.\n            * inferred_gammas (list(float)):\n                The prior loss probabilities inferred through error learning.\n    ";
+static char __pyx_doc_4sasc_infer_tree[] = "\n    Infers a tree from a matrix representing the mutations for a sample of cells using\n    simulated annealing to build a phylogeny using a k-Dollo model.\n\n    Parameters:\n        labeled_genotype_matrix(GenotypeMatrix):\n            The genotype matrix from which to infer the phylogeny tree.\n        alphas(float or list(float)):\n            The probability of a false negative for each mutation (that is, for each column in the matrix).\n            this can be a single float that will be used for all mutations, or a list of floats\n            with an element for each mutation.\n        gammas(float or list(float)), by default 1:\n            The prior loss probability for each mutation. If a single float is specified,\n            then it will be used for all mutations, and if nothing is specified the used value will be 1.\n            Otherwise, a list of floats must be provided with a gamma value for each mutation.\n        beta(float):\n            The probability for a false positive for each mutation. A single value must be provided.\n        k(int):\n            The k used in the k-Dollo model for tree inference. This is the maximum amount of times\n            each mutation can be lost after being acquired in the phylogeny tree.\n        max_deletions(int), by default MAX_INT:\n            The maximum amount of deletions globally allowed in the tree.\n        repetitions(int), by default 5:\n            The number of times the inference process will be repeated.\n            The inferred tree with the best score will be used for the output.\n        monoclonal(bool), by default False:\n            If this is true, then SASC will be forced to infer a monoclonal tree,\n            with exactly one child for the germline.\n        start_temp(float), by default 10000:\n            The starting temperature for simulated annealing.\n        cooling_rate(float), by default 0.01:\n            The cooling rate for simulated annealing.\n        cores(int), by ""default 1:\n            The number of cores used by SASC.\n        el_a_variance(float), by default 0:\n            The variance of the false negative rates for error learning.\n            If a single alpha was specified, then all the false negative rates will be adjusted\n            simultaneously. Otherwise, each alpha will change independently from the others.\n        el_b_variance(float), by default 0:\n            The variance of the false positive rates for error learning.\n            If a single gamma was specified, then all the prior loss probabilities will be adjusted\n            simultaneously. Otherwise, each gamma will change independently from the others.\n        el_g_variance(float), by default 0:\n            The variance of the prior loss probabilities for error learning.\n        get_cells(bool), by default False:\n            If this is true, the tree in the output will also include the nodes\n            for the cells in the sample.\n\n    Returns:\n        dict:\n            A dictionary with the following key-value pairs:\n            * inferred_tree (PhylogenyTree):\n                The tree that was inferred by SASC, with its confidence score.\n            * expected_genotype_matrix (GenotypeMatrix):\n                A matrix where the missing information about the mutations has been inferred\n                starting from the tree.\n            * inferred_alphas (list(float)):\n                The false negative rates inferred through error learning.\n            * inferred_beta (float):\n                The false positive rate inferred through error learning.\n            * inferred_gammas (list(float)):\n                The prior loss probabilities inferred through error learning.\n    ";
 static PyMethodDef __pyx_mdef_4sasc_1infer_tree = {"infer_tree", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sasc_1infer_tree, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sasc_infer_tree};
 static PyObject *__pyx_pw_4sasc_1infer_tree(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_labeled_genotype_matrix = 0;
@@ -1640,7 +1643,6 @@ static PyObject *__pyx_pw_4sasc_1infer_tree(PyObject *__pyx_self, PyObject *__py
   PyObject *__pyx_v_max_deletions = 0;
   PyObject *__pyx_v_repetitions = 0;
   PyObject *__pyx_v_start_temp = 0;
-  PyObject *__pyx_v_cooling_rate = 0;
   PyObject *__pyx_v_cores = 0;
   PyObject *__pyx_v_el_a_variance = 0;
   PyObject *__pyx_v_el_b_variance = 0;
@@ -1648,6 +1650,7 @@ static PyObject *__pyx_pw_4sasc_1infer_tree(PyObject *__pyx_self, PyObject *__py
   PyObject *__pyx_v_monoclonal = 0;
   PyObject *__pyx_v_gammas = 0;
   PyObject *__pyx_v_get_cells = 0;
+  PyObject *__pyx_v_cooling_rate = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1655,35 +1658,35 @@ static PyObject *__pyx_pw_4sasc_1infer_tree(PyObject *__pyx_self, PyObject *__py
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("infer_tree (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_labeled_genotype_matrix,&__pyx_n_s_alphas,&__pyx_n_s_beta,&__pyx_n_s_k,&__pyx_n_s_max_deletions,&__pyx_n_s_repetitions,&__pyx_n_s_start_temp,&__pyx_n_s_cooling_rate,&__pyx_n_s_cores,&__pyx_n_s_el_a_variance,&__pyx_n_s_el_b_variance,&__pyx_n_s_el_g_variance,&__pyx_n_s_monoclonal,&__pyx_n_s_gammas,&__pyx_n_s_get_cells,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_labeled_genotype_matrix,&__pyx_n_s_alphas,&__pyx_n_s_beta,&__pyx_n_s_k,&__pyx_n_s_max_deletions,&__pyx_n_s_repetitions,&__pyx_n_s_start_temp,&__pyx_n_s_cores,&__pyx_n_s_el_a_variance,&__pyx_n_s_el_b_variance,&__pyx_n_s_el_g_variance,&__pyx_n_s_monoclonal,&__pyx_n_s_gammas,&__pyx_n_s_get_cells,&__pyx_n_s_cooling_rate,0};
     PyObject* values[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     values[4] = __pyx_k_;
     values[5] = ((PyObject *)__pyx_int_5);
     values[6] = ((PyObject *)__pyx_int_10000);
-    values[7] = ((PyObject *)__pyx_float_0_01);
-    values[8] = ((PyObject *)__pyx_int_1);
+    values[7] = ((PyObject *)__pyx_int_1);
+    values[8] = ((PyObject *)__pyx_int_0);
     values[9] = ((PyObject *)__pyx_int_0);
     values[10] = ((PyObject *)__pyx_int_0);
-    values[11] = ((PyObject *)__pyx_int_0);
 
-    /* "sasc.pyx":57
+    /* "sasc.pyx":56
  *         el_b_variance=0,
  *         el_g_variance=0,
  *         monoclonal=False,             # <<<<<<<<<<<<<<
  *         gammas=1,
- *         get_cells=False
+ *         get_cells=False,
  */
-    values[12] = ((PyObject *)Py_False);
-    values[13] = ((PyObject *)__pyx_int_1);
+    values[11] = ((PyObject *)Py_False);
+    values[12] = ((PyObject *)__pyx_int_1);
 
-    /* "sasc.pyx":59
+    /* "sasc.pyx":58
  *         monoclonal=False,
  *         gammas=1,
- *         get_cells=False             # <<<<<<<<<<<<<<
+ *         get_cells=False,             # <<<<<<<<<<<<<<
+ *         cooling_rate=0.01 #this cannot be written as 10**-2, otherwise Cython builds it from 10L and assigns 0 to it
  * ):
- *     """
  */
-    values[14] = ((PyObject *)Py_False);
+    values[13] = ((PyObject *)Py_False);
+    values[14] = ((PyObject *)__pyx_float_0_01);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
@@ -1765,49 +1768,49 @@ static PyObject *__pyx_pw_4sasc_1infer_tree(PyObject *__pyx_self, PyObject *__py
         CYTHON_FALLTHROUGH;
         case  7:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_cooling_rate);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_cores);
           if (value) { values[7] = value; kw_args--; }
         }
         CYTHON_FALLTHROUGH;
         case  8:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_cores);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_el_a_variance);
           if (value) { values[8] = value; kw_args--; }
         }
         CYTHON_FALLTHROUGH;
         case  9:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_el_a_variance);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_el_b_variance);
           if (value) { values[9] = value; kw_args--; }
         }
         CYTHON_FALLTHROUGH;
         case 10:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_el_b_variance);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_el_g_variance);
           if (value) { values[10] = value; kw_args--; }
         }
         CYTHON_FALLTHROUGH;
         case 11:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_el_g_variance);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_monoclonal);
           if (value) { values[11] = value; kw_args--; }
         }
         CYTHON_FALLTHROUGH;
         case 12:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_monoclonal);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_gammas);
           if (value) { values[12] = value; kw_args--; }
         }
         CYTHON_FALLTHROUGH;
         case 13:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_gammas);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_get_cells);
           if (value) { values[13] = value; kw_args--; }
         }
         CYTHON_FALLTHROUGH;
         case 14:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_get_cells);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_cooling_rate);
           if (value) { values[14] = value; kw_args--; }
         }
       }
@@ -1853,14 +1856,14 @@ static PyObject *__pyx_pw_4sasc_1infer_tree(PyObject *__pyx_self, PyObject *__py
     __pyx_v_max_deletions = values[4];
     __pyx_v_repetitions = values[5];
     __pyx_v_start_temp = values[6];
-    __pyx_v_cooling_rate = values[7];
-    __pyx_v_cores = values[8];
-    __pyx_v_el_a_variance = values[9];
-    __pyx_v_el_b_variance = values[10];
-    __pyx_v_el_g_variance = values[11];
-    __pyx_v_monoclonal = values[12];
-    __pyx_v_gammas = values[13];
-    __pyx_v_get_cells = values[14];
+    __pyx_v_cores = values[7];
+    __pyx_v_el_a_variance = values[8];
+    __pyx_v_el_b_variance = values[9];
+    __pyx_v_el_g_variance = values[10];
+    __pyx_v_monoclonal = values[11];
+    __pyx_v_gammas = values[12];
+    __pyx_v_get_cells = values[13];
+    __pyx_v_cooling_rate = values[14];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
@@ -1870,7 +1873,7 @@ static PyObject *__pyx_pw_4sasc_1infer_tree(PyObject *__pyx_self, PyObject *__py
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_4sasc_infer_tree(__pyx_self, __pyx_v_labeled_genotype_matrix, __pyx_v_alphas, __pyx_v_beta, __pyx_v_k, __pyx_v_max_deletions, __pyx_v_repetitions, __pyx_v_start_temp, __pyx_v_cooling_rate, __pyx_v_cores, __pyx_v_el_a_variance, __pyx_v_el_b_variance, __pyx_v_el_g_variance, __pyx_v_monoclonal, __pyx_v_gammas, __pyx_v_get_cells);
+  __pyx_r = __pyx_pf_4sasc_infer_tree(__pyx_self, __pyx_v_labeled_genotype_matrix, __pyx_v_alphas, __pyx_v_beta, __pyx_v_k, __pyx_v_max_deletions, __pyx_v_repetitions, __pyx_v_start_temp, __pyx_v_cores, __pyx_v_el_a_variance, __pyx_v_el_b_variance, __pyx_v_el_g_variance, __pyx_v_monoclonal, __pyx_v_gammas, __pyx_v_get_cells, __pyx_v_cooling_rate);
 
   /* "sasc.pyx":44
  * 
@@ -2054,7 +2057,7 @@ static PyObject *__pyx_pf_4sasc_10infer_tree_converts_to_index(CYTHON_UNUSED PyO
  *         alphas,
  */
 
-static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_labeled_genotype_matrix, PyObject *__pyx_v_alphas, PyObject *__pyx_v_beta, PyObject *__pyx_v_k, PyObject *__pyx_v_max_deletions, PyObject *__pyx_v_repetitions, PyObject *__pyx_v_start_temp, PyObject *__pyx_v_cooling_rate, PyObject *__pyx_v_cores, PyObject *__pyx_v_el_a_variance, PyObject *__pyx_v_el_b_variance, PyObject *__pyx_v_el_g_variance, PyObject *__pyx_v_monoclonal, PyObject *__pyx_v_gammas, PyObject *__pyx_v_get_cells) {
+static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_labeled_genotype_matrix, PyObject *__pyx_v_alphas, PyObject *__pyx_v_beta, PyObject *__pyx_v_k, PyObject *__pyx_v_max_deletions, PyObject *__pyx_v_repetitions, PyObject *__pyx_v_start_temp, PyObject *__pyx_v_cores, PyObject *__pyx_v_el_a_variance, PyObject *__pyx_v_el_b_variance, PyObject *__pyx_v_el_g_variance, PyObject *__pyx_v_monoclonal, PyObject *__pyx_v_gammas, PyObject *__pyx_v_get_cells, PyObject *__pyx_v_cooling_rate) {
   sasc_in_t __pyx_v_args_struct;
   sasc_in_t *__pyx_v_arguments;
   PyObject *__pyx_v_genotype_matrix = NULL;
@@ -2087,10 +2090,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  Py_ssize_t __pyx_t_4;
+  int __pyx_t_4;
   int __pyx_t_5;
   int __pyx_t_6;
-  int __pyx_t_7;
+  Py_ssize_t __pyx_t_7;
   Py_UCS4 __pyx_t_8;
   PyObject *(*__pyx_t_9)(PyObject *);
   PyObject *__pyx_t_10 = NULL;
@@ -2133,8 +2136,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     cdef sca.sasc_in_t* arguments = &args_struct
  * 
  *     genotype_matrix = labeled_genotype_matrix.matrix()             # <<<<<<<<<<<<<<
- *     arguments.N = len(genotype_matrix)
- *     arguments.M = len(genotype_matrix[0])
+ *     arguments.N = genotype_matrix.shape[0]
+ *     arguments.M = genotype_matrix.shape[1]
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_labeled_genotype_matrix, __pyx_n_s_matrix); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -2159,45 +2162,54 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   /* "sasc.pyx":130
  * 
  *     genotype_matrix = labeled_genotype_matrix.matrix()
- *     arguments.N = len(genotype_matrix)             # <<<<<<<<<<<<<<
- *     arguments.M = len(genotype_matrix[0])
+ *     arguments.N = genotype_matrix.shape[0]             # <<<<<<<<<<<<<<
+ *     arguments.M = genotype_matrix.shape[1]
  *     cdef int N = arguments.N
  */
-  __pyx_t_4 = PyObject_Length(__pyx_v_genotype_matrix); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 130, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_genotype_matrix, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 130, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 130, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_arguments->N = __pyx_t_4;
 
   /* "sasc.pyx":131
  *     genotype_matrix = labeled_genotype_matrix.matrix()
- *     arguments.N = len(genotype_matrix)
- *     arguments.M = len(genotype_matrix[0])             # <<<<<<<<<<<<<<
+ *     arguments.N = genotype_matrix.shape[0]
+ *     arguments.M = genotype_matrix.shape[1]             # <<<<<<<<<<<<<<
  *     cdef int N = arguments.N
  *     cdef int M = arguments.M
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_genotype_matrix, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_genotype_matrix, __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_2, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 131, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_arguments->M = __pyx_t_4;
 
   /* "sasc.pyx":132
- *     arguments.N = len(genotype_matrix)
- *     arguments.M = len(genotype_matrix[0])
+ *     arguments.N = genotype_matrix.shape[0]
+ *     arguments.M = genotype_matrix.shape[1]
  *     cdef int N = arguments.N             # <<<<<<<<<<<<<<
  *     cdef int M = arguments.M
  * 
  */
-  __pyx_t_5 = __pyx_v_arguments->N;
-  __pyx_v_N = __pyx_t_5;
+  __pyx_t_4 = __pyx_v_arguments->N;
+  __pyx_v_N = __pyx_t_4;
 
   /* "sasc.pyx":133
- *     arguments.M = len(genotype_matrix[0])
+ *     arguments.M = genotype_matrix.shape[1]
  *     cdef int N = arguments.N
  *     cdef int M = arguments.M             # <<<<<<<<<<<<<<
  * 
  *     #input validation
  */
-  __pyx_t_5 = __pyx_v_arguments->M;
-  __pyx_v_M = __pyx_t_5;
+  __pyx_t_4 = __pyx_v_arguments->M;
+  __pyx_v_M = __pyx_t_4;
 
   /* "sasc.pyx":136
  * 
@@ -2207,19 +2219,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     if el_a_variance < 0 or el_b_variance < 0 or el_g_variance < 0:
  */
   __pyx_t_1 = PyObject_RichCompare(__pyx_v_beta, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!__pyx_t_7) {
+  if (!__pyx_t_6) {
   } else {
-    __pyx_t_6 = __pyx_t_7;
+    __pyx_t_5 = __pyx_t_6;
     goto __pyx_L4_bool_binop_done;
   }
   __pyx_t_1 = PyObject_RichCompare(__pyx_v_beta, __pyx_int_1, Py_GT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __pyx_t_7;
+  __pyx_t_5 = __pyx_t_6;
   __pyx_L4_bool_binop_done:;
-  if (unlikely(__pyx_t_6)) {
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":137
  *     #input validation
@@ -2230,24 +2242,24 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
     __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
     __pyx_t_8 = 127;
     __Pyx_INCREF(__pyx_kp_u_beta_must_be_within_0_and_1_but);
-    __pyx_t_4 += 33;
+    __pyx_t_7 += 33;
     __Pyx_GIVEREF(__pyx_kp_u_beta_must_be_within_0_and_1_but);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_beta_must_be_within_0_and_1_but);
     __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_v_beta, __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) : __pyx_t_8;
-    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_2);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_2);
     __pyx_t_2 = 0;
     __Pyx_INCREF(__pyx_kp_u_is_not);
-    __pyx_t_4 += 7;
+    __pyx_t_7 += 7;
     __Pyx_GIVEREF(__pyx_kp_u_is_not);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_is_not);
-    __pyx_t_2 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
@@ -2274,27 +2286,27 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     if int(k) != k or k < 0:
  */
   __pyx_t_1 = PyObject_RichCompare(__pyx_v_el_a_variance, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 138, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!__pyx_t_7) {
+  if (!__pyx_t_6) {
   } else {
-    __pyx_t_6 = __pyx_t_7;
+    __pyx_t_5 = __pyx_t_6;
     goto __pyx_L7_bool_binop_done;
   }
   __pyx_t_1 = PyObject_RichCompare(__pyx_v_el_b_variance, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 138, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!__pyx_t_7) {
+  if (!__pyx_t_6) {
   } else {
-    __pyx_t_6 = __pyx_t_7;
+    __pyx_t_5 = __pyx_t_6;
     goto __pyx_L7_bool_binop_done;
   }
   __pyx_t_1 = PyObject_RichCompare(__pyx_v_el_g_variance, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 138, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __pyx_t_7;
+  __pyx_t_5 = __pyx_t_6;
   __pyx_L7_bool_binop_done:;
-  if (unlikely(__pyx_t_6)) {
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":139
  *         raise ValueError(f'beta must be within 0 and 1, but {beta} is not')
@@ -2305,10 +2317,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
     __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
     __pyx_t_8 = 127;
     __Pyx_INCREF(__pyx_kp_u_error_learning_parameters_must_b);
-    __pyx_t_4 += 55;
+    __pyx_t_7 += 55;
     __Pyx_GIVEREF(__pyx_kp_u_error_learning_parameters_must_b);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_error_learning_parameters_must_b);
     __pyx_t_2 = PyList_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
@@ -2326,15 +2338,15 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_8;
-    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
     __pyx_t_3 = 0;
     __Pyx_INCREF(__pyx_kp_u_is_not);
-    __pyx_t_4 += 7;
+    __pyx_t_7 += 7;
     __Pyx_GIVEREF(__pyx_kp_u_is_not);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_is_not);
-    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 139, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
@@ -2364,19 +2376,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_v_k, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (!__pyx_t_7) {
+  if (!__pyx_t_6) {
   } else {
-    __pyx_t_6 = __pyx_t_7;
+    __pyx_t_5 = __pyx_t_6;
     goto __pyx_L11_bool_binop_done;
   }
   __pyx_t_3 = PyObject_RichCompare(__pyx_v_k, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_6 = __pyx_t_7;
+  __pyx_t_5 = __pyx_t_6;
   __pyx_L11_bool_binop_done:;
-  if (unlikely(__pyx_t_6)) {
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":141
  *         raise ValueError(f'error learning parameters must be positive, but one in {[el_a_variance, el_g_variance, el_b_variance]} is not')
@@ -2387,24 +2399,24 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
     __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
     __pyx_t_8 = 127;
     __Pyx_INCREF(__pyx_kp_u_k_must_be_a_non_negative_integer);
-    __pyx_t_4 += 38;
+    __pyx_t_7 += 38;
     __Pyx_GIVEREF(__pyx_kp_u_k_must_be_a_non_negative_integer);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_k_must_be_a_non_negative_integer);
     __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_k, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) : __pyx_t_8;
-    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
     __pyx_t_1 = 0;
     __Pyx_INCREF(__pyx_kp_u_is_not);
-    __pyx_t_4 += 7;
+    __pyx_t_7 += 7;
     __Pyx_GIVEREF(__pyx_kp_u_is_not);
     PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u_is_not);
-    __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L1_error)
@@ -2434,19 +2446,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_1 = PyObject_RichCompare(__pyx_t_3, __pyx_v_max_deletions, Py_NE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 142, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 142, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!__pyx_t_7) {
+  if (!__pyx_t_6) {
   } else {
-    __pyx_t_6 = __pyx_t_7;
+    __pyx_t_5 = __pyx_t_6;
     goto __pyx_L14_bool_binop_done;
   }
   __pyx_t_1 = PyObject_RichCompare(__pyx_v_max_deletions, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 142, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 142, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __pyx_t_7;
+  __pyx_t_5 = __pyx_t_6;
   __pyx_L14_bool_binop_done:;
-  if (unlikely(__pyx_t_6)) {
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":143
  *         raise ValueError(f'k must be a non-negative integer, but {k} is not')
@@ -2457,24 +2469,24 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
     __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
     __pyx_t_8 = 127;
     __Pyx_INCREF(__pyx_kp_u_the_maximum_number_of_deletions);
-    __pyx_t_4 += 68;
+    __pyx_t_7 += 68;
     __Pyx_GIVEREF(__pyx_kp_u_the_maximum_number_of_deletions);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_the_maximum_number_of_deletions);
     __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_max_deletions, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_8;
-    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
     __pyx_t_3 = 0;
     __Pyx_INCREF(__pyx_kp_u_is_not);
-    __pyx_t_4 += 7;
+    __pyx_t_7 += 7;
     __Pyx_GIVEREF(__pyx_kp_u_is_not);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_is_not);
-    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
@@ -2504,19 +2516,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_v_repetitions, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (!__pyx_t_7) {
+  if (!__pyx_t_6) {
   } else {
-    __pyx_t_6 = __pyx_t_7;
+    __pyx_t_5 = __pyx_t_6;
     goto __pyx_L17_bool_binop_done;
   }
   __pyx_t_3 = PyObject_RichCompare(__pyx_v_repetitions, __pyx_int_1, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 144, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_6 = __pyx_t_7;
+  __pyx_t_5 = __pyx_t_6;
   __pyx_L17_bool_binop_done:;
-  if (unlikely(__pyx_t_6)) {
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":145
  *         raise ValueError(f'the maximum number of deletions must be a non-negative integer, but {max_deletions} is not')
@@ -2527,24 +2539,24 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
     __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 145, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
     __pyx_t_8 = 127;
     __Pyx_INCREF(__pyx_kp_u_the_number_of_repetitions_must_b);
-    __pyx_t_4 += 58;
+    __pyx_t_7 += 58;
     __Pyx_GIVEREF(__pyx_kp_u_the_number_of_repetitions_must_b);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_the_number_of_repetitions_must_b);
     __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_repetitions, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) : __pyx_t_8;
-    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
     __pyx_t_1 = 0;
     __Pyx_INCREF(__pyx_kp_u_is_not);
-    __pyx_t_4 += 7;
+    __pyx_t_7 += 7;
     __Pyx_GIVEREF(__pyx_kp_u_is_not);
     PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u_is_not);
-    __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 145, __pyx_L1_error)
@@ -2571,9 +2583,9 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     if cooling_rate <= 0:
  */
   __pyx_t_3 = PyObject_RichCompare(__pyx_v_start_temp, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 146, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 146, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(__pyx_t_6)) {
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":147
  *         raise ValueError(f'the number of repetitions must be a positive integer, but {repetitions} is not')
@@ -2584,24 +2596,24 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
     __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
     __pyx_t_8 = 127;
     __Pyx_INCREF(__pyx_kp_u_the_starting_temperature_must_be);
-    __pyx_t_4 += 47;
+    __pyx_t_7 += 47;
     __Pyx_GIVEREF(__pyx_kp_u_the_starting_temperature_must_be);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_the_starting_temperature_must_be);
     __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_start_temp, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) : __pyx_t_8;
-    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
     __pyx_t_1 = 0;
     __Pyx_INCREF(__pyx_kp_u_is_not);
-    __pyx_t_4 += 7;
+    __pyx_t_7 += 7;
     __Pyx_GIVEREF(__pyx_kp_u_is_not);
     PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u_is_not);
-    __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 147, __pyx_L1_error)
@@ -2628,9 +2640,9 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     if int(cores) != cores or cores < 1:
  */
   __pyx_t_3 = PyObject_RichCompare(__pyx_v_cooling_rate, __pyx_int_0, Py_LE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(__pyx_t_6)) {
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":149
  *         raise ValueError(f'the starting temperature must be positive, but {start_temp} is not')
@@ -2641,24 +2653,24 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
     __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
     __pyx_t_8 = 127;
     __Pyx_INCREF(__pyx_kp_u_the_cooling_rate_must_be_positiv);
-    __pyx_t_4 += 39;
+    __pyx_t_7 += 39;
     __Pyx_GIVEREF(__pyx_kp_u_the_cooling_rate_must_be_positiv);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_the_cooling_rate_must_be_positiv);
     __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_cooling_rate, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) : __pyx_t_8;
-    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
     __pyx_t_1 = 0;
     __Pyx_INCREF(__pyx_kp_u_is_not);
-    __pyx_t_4 += 7;
+    __pyx_t_7 += 7;
     __Pyx_GIVEREF(__pyx_kp_u_is_not);
     PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u_is_not);
-    __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 149, __pyx_L1_error)
@@ -2688,19 +2700,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_1 = PyObject_RichCompare(__pyx_t_3, __pyx_v_cores, Py_NE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 150, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 150, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!__pyx_t_7) {
+  if (!__pyx_t_6) {
   } else {
-    __pyx_t_6 = __pyx_t_7;
+    __pyx_t_5 = __pyx_t_6;
     goto __pyx_L22_bool_binop_done;
   }
   __pyx_t_1 = PyObject_RichCompare(__pyx_v_cores, __pyx_int_1, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 150, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 150, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __pyx_t_7;
+  __pyx_t_5 = __pyx_t_6;
   __pyx_L22_bool_binop_done:;
-  if (unlikely(__pyx_t_6)) {
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":151
  *         raise ValueError(f'the cooling rate must be positive, but {cooling_rate} is not')
@@ -2711,24 +2723,24 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
     __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
     __pyx_t_8 = 127;
     __Pyx_INCREF(__pyx_kp_u_the_number_of_cores_must_be_a_po);
-    __pyx_t_4 += 52;
+    __pyx_t_7 += 52;
     __Pyx_GIVEREF(__pyx_kp_u_the_number_of_cores_must_be_a_po);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_the_number_of_cores_must_be_a_po);
     __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_cores, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 151, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_8;
-    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
     __pyx_t_3 = 0;
     __Pyx_INCREF(__pyx_kp_u_is_not);
-    __pyx_t_4 += 7;
+    __pyx_t_7 += 7;
     __Pyx_GIVEREF(__pyx_kp_u_is_not);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_is_not);
-    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 151, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 151, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
@@ -2754,8 +2766,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     single_gamma = not isinstance(gammas, list)
  *     if single_alpha:
  */
-  __pyx_t_6 = PyList_Check(__pyx_v_alphas); 
-  __pyx_v_single_alpha = (!(__pyx_t_6 != 0));
+  __pyx_t_5 = PyList_Check(__pyx_v_alphas); 
+  __pyx_v_single_alpha = (!(__pyx_t_5 != 0));
 
   /* "sasc.pyx":154
  * 
@@ -2764,8 +2776,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     if single_alpha:
  *         alphas = [alphas] * M
  */
-  __pyx_t_6 = PyList_Check(__pyx_v_gammas); 
-  __pyx_v_single_gamma = (!(__pyx_t_6 != 0));
+  __pyx_t_5 = PyList_Check(__pyx_v_gammas); 
+  __pyx_v_single_gamma = (!(__pyx_t_5 != 0));
 
   /* "sasc.pyx":155
  *     single_alpha = not isinstance(alphas, list)
@@ -2774,8 +2786,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *         alphas = [alphas] * M
  *     if single_gamma:
  */
-  __pyx_t_6 = (__pyx_v_single_alpha != 0);
-  if (__pyx_t_6) {
+  __pyx_t_5 = (__pyx_v_single_alpha != 0);
+  if (__pyx_t_5) {
 
     /* "sasc.pyx":156
  *     single_gamma = not isinstance(gammas, list)
@@ -2812,8 +2824,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *         gammas = [gammas] * M
  *     if len(alphas) != M:
  */
-  __pyx_t_6 = (__pyx_v_single_gamma != 0);
-  if (__pyx_t_6) {
+  __pyx_t_5 = (__pyx_v_single_gamma != 0);
+  if (__pyx_t_5) {
 
     /* "sasc.pyx":158
  *         alphas = [alphas] * M
@@ -2850,9 +2862,9 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *         raise ValueError(f'multiple alphas are specified in {alphas}, but they are more or less than the number of mutations.')
  *     if len(gammas) != M:
  */
-  __pyx_t_4 = PyObject_Length(__pyx_v_alphas); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 159, __pyx_L1_error)
-  __pyx_t_6 = ((__pyx_t_4 != __pyx_v_M) != 0);
-  if (unlikely(__pyx_t_6)) {
+  __pyx_t_7 = PyObject_Length(__pyx_v_alphas); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_t_5 = ((__pyx_t_7 != __pyx_v_M) != 0);
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":160
  *         gammas = [gammas] * M
@@ -2863,24 +2875,24 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
     __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 160, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
     __pyx_t_8 = 127;
     __Pyx_INCREF(__pyx_kp_u_multiple_alphas_are_specified_in);
-    __pyx_t_4 += 33;
+    __pyx_t_7 += 33;
     __Pyx_GIVEREF(__pyx_kp_u_multiple_alphas_are_specified_in);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_multiple_alphas_are_specified_in);
     __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_alphas, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_8;
-    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
     __pyx_t_3 = 0;
     __Pyx_INCREF(__pyx_kp_u_but_they_are_more_or_less_than);
-    __pyx_t_4 += 57;
+    __pyx_t_7 += 57;
     __Pyx_GIVEREF(__pyx_kp_u_but_they_are_more_or_less_than);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_but_they_are_more_or_less_than);
-    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 160, __pyx_L1_error)
@@ -2906,9 +2918,9 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *         raise ValueError(f'multiple gammas are specified in {gammas}, but they are more or less than the number of mutations.')
  *     if any([alpha < 0 or alpha > 1 for alpha in alphas]):
  */
-  __pyx_t_4 = PyObject_Length(__pyx_v_gammas); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 161, __pyx_L1_error)
-  __pyx_t_6 = ((__pyx_t_4 != __pyx_v_M) != 0);
-  if (unlikely(__pyx_t_6)) {
+  __pyx_t_7 = PyObject_Length(__pyx_v_gammas); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_5 = ((__pyx_t_7 != __pyx_v_M) != 0);
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":162
  *         raise ValueError(f'multiple alphas are specified in {alphas}, but they are more or less than the number of mutations.')
@@ -2919,24 +2931,24 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
     __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 162, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
     __pyx_t_8 = 127;
     __Pyx_INCREF(__pyx_kp_u_multiple_gammas_are_specified_in);
-    __pyx_t_4 += 33;
+    __pyx_t_7 += 33;
     __Pyx_GIVEREF(__pyx_kp_u_multiple_gammas_are_specified_in);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_multiple_gammas_are_specified_in);
     __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_gammas, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 162, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_8;
-    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
     __pyx_t_3 = 0;
     __Pyx_INCREF(__pyx_kp_u_but_they_are_more_or_less_than);
-    __pyx_t_4 += 57;
+    __pyx_t_7 += 57;
     __Pyx_GIVEREF(__pyx_kp_u_but_they_are_more_or_less_than);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_but_they_are_more_or_less_than);
-    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 162, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 162, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 162, __pyx_L1_error)
@@ -2966,29 +2978,29 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 163, __pyx_L31_error)
     __Pyx_GOTREF(__pyx_t_1);
     if (likely(PyList_CheckExact(__pyx_v_alphas)) || PyTuple_CheckExact(__pyx_v_alphas)) {
-      __pyx_t_3 = __pyx_v_alphas; __Pyx_INCREF(__pyx_t_3); __pyx_t_4 = 0;
+      __pyx_t_3 = __pyx_v_alphas; __Pyx_INCREF(__pyx_t_3); __pyx_t_7 = 0;
       __pyx_t_9 = NULL;
     } else {
-      __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_alphas); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 163, __pyx_L31_error)
+      __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_alphas); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 163, __pyx_L31_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_9 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 163, __pyx_L31_error)
     }
     for (;;) {
       if (likely(!__pyx_t_9)) {
         if (likely(PyList_CheckExact(__pyx_t_3))) {
-          if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_3)) break;
+          if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_3)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 163, __pyx_L31_error)
+          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 163, __pyx_L31_error)
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L31_error)
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L31_error)
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         } else {
-          if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
+          if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 163, __pyx_L31_error)
+          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 163, __pyx_L31_error)
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L31_error)
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L31_error)
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         }
@@ -3007,8 +3019,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
       __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_alpha, __pyx_t_2);
       __pyx_t_2 = 0;
       __pyx_t_10 = PyObject_RichCompare(__pyx_7genexpr__pyx_v_alpha, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 163, __pyx_L31_error)
-      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 163, __pyx_L31_error)
-      if (!__pyx_t_6) {
+      __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 163, __pyx_L31_error)
+      if (!__pyx_t_5) {
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       } else {
         __Pyx_INCREF(__pyx_t_10);
@@ -3035,9 +3047,9 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_any, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 163, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 163, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(__pyx_t_6)) {
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":164
  *         raise ValueError(f'multiple gammas are specified in {gammas}, but they are more or less than the number of mutations.')
@@ -3048,24 +3060,24 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
     __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
     __pyx_t_8 = 127;
     __Pyx_INCREF(__pyx_kp_u_all_alpha_values_must_be_within);
-    __pyx_t_4 += 61;
+    __pyx_t_7 += 61;
     __Pyx_GIVEREF(__pyx_kp_u_all_alpha_values_must_be_within);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_all_alpha_values_must_be_within);
     __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_alphas, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) : __pyx_t_8;
-    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
     __pyx_t_1 = 0;
     __Pyx_INCREF(__pyx_kp_u_is_not_2);
-    __pyx_t_4 += 8;
+    __pyx_t_7 += 8;
     __Pyx_GIVEREF(__pyx_kp_u_is_not_2);
     PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u_is_not_2);
-    __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 164, __pyx_L1_error)
@@ -3095,29 +3107,29 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L40_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (likely(PyList_CheckExact(__pyx_v_gammas)) || PyTuple_CheckExact(__pyx_v_gammas)) {
-      __pyx_t_1 = __pyx_v_gammas; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
+      __pyx_t_1 = __pyx_v_gammas; __Pyx_INCREF(__pyx_t_1); __pyx_t_7 = 0;
       __pyx_t_9 = NULL;
     } else {
-      __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_gammas); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L40_error)
+      __pyx_t_7 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_gammas); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L40_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_9 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 165, __pyx_L40_error)
     }
     for (;;) {
       if (likely(!__pyx_t_9)) {
         if (likely(PyList_CheckExact(__pyx_t_1))) {
-          if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
+          if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_1)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 165, __pyx_L40_error)
+          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 165, __pyx_L40_error)
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L40_error)
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L40_error)
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         } else {
-          if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+          if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 165, __pyx_L40_error)
+          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 165, __pyx_L40_error)
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L40_error)
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L40_error)
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         }
@@ -3136,8 +3148,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
       __Pyx_XDECREF_SET(__pyx_8genexpr1__pyx_v_gamma, __pyx_t_2);
       __pyx_t_2 = 0;
       __pyx_t_10 = PyObject_RichCompare(__pyx_8genexpr1__pyx_v_gamma, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 165, __pyx_L40_error)
-      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 165, __pyx_L40_error)
-      if (!__pyx_t_6) {
+      __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 165, __pyx_L40_error)
+      if (!__pyx_t_5) {
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       } else {
         __Pyx_INCREF(__pyx_t_10);
@@ -3164,9 +3176,9 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_any, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 165, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(__pyx_t_6)) {
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":166
  *         raise ValueError(f'all alpha values must be within 0 and 1, but at least one in {alphas} is not.')
@@ -3177,24 +3189,24 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
     __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = 0;
+    __pyx_t_7 = 0;
     __pyx_t_8 = 127;
     __Pyx_INCREF(__pyx_kp_u_all_gamma_values_must_be_within);
-    __pyx_t_4 += 61;
+    __pyx_t_7 += 61;
     __Pyx_GIVEREF(__pyx_kp_u_all_gamma_values_must_be_within);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_all_gamma_values_must_be_within);
     __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_gammas, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 166, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_8;
-    __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
     __pyx_t_3 = 0;
     __Pyx_INCREF(__pyx_kp_u_is_not_2);
-    __pyx_t_4 += 8;
+    __pyx_t_7 += 8;
     __Pyx_GIVEREF(__pyx_kp_u_is_not_2);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_is_not_2);
-    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 166, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 166, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
@@ -3262,20 +3274,20 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  */
   __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_k, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!__pyx_t_7) {
+  if (!__pyx_t_6) {
   } else {
-    __pyx_t_6 = __pyx_t_7;
+    __pyx_t_5 = __pyx_t_6;
     goto __pyx_L47_bool_binop_done;
   }
   __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_max_deletions, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __pyx_t_7;
+  __pyx_t_5 = __pyx_t_6;
   __pyx_L47_bool_binop_done:;
-  if (__pyx_t_6) {
+  if (__pyx_t_5) {
 
     /* "sasc.pyx":177
  *     arguments.el_g_variance = el_g_variance
@@ -3313,8 +3325,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     arguments.max_deletions = max_deletions
  *     arguments.repetitions = repetitions
  */
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_k); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L1_error)
-  __pyx_v_arguments->k = __pyx_t_5;
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_k); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_v_arguments->k = __pyx_t_4;
 
   /* "sasc.pyx":180
  *         max_deletions = 0
@@ -3323,8 +3335,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     arguments.repetitions = repetitions
  *     arguments.start_temp = start_temp
  */
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_max_deletions); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 180, __pyx_L1_error)
-  __pyx_v_arguments->max_deletions = __pyx_t_5;
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_max_deletions); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 180, __pyx_L1_error)
+  __pyx_v_arguments->max_deletions = __pyx_t_4;
 
   /* "sasc.pyx":181
  *     arguments.k = k
@@ -3333,8 +3345,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     arguments.start_temp = start_temp
  *     arguments.cooling_rate = cooling_rate
  */
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_repetitions); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 181, __pyx_L1_error)
-  __pyx_v_arguments->repetitions = __pyx_t_5;
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_repetitions); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 181, __pyx_L1_error)
+  __pyx_v_arguments->repetitions = __pyx_t_4;
 
   /* "sasc.pyx":182
  *     arguments.max_deletions = max_deletions
@@ -3363,15 +3375,15 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  * 
  *     # Marshalling of the matrix
  */
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_cores); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 184, __pyx_L1_error)
-  __pyx_v_arguments->cores = __pyx_t_5;
+  __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_cores); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_v_arguments->cores = __pyx_t_4;
 
   /* "sasc.pyx":187
  * 
  *     # Marshalling of the matrix
  *     arguments.genotype_matrix = <int**>malloc(N*sizeof(int*))             # <<<<<<<<<<<<<<
  *     if arguments.genotype_matrix == NULL:
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  */
   __pyx_v_arguments->genotype_matrix = ((int **)malloc((__pyx_v_N * (sizeof(int *)))));
 
@@ -3379,37 +3391,35 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     # Marshalling of the matrix
  *     arguments.genotype_matrix = <int**>malloc(N*sizeof(int*))
  *     if arguments.genotype_matrix == NULL:             # <<<<<<<<<<<<<<
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  *     for i in range(N):
  */
-  __pyx_t_6 = ((__pyx_v_arguments->genotype_matrix == NULL) != 0);
-  if (unlikely(__pyx_t_6)) {
+  __pyx_t_5 = ((__pyx_v_arguments->genotype_matrix == NULL) != 0);
+  if (__pyx_t_5) {
 
     /* "sasc.pyx":189
  *     arguments.genotype_matrix = <int**>malloc(N*sizeof(int*))
  *     if arguments.genotype_matrix == NULL:
- *         raise Exception('out of memory')             # <<<<<<<<<<<<<<
+ *         exit('out of memory')             # <<<<<<<<<<<<<<
  *     for i in range(N):
  *         arguments.genotype_matrix[i] = <int*>malloc(M*sizeof(int))
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])), __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_exit, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 189, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 189, __pyx_L1_error)
 
     /* "sasc.pyx":188
  *     # Marshalling of the matrix
  *     arguments.genotype_matrix = <int**>malloc(N*sizeof(int*))
  *     if arguments.genotype_matrix == NULL:             # <<<<<<<<<<<<<<
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  *     for i in range(N):
  */
   }
 
   /* "sasc.pyx":190
  *     if arguments.genotype_matrix == NULL:
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  *     for i in range(N):             # <<<<<<<<<<<<<<
  *         arguments.genotype_matrix[i] = <int*>malloc(M*sizeof(int))
  *         if arguments.genotype_matrix[i] == NULL:
@@ -3420,10 +3430,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
-    __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
+    __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_7 = 0;
     __pyx_t_9 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 190, __pyx_L1_error)
+    __pyx_t_7 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 190, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_9 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 190, __pyx_L1_error)
   }
@@ -3431,19 +3441,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   for (;;) {
     if (likely(!__pyx_t_9)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
-        if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
+        if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 190, __pyx_L1_error)
+        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 190, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 190, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 190, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       } else {
-        if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+        if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 190, __pyx_L1_error)
+        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 190, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 190, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 190, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       }
@@ -3463,11 +3473,11 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     __pyx_t_3 = 0;
 
     /* "sasc.pyx":191
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  *     for i in range(N):
  *         arguments.genotype_matrix[i] = <int*>malloc(M*sizeof(int))             # <<<<<<<<<<<<<<
  *         if arguments.genotype_matrix[i] == NULL:
- *             raise Exception('out of memory')
+ *             exit('out of memory')
  */
     __pyx_t_12 = __Pyx_PyIndex_AsSsize_t(__pyx_v_i); if (unlikely((__pyx_t_12 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 191, __pyx_L1_error)
     (__pyx_v_arguments->genotype_matrix[__pyx_t_12]) = ((int *)malloc((__pyx_v_M * (sizeof(int)))));
@@ -3476,49 +3486,47 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     for i in range(N):
  *         arguments.genotype_matrix[i] = <int*>malloc(M*sizeof(int))
  *         if arguments.genotype_matrix[i] == NULL:             # <<<<<<<<<<<<<<
- *             raise Exception('out of memory')
+ *             exit('out of memory')
  *         for j in range(M):
  */
     __pyx_t_12 = __Pyx_PyIndex_AsSsize_t(__pyx_v_i); if (unlikely((__pyx_t_12 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 192, __pyx_L1_error)
-    __pyx_t_6 = (((__pyx_v_arguments->genotype_matrix[__pyx_t_12]) == NULL) != 0);
-    if (unlikely(__pyx_t_6)) {
+    __pyx_t_5 = (((__pyx_v_arguments->genotype_matrix[__pyx_t_12]) == NULL) != 0);
+    if (__pyx_t_5) {
 
       /* "sasc.pyx":193
  *         arguments.genotype_matrix[i] = <int*>malloc(M*sizeof(int))
  *         if arguments.genotype_matrix[i] == NULL:
- *             raise Exception('out of memory')             # <<<<<<<<<<<<<<
+ *             exit('out of memory')             # <<<<<<<<<<<<<<
  *         for j in range(M):
  *             arguments.genotype_matrix[i][j] = genotype_matrix[i][j]
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])), __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 193, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_exit, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 193, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 193, __pyx_L1_error)
 
       /* "sasc.pyx":192
  *     for i in range(N):
  *         arguments.genotype_matrix[i] = <int*>malloc(M*sizeof(int))
  *         if arguments.genotype_matrix[i] == NULL:             # <<<<<<<<<<<<<<
- *             raise Exception('out of memory')
+ *             exit('out of memory')
  *         for j in range(M):
  */
     }
 
     /* "sasc.pyx":194
  *         if arguments.genotype_matrix[i] == NULL:
- *             raise Exception('out of memory')
+ *             exit('out of memory')
  *         for j in range(M):             # <<<<<<<<<<<<<<
  *             arguments.genotype_matrix[i][j] = genotype_matrix[i][j]
  * 
  */
-    __pyx_t_5 = __pyx_v_M;
-    __pyx_t_13 = __pyx_t_5;
+    __pyx_t_4 = __pyx_v_M;
+    __pyx_t_13 = __pyx_t_4;
     for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
       __pyx_v_j = __pyx_t_14;
 
       /* "sasc.pyx":195
- *             raise Exception('out of memory')
+ *             exit('out of memory')
  *         for j in range(M):
  *             arguments.genotype_matrix[i][j] = genotype_matrix[i][j]             # <<<<<<<<<<<<<<
  * 
@@ -3537,7 +3545,7 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
 
     /* "sasc.pyx":190
  *     if arguments.genotype_matrix == NULL:
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  *     for i in range(N):             # <<<<<<<<<<<<<<
  *         arguments.genotype_matrix[i] = <int*>malloc(M*sizeof(int))
  *         if arguments.genotype_matrix[i] == NULL:
@@ -3564,8 +3572,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   { /* enter inner scope */
     __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 200, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = __pyx_v_M;
-    __pyx_t_13 = __pyx_t_5;
+    __pyx_t_4 = __pyx_v_M;
+    __pyx_t_13 = __pyx_t_4;
     for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
       __pyx_8genexpr2__pyx_v_i = __pyx_t_14;
       __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_8genexpr2__pyx_v_i); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 200, __pyx_L1_error)
@@ -3604,10 +3612,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
-    __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
+    __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_7 = 0;
     __pyx_t_9 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_7 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_9 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 201, __pyx_L1_error)
   }
@@ -3615,19 +3623,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   for (;;) {
     if (likely(!__pyx_t_9)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
-        if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
+        if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 201, __pyx_L1_error)
+        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 201, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       } else {
-        if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+        if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 201, __pyx_L1_error)
+        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 201, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       }
@@ -3695,10 +3703,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *         or arguments.alphas == NULL
  *     ):
  */
-  __pyx_t_7 = ((__pyx_v_arguments->gammas == NULL) != 0);
-  if (!__pyx_t_7) {
+  __pyx_t_6 = ((__pyx_v_arguments->gammas == NULL) != 0);
+  if (!__pyx_t_6) {
   } else {
-    __pyx_t_6 = __pyx_t_7;
+    __pyx_t_5 = __pyx_t_6;
     goto __pyx_L60_bool_binop_done;
   }
 
@@ -3709,8 +3717,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     ):
  *         raise Exception('out of memory')
  */
-  __pyx_t_7 = ((__pyx_v_arguments->alphas == NULL) != 0);
-  __pyx_t_6 = __pyx_t_7;
+  __pyx_t_6 = ((__pyx_v_arguments->alphas == NULL) != 0);
+  __pyx_t_5 = __pyx_t_6;
   __pyx_L60_bool_binop_done:;
 
   /* "sasc.pyx":207
@@ -3720,7 +3728,7 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *         arguments.gammas == NULL
  *         or arguments.alphas == NULL
  */
-  if (unlikely(__pyx_t_6)) {
+  if (unlikely(__pyx_t_5)) {
 
     /* "sasc.pyx":211
  *         or arguments.alphas == NULL
@@ -3757,10 +3765,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
-    __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
+    __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_7 = 0;
     __pyx_t_9 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 213, __pyx_L1_error)
+    __pyx_t_7 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 213, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_9 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 213, __pyx_L1_error)
   }
@@ -3768,19 +3776,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   for (;;) {
     if (likely(!__pyx_t_9)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
-        if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
+        if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 213, __pyx_L1_error)
+        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 213, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 213, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 213, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       } else {
-        if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+        if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 213, __pyx_L1_error)
+        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 213, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 213, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 213, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       }
@@ -3845,11 +3853,11 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     arguments.monoclonal = 1 if monoclonal else 0
  */
   if ((__pyx_v_single_alpha != 0)) {
-    __pyx_t_5 = 1;
+    __pyx_t_4 = 1;
   } else {
-    __pyx_t_5 = 0;
+    __pyx_t_4 = 0;
   }
-  __pyx_v_arguments->single_alpha = __pyx_t_5;
+  __pyx_v_arguments->single_alpha = __pyx_t_4;
 
   /* "sasc.pyx":219
  *     # Python bools must be converted into C integers
@@ -3859,11 +3867,11 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  * 
  */
   if ((__pyx_v_single_gamma != 0)) {
-    __pyx_t_5 = 1;
+    __pyx_t_4 = 1;
   } else {
-    __pyx_t_5 = 0;
+    __pyx_t_4 = 0;
   }
-  __pyx_v_arguments->single_gamma = __pyx_t_5;
+  __pyx_v_arguments->single_gamma = __pyx_t_4;
 
   /* "sasc.pyx":220
  *     arguments.single_alpha = 1 if single_alpha else 0
@@ -3872,13 +3880,13 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  * 
  *     # The output structure is created beforehand to avoid memory allocations inside the c call.
  */
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_monoclonal); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
-  if (__pyx_t_6) {
-    __pyx_t_5 = 1;
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_v_monoclonal); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
+  if (__pyx_t_5) {
+    __pyx_t_4 = 1;
   } else {
-    __pyx_t_5 = 0;
+    __pyx_t_4 = 0;
   }
-  __pyx_v_arguments->monoclonal = __pyx_t_5;
+  __pyx_v_arguments->monoclonal = __pyx_t_4;
 
   /* "sasc.pyx":224
  *     # The output structure is created beforehand to avoid memory allocations inside the c call.
@@ -3894,7 +3902,7 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  * 
  *     c_out.gtp_matrix = <int**> malloc(N * sizeof(int*))             # <<<<<<<<<<<<<<
  *     if c_out.gtp_matrix == NULL:
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  */
   __pyx_v_c_out->gtp_matrix = ((int **)malloc((__pyx_v_N * (sizeof(int *)))));
 
@@ -3902,37 +3910,35 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  * 
  *     c_out.gtp_matrix = <int**> malloc(N * sizeof(int*))
  *     if c_out.gtp_matrix == NULL:             # <<<<<<<<<<<<<<
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  *     for i in range(N):
  */
-  __pyx_t_6 = ((__pyx_v_c_out->gtp_matrix == NULL) != 0);
-  if (unlikely(__pyx_t_6)) {
+  __pyx_t_5 = ((__pyx_v_c_out->gtp_matrix == NULL) != 0);
+  if (__pyx_t_5) {
 
     /* "sasc.pyx":228
  *     c_out.gtp_matrix = <int**> malloc(N * sizeof(int*))
  *     if c_out.gtp_matrix == NULL:
- *         raise Exception('out of memory')             # <<<<<<<<<<<<<<
+ *         exit('out of memory')             # <<<<<<<<<<<<<<
  *     for i in range(N):
  *         c_out.gtp_matrix[i] = <int*> malloc(M * sizeof(int))
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])), __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_exit, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 228, __pyx_L1_error)
 
     /* "sasc.pyx":227
  * 
  *     c_out.gtp_matrix = <int**> malloc(N * sizeof(int*))
  *     if c_out.gtp_matrix == NULL:             # <<<<<<<<<<<<<<
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  *     for i in range(N):
  */
   }
 
   /* "sasc.pyx":229
  *     if c_out.gtp_matrix == NULL:
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  *     for i in range(N):             # <<<<<<<<<<<<<<
  *         c_out.gtp_matrix[i] = <int*> malloc(M * sizeof(int))
  *         if c_out.gtp_matrix[i] == NULL:
@@ -3943,10 +3949,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
-    __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
+    __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_7 = 0;
     __pyx_t_9 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
+    __pyx_t_7 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_9 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 229, __pyx_L1_error)
   }
@@ -3954,19 +3960,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   for (;;) {
     if (likely(!__pyx_t_9)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
-        if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
+        if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 229, __pyx_L1_error)
+        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 229, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 229, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 229, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       } else {
-        if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+        if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 229, __pyx_L1_error)
+        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 229, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 229, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 229, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       }
@@ -3986,11 +3992,11 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     __pyx_t_3 = 0;
 
     /* "sasc.pyx":230
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  *     for i in range(N):
  *         c_out.gtp_matrix[i] = <int*> malloc(M * sizeof(int))             # <<<<<<<<<<<<<<
  *         if c_out.gtp_matrix[i] == NULL:
- *             raise Exception('out of memory')
+ *             exit('out of memory')
  */
     __pyx_t_12 = __Pyx_PyIndex_AsSsize_t(__pyx_v_i); if (unlikely((__pyx_t_12 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 230, __pyx_L1_error)
     (__pyx_v_c_out->gtp_matrix[__pyx_t_12]) = ((int *)malloc((__pyx_v_M * (sizeof(int)))));
@@ -3999,38 +4005,36 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *     for i in range(N):
  *         c_out.gtp_matrix[i] = <int*> malloc(M * sizeof(int))
  *         if c_out.gtp_matrix[i] == NULL:             # <<<<<<<<<<<<<<
- *             raise Exception('out of memory')
+ *             exit('out of memory')
  * 
  */
     __pyx_t_12 = __Pyx_PyIndex_AsSsize_t(__pyx_v_i); if (unlikely((__pyx_t_12 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 231, __pyx_L1_error)
-    __pyx_t_6 = (((__pyx_v_c_out->gtp_matrix[__pyx_t_12]) == NULL) != 0);
-    if (unlikely(__pyx_t_6)) {
+    __pyx_t_5 = (((__pyx_v_c_out->gtp_matrix[__pyx_t_12]) == NULL) != 0);
+    if (__pyx_t_5) {
 
       /* "sasc.pyx":232
  *         c_out.gtp_matrix[i] = <int*> malloc(M * sizeof(int))
  *         if c_out.gtp_matrix[i] == NULL:
- *             raise Exception('out of memory')             # <<<<<<<<<<<<<<
+ *             exit('out of memory')             # <<<<<<<<<<<<<<
  * 
  *     c_out.ids_of_leaves = <int*> malloc(N * sizeof(int))
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])), __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 232, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_exit, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 232, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 232, __pyx_L1_error)
 
       /* "sasc.pyx":231
  *     for i in range(N):
  *         c_out.gtp_matrix[i] = <int*> malloc(M * sizeof(int))
  *         if c_out.gtp_matrix[i] == NULL:             # <<<<<<<<<<<<<<
- *             raise Exception('out of memory')
+ *             exit('out of memory')
  * 
  */
     }
 
     /* "sasc.pyx":229
  *     if c_out.gtp_matrix == NULL:
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  *     for i in range(N):             # <<<<<<<<<<<<<<
  *         c_out.gtp_matrix[i] = <int*> malloc(M * sizeof(int))
  *         if c_out.gtp_matrix[i] == NULL:
@@ -4039,7 +4043,7 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "sasc.pyx":234
- *             raise Exception('out of memory')
+ *             exit('out of memory')
  * 
  *     c_out.ids_of_leaves = <int*> malloc(N * sizeof(int))             # <<<<<<<<<<<<<<
  *     c_out.el_alphas = <double*> malloc(M * sizeof(double))
@@ -4072,10 +4076,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *         or c_out.el_gammas == NULL
  *         or c_out.ids_of_leaves == NULL
  */
-  __pyx_t_7 = ((__pyx_v_c_out->el_alphas == NULL) != 0);
-  if (!__pyx_t_7) {
+  __pyx_t_6 = ((__pyx_v_c_out->el_alphas == NULL) != 0);
+  if (!__pyx_t_6) {
   } else {
-    __pyx_t_6 = __pyx_t_7;
+    __pyx_t_5 = __pyx_t_6;
     goto __pyx_L69_bool_binop_done;
   }
 
@@ -4086,10 +4090,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *         or c_out.ids_of_leaves == NULL
  *     ):
  */
-  __pyx_t_7 = ((__pyx_v_c_out->el_gammas == NULL) != 0);
-  if (!__pyx_t_7) {
+  __pyx_t_6 = ((__pyx_v_c_out->el_gammas == NULL) != 0);
+  if (!__pyx_t_6) {
   } else {
-    __pyx_t_6 = __pyx_t_7;
+    __pyx_t_5 = __pyx_t_6;
     goto __pyx_L69_bool_binop_done;
   }
 
@@ -4098,10 +4102,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *         or c_out.el_gammas == NULL
  *         or c_out.ids_of_leaves == NULL             # <<<<<<<<<<<<<<
  *     ):
- *         raise Exception('out of memory')
+ *         exit('out of memory')
  */
-  __pyx_t_7 = ((__pyx_v_c_out->ids_of_leaves == NULL) != 0);
-  __pyx_t_6 = __pyx_t_7;
+  __pyx_t_6 = ((__pyx_v_c_out->ids_of_leaves == NULL) != 0);
+  __pyx_t_5 = __pyx_t_6;
   __pyx_L69_bool_binop_done:;
 
   /* "sasc.pyx":237
@@ -4111,20 +4115,18 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *         c_out.el_alphas == NULL
  *         or c_out.el_gammas == NULL
  */
-  if (unlikely(__pyx_t_6)) {
+  if (__pyx_t_5) {
 
     /* "sasc.pyx":242
  *         or c_out.ids_of_leaves == NULL
  *     ):
- *         raise Exception('out of memory')             # <<<<<<<<<<<<<<
+ *         exit('out of memory')             # <<<<<<<<<<<<<<
  * 
  *     cdef int comp_result
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])), __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_exit, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 242, __pyx_L1_error)
 
     /* "sasc.pyx":237
  *     c_out.el_alphas = <double*> malloc(M * sizeof(double))
@@ -4223,10 +4225,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
-      __pyx_t_2 = __pyx_t_3; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
+      __pyx_t_2 = __pyx_t_3; __Pyx_INCREF(__pyx_t_2); __pyx_t_7 = 0;
       __pyx_t_9 = NULL;
     } else {
-      __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 268, __pyx_L73_error)
+      __pyx_t_7 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 268, __pyx_L73_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_9 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 268, __pyx_L73_error)
     }
@@ -4234,19 +4236,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     for (;;) {
       if (likely(!__pyx_t_9)) {
         if (likely(PyList_CheckExact(__pyx_t_2))) {
-          if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
+          if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 268, __pyx_L73_error)
+          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 268, __pyx_L73_error)
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 268, __pyx_L73_error)
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 268, __pyx_L73_error)
           __Pyx_GOTREF(__pyx_t_3);
           #endif
         } else {
-          if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+          if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 268, __pyx_L73_error)
+          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 268, __pyx_L73_error)
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 268, __pyx_L73_error)
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 268, __pyx_L73_error)
           __Pyx_GOTREF(__pyx_t_3);
           #endif
         }
@@ -4320,9 +4322,9 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *                 if converts_to_index(attributes['label']):
  *                     attributes['label'] = labeled_genotype_matrix.mutation_labels[ int(attributes['label']) ]
  */
-      __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_n_u_label, __pyx_v_attributes, Py_EQ)); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 269, __pyx_L73_error)
-      __pyx_t_7 = (__pyx_t_6 != 0);
-      if (__pyx_t_7) {
+      __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_n_u_label, __pyx_v_attributes, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 269, __pyx_L73_error)
+      __pyx_t_6 = (__pyx_t_5 != 0);
+      if (__pyx_t_6) {
 
         /* "sasc.pyx":270
  *         for [node, attributes] in best_tree.nodes(data = True):
@@ -4336,9 +4338,9 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
         __pyx_t_10 = __pyx_pf_4sasc_10infer_tree_converts_to_index(__pyx_v_converts_to_index, __pyx_t_3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 270, __pyx_L73_error)
         __Pyx_GOTREF(__pyx_t_10);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 270, __pyx_L73_error)
+        __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 270, __pyx_L73_error)
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        if (__pyx_t_7) {
+        if (__pyx_t_6) {
 
           /* "sasc.pyx":271
  *             if 'label' in attributes:
@@ -4456,8 +4458,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *             for i, cell in enumerate(labeled_genotype_matrix.cell_labels):
  *                 cell_id = f'cell: {cell}'
  */
-    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_v_get_cells); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 278, __pyx_L73_error)
-    if (__pyx_t_7) {
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_get_cells); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 278, __pyx_L73_error)
+    if (__pyx_t_6) {
 
       /* "sasc.pyx":279
  * 
@@ -4471,10 +4473,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
       __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_labeled_genotype_matrix, __pyx_n_s_cell_labels); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 279, __pyx_L73_error)
       __Pyx_GOTREF(__pyx_t_3);
       if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
-        __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
+        __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_7 = 0;
         __pyx_t_9 = NULL;
       } else {
-        __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L73_error)
+        __pyx_t_7 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L73_error)
         __Pyx_GOTREF(__pyx_t_1);
         __pyx_t_9 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 279, __pyx_L73_error)
       }
@@ -4482,19 +4484,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
       for (;;) {
         if (likely(!__pyx_t_9)) {
           if (likely(PyList_CheckExact(__pyx_t_1))) {
-            if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
+            if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_1)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 279, __pyx_L73_error)
+            __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 279, __pyx_L73_error)
             #else
-            __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 279, __pyx_L73_error)
+            __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 279, __pyx_L73_error)
             __Pyx_GOTREF(__pyx_t_3);
             #endif
           } else {
-            if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+            if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 279, __pyx_L73_error)
+            __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 279, __pyx_L73_error)
             #else
-            __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 279, __pyx_L73_error)
+            __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 279, __pyx_L73_error)
             __Pyx_GOTREF(__pyx_t_3);
             #endif
           }
@@ -4575,7 +4577,7 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
         __Pyx_GOTREF(__pyx_t_10);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_t_3 = NULL;
-        __pyx_t_5 = 0;
+        __pyx_t_4 = 0;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_17))) {
           __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_17);
           if (likely(__pyx_t_3)) {
@@ -4583,13 +4585,13 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
             __Pyx_INCREF(__pyx_t_3);
             __Pyx_INCREF(function);
             __Pyx_DECREF_SET(__pyx_t_17, function);
-            __pyx_t_5 = 1;
+            __pyx_t_4 = 1;
           }
         }
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_17)) {
           PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_t_10, __pyx_v_cell_id};
-          __pyx_t_19 = __Pyx_PyFunction_FastCall(__pyx_t_17, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 282, __pyx_L73_error)
+          __pyx_t_19 = __Pyx_PyFunction_FastCall(__pyx_t_17, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 282, __pyx_L73_error)
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_GOTREF(__pyx_t_19);
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -4598,23 +4600,23 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_17)) {
           PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_t_10, __pyx_v_cell_id};
-          __pyx_t_19 = __Pyx_PyCFunction_FastCall(__pyx_t_17, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 282, __pyx_L73_error)
+          __pyx_t_19 = __Pyx_PyCFunction_FastCall(__pyx_t_17, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 282, __pyx_L73_error)
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_GOTREF(__pyx_t_19);
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         } else
         #endif
         {
-          __pyx_t_20 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 282, __pyx_L73_error)
+          __pyx_t_20 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 282, __pyx_L73_error)
           __Pyx_GOTREF(__pyx_t_20);
           if (__pyx_t_3) {
             __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_20, 0, __pyx_t_3); __pyx_t_3 = NULL;
           }
           __Pyx_GIVEREF(__pyx_t_10);
-          PyTuple_SET_ITEM(__pyx_t_20, 0+__pyx_t_5, __pyx_t_10);
+          PyTuple_SET_ITEM(__pyx_t_20, 0+__pyx_t_4, __pyx_t_10);
           __Pyx_INCREF(__pyx_v_cell_id);
           __Pyx_GIVEREF(__pyx_v_cell_id);
-          PyTuple_SET_ITEM(__pyx_t_20, 1+__pyx_t_5, __pyx_v_cell_id);
+          PyTuple_SET_ITEM(__pyx_t_20, 1+__pyx_t_4, __pyx_v_cell_id);
           __pyx_t_10 = 0;
           __pyx_t_19 = __Pyx_PyObject_Call(__pyx_t_17, __pyx_t_20, NULL); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 282, __pyx_L73_error)
           __Pyx_GOTREF(__pyx_t_19);
@@ -4699,10 +4701,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     __Pyx_GOTREF(__pyx_t_19);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (likely(PyList_CheckExact(__pyx_t_19)) || PyTuple_CheckExact(__pyx_t_19)) {
-      __pyx_t_2 = __pyx_t_19; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
+      __pyx_t_2 = __pyx_t_19; __Pyx_INCREF(__pyx_t_2); __pyx_t_7 = 0;
       __pyx_t_9 = NULL;
     } else {
-      __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_19); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 286, __pyx_L73_error)
+      __pyx_t_7 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_19); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 286, __pyx_L73_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_9 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 286, __pyx_L73_error)
     }
@@ -4710,19 +4712,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     for (;;) {
       if (likely(!__pyx_t_9)) {
         if (likely(PyList_CheckExact(__pyx_t_2))) {
-          if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
+          if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_19 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_19); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 286, __pyx_L73_error)
+          __pyx_t_19 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_19); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 286, __pyx_L73_error)
           #else
-          __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 286, __pyx_L73_error)
+          __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 286, __pyx_L73_error)
           __Pyx_GOTREF(__pyx_t_19);
           #endif
         } else {
-          if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+          if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_19 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_19); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 286, __pyx_L73_error)
+          __pyx_t_19 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_19); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 286, __pyx_L73_error)
           #else
-          __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 286, __pyx_L73_error)
+          __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 286, __pyx_L73_error)
           __Pyx_GOTREF(__pyx_t_19);
           #endif
         }
@@ -4748,8 +4750,8 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
  *                 expected_matrix[i][j] = c_out.gtp_matrix[i][j]
  * 
  */
-      __pyx_t_5 = __pyx_v_M;
-      __pyx_t_13 = __pyx_t_5;
+      __pyx_t_4 = __pyx_v_M;
+      __pyx_t_13 = __pyx_t_4;
       for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
         __pyx_v_j = __pyx_t_14;
 
@@ -4831,10 +4833,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     __Pyx_GOTREF(__pyx_t_19);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (likely(PyList_CheckExact(__pyx_t_19)) || PyTuple_CheckExact(__pyx_t_19)) {
-      __pyx_t_2 = __pyx_t_19; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
+      __pyx_t_2 = __pyx_t_19; __Pyx_INCREF(__pyx_t_2); __pyx_t_7 = 0;
       __pyx_t_9 = NULL;
     } else {
-      __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_19); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 293, __pyx_L73_error)
+      __pyx_t_7 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_19); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 293, __pyx_L73_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_9 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 293, __pyx_L73_error)
     }
@@ -4842,19 +4844,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     for (;;) {
       if (likely(!__pyx_t_9)) {
         if (likely(PyList_CheckExact(__pyx_t_2))) {
-          if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
+          if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_19 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_19); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 293, __pyx_L73_error)
+          __pyx_t_19 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_19); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 293, __pyx_L73_error)
           #else
-          __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 293, __pyx_L73_error)
+          __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 293, __pyx_L73_error)
           __Pyx_GOTREF(__pyx_t_19);
           #endif
         } else {
-          if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+          if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_19 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_19); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 293, __pyx_L73_error)
+          __pyx_t_19 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_19); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 293, __pyx_L73_error)
           #else
-          __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 293, __pyx_L73_error)
+          __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 293, __pyx_L73_error)
           __Pyx_GOTREF(__pyx_t_19);
           #endif
         }
@@ -4976,7 +4978,7 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     __pyx_t_17 = __Pyx_PyObject_GetAttrStr(__pyx_v_labeled_genotype_matrix, __pyx_n_s_mutation_labels); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 303, __pyx_L73_error)
     __Pyx_GOTREF(__pyx_t_17);
     __pyx_t_1 = NULL;
-    __pyx_t_5 = 0;
+    __pyx_t_4 = 0;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_19))) {
       __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_19);
       if (likely(__pyx_t_1)) {
@@ -4984,13 +4986,13 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
         __Pyx_INCREF(__pyx_t_1);
         __Pyx_INCREF(function);
         __Pyx_DECREF_SET(__pyx_t_19, function);
-        __pyx_t_5 = 1;
+        __pyx_t_4 = 1;
       }
     }
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_19)) {
       PyObject *__pyx_temp[4] = {__pyx_t_1, __pyx_v_expected_matrix, __pyx_t_20, __pyx_t_17};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_19, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 300, __pyx_L73_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_19, __pyx_temp+1-__pyx_t_4, 3+__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 300, __pyx_L73_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
@@ -5000,7 +5002,7 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_19)) {
       PyObject *__pyx_temp[4] = {__pyx_t_1, __pyx_v_expected_matrix, __pyx_t_20, __pyx_t_17};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_19, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 300, __pyx_L73_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_19, __pyx_temp+1-__pyx_t_4, 3+__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 300, __pyx_L73_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
@@ -5008,18 +5010,18 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
     } else
     #endif
     {
-      __pyx_t_10 = PyTuple_New(3+__pyx_t_5); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 300, __pyx_L73_error)
+      __pyx_t_10 = PyTuple_New(3+__pyx_t_4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 300, __pyx_L73_error)
       __Pyx_GOTREF(__pyx_t_10);
       if (__pyx_t_1) {
         __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_1); __pyx_t_1 = NULL;
       }
       __Pyx_INCREF(__pyx_v_expected_matrix);
       __Pyx_GIVEREF(__pyx_v_expected_matrix);
-      PyTuple_SET_ITEM(__pyx_t_10, 0+__pyx_t_5, __pyx_v_expected_matrix);
+      PyTuple_SET_ITEM(__pyx_t_10, 0+__pyx_t_4, __pyx_v_expected_matrix);
       __Pyx_GIVEREF(__pyx_t_20);
-      PyTuple_SET_ITEM(__pyx_t_10, 1+__pyx_t_5, __pyx_t_20);
+      PyTuple_SET_ITEM(__pyx_t_10, 1+__pyx_t_4, __pyx_t_20);
       __Pyx_GIVEREF(__pyx_t_17);
-      PyTuple_SET_ITEM(__pyx_t_10, 2+__pyx_t_5, __pyx_t_17);
+      PyTuple_SET_ITEM(__pyx_t_10, 2+__pyx_t_4, __pyx_t_17);
       __pyx_t_20 = 0;
       __pyx_t_17 = 0;
       __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_19, __pyx_t_10, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 300, __pyx_L73_error)
@@ -5123,7 +5125,7 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
       __Pyx_XGOTREF(__pyx_t_25);
       __Pyx_XGOTREF(__pyx_t_26);
       __Pyx_XGOTREF(__pyx_t_27);
-      __pyx_t_5 = __pyx_lineno; __pyx_t_13 = __pyx_clineno; __pyx_t_21 = __pyx_filename;
+      __pyx_t_4 = __pyx_lineno; __pyx_t_13 = __pyx_clineno; __pyx_t_21 = __pyx_filename;
       {
         free(__pyx_v_c_out->el_alphas);
 
@@ -5149,10 +5151,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
         __Pyx_GOTREF(__pyx_t_19);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         if (likely(PyList_CheckExact(__pyx_t_19)) || PyTuple_CheckExact(__pyx_t_19)) {
-          __pyx_t_2 = __pyx_t_19; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
+          __pyx_t_2 = __pyx_t_19; __Pyx_INCREF(__pyx_t_2); __pyx_t_7 = 0;
           __pyx_t_9 = NULL;
         } else {
-          __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_19); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 320, __pyx_L91_error)
+          __pyx_t_7 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_19); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 320, __pyx_L91_error)
           __Pyx_GOTREF(__pyx_t_2);
           __pyx_t_9 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 320, __pyx_L91_error)
         }
@@ -5160,19 +5162,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
         for (;;) {
           if (likely(!__pyx_t_9)) {
             if (likely(PyList_CheckExact(__pyx_t_2))) {
-              if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
+              if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_2)) break;
               #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_19 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_19); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 320, __pyx_L91_error)
+              __pyx_t_19 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_19); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 320, __pyx_L91_error)
               #else
-              __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 320, __pyx_L91_error)
+              __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 320, __pyx_L91_error)
               __Pyx_GOTREF(__pyx_t_19);
               #endif
             } else {
-              if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+              if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
               #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_19 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_19); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 320, __pyx_L91_error)
+              __pyx_t_19 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_19); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 320, __pyx_L91_error)
               #else
-              __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 320, __pyx_L91_error)
+              __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 320, __pyx_L91_error)
               __Pyx_GOTREF(__pyx_t_19);
               #endif
             }
@@ -5258,7 +5260,7 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
       __Pyx_XGIVEREF(__pyx_t_24);
       __Pyx_ErrRestore(__pyx_t_22, __pyx_t_23, __pyx_t_24);
       __pyx_t_22 = 0; __pyx_t_23 = 0; __pyx_t_24 = 0; __pyx_t_25 = 0; __pyx_t_26 = 0; __pyx_t_27 = 0;
-      __pyx_lineno = __pyx_t_5; __pyx_clineno = __pyx_t_13; __pyx_filename = __pyx_t_21;
+      __pyx_lineno = __pyx_t_4; __pyx_clineno = __pyx_t_13; __pyx_filename = __pyx_t_21;
       goto __pyx_L1_error;
       __pyx_L91_error:;
       if (PY_MAJOR_VERSION >= 3) {
@@ -5308,10 +5310,10 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
       __Pyx_GOTREF(__pyx_t_19);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (likely(PyList_CheckExact(__pyx_t_19)) || PyTuple_CheckExact(__pyx_t_19)) {
-        __pyx_t_2 = __pyx_t_19; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
+        __pyx_t_2 = __pyx_t_19; __Pyx_INCREF(__pyx_t_2); __pyx_t_7 = 0;
         __pyx_t_9 = NULL;
       } else {
-        __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_19); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 320, __pyx_L1_error)
+        __pyx_t_7 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_19); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 320, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __pyx_t_9 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 320, __pyx_L1_error)
       }
@@ -5319,19 +5321,19 @@ static PyObject *__pyx_pf_4sasc_infer_tree(CYTHON_UNUSED PyObject *__pyx_self, P
       for (;;) {
         if (likely(!__pyx_t_9)) {
           if (likely(PyList_CheckExact(__pyx_t_2))) {
-            if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
+            if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_2)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_19 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_19); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 320, __pyx_L1_error)
+            __pyx_t_19 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_19); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 320, __pyx_L1_error)
             #else
-            __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 320, __pyx_L1_error)
+            __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 320, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_19);
             #endif
           } else {
-            if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+            if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_19 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_19); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 320, __pyx_L1_error)
+            __pyx_t_19 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_19); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 320, __pyx_L1_error)
             #else
-            __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 320, __pyx_L1_error)
+            __pyx_t_19 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 320, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_19);
             #endif
           }
@@ -5825,6 +5827,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_el_gammas, __pyx_k_el_gammas, sizeof(__pyx_k_el_gammas), 0, 0, 1, 1},
   {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
   {&__pyx_kp_u_error_learning_parameters_must_b, __pyx_k_error_learning_parameters_must_b, sizeof(__pyx_k_error_learning_parameters_must_b), 0, 1, 0, 0},
+  {&__pyx_n_s_exit, __pyx_k_exit, sizeof(__pyx_k_exit), 0, 0, 1, 1},
   {&__pyx_n_u_expected_genotype_matrix, __pyx_k_expected_genotype_matrix, sizeof(__pyx_k_expected_genotype_matrix), 0, 1, 0, 1},
   {&__pyx_n_s_expected_matrix, __pyx_k_expected_matrix, sizeof(__pyx_k_expected_matrix), 0, 0, 1, 1},
   {&__pyx_n_s_fillcolor, __pyx_k_fillcolor, sizeof(__pyx_k_fillcolor), 0, 0, 1, 1},
@@ -5894,6 +5897,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 137, __pyx_L1_error)
   __pyx_builtin_any = __Pyx_GetBuiltinName(__pyx_n_s_any); if (!__pyx_builtin_any) __PYX_ERR(0, 163, __pyx_L1_error)
+  __pyx_builtin_exit = __Pyx_GetBuiltinName(__pyx_n_s_exit); if (!__pyx_builtin_exit) __PYX_ERR(0, 189, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 190, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 279, __pyx_L1_error)
   return 0;
@@ -5908,7 +5912,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "sasc.pyx":189
  *     arguments.genotype_matrix = <int**>malloc(N*sizeof(int*))
  *     if arguments.genotype_matrix == NULL:
- *         raise Exception('out of memory')             # <<<<<<<<<<<<<<
+ *         exit('out of memory')             # <<<<<<<<<<<<<<
  *     for i in range(N):
  *         arguments.genotype_matrix[i] = <int*>malloc(M*sizeof(int))
  */
@@ -5935,7 +5939,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         labeled_genotype_matrix,
  *         alphas,
  */
-  __pyx_tuple__5 = PyTuple_Pack(44, __pyx_n_s_labeled_genotype_matrix, __pyx_n_s_alphas, __pyx_n_s_beta, __pyx_n_s_k, __pyx_n_s_max_deletions, __pyx_n_s_repetitions, __pyx_n_s_start_temp, __pyx_n_s_cooling_rate, __pyx_n_s_cores, __pyx_n_s_el_a_variance, __pyx_n_s_el_b_variance, __pyx_n_s_el_g_variance, __pyx_n_s_monoclonal, __pyx_n_s_gammas, __pyx_n_s_get_cells, __pyx_n_s_args_struct, __pyx_n_s_arguments, __pyx_n_s_genotype_matrix, __pyx_n_s_N, __pyx_n_s_M, __pyx_n_s_single_alpha, __pyx_n_s_single_gamma, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_automatic_labels, __pyx_n_s_out_struct, __pyx_n_s_c_out, __pyx_n_s_comp_result, __pyx_n_s_root, __pyx_n_s_best_tree, __pyx_n_s_converts_to_index, __pyx_n_s_converts_to_index, __pyx_n_s_node, __pyx_n_s_attributes, __pyx_n_s_cell_2, __pyx_n_s_cell_id, __pyx_n_s_expected_matrix, __pyx_n_s_el_alphas, __pyx_n_s_el_gammas, __pyx_n_s_el_beta, __pyx_n_s_out, __pyx_n_s_alpha, __pyx_n_s_gamma, __pyx_n_s_i); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(44, __pyx_n_s_labeled_genotype_matrix, __pyx_n_s_alphas, __pyx_n_s_beta, __pyx_n_s_k, __pyx_n_s_max_deletions, __pyx_n_s_repetitions, __pyx_n_s_start_temp, __pyx_n_s_cores, __pyx_n_s_el_a_variance, __pyx_n_s_el_b_variance, __pyx_n_s_el_g_variance, __pyx_n_s_monoclonal, __pyx_n_s_gammas, __pyx_n_s_get_cells, __pyx_n_s_cooling_rate, __pyx_n_s_args_struct, __pyx_n_s_arguments, __pyx_n_s_genotype_matrix, __pyx_n_s_N, __pyx_n_s_M, __pyx_n_s_single_alpha, __pyx_n_s_single_gamma, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_automatic_labels, __pyx_n_s_out_struct, __pyx_n_s_c_out, __pyx_n_s_comp_result, __pyx_n_s_root, __pyx_n_s_best_tree, __pyx_n_s_converts_to_index, __pyx_n_s_converts_to_index, __pyx_n_s_node, __pyx_n_s_attributes, __pyx_n_s_cell_2, __pyx_n_s_cell_id, __pyx_n_s_expected_matrix, __pyx_n_s_el_alphas, __pyx_n_s_el_gammas, __pyx_n_s_el_beta, __pyx_n_s_out, __pyx_n_s_alpha, __pyx_n_s_gamma, __pyx_n_s_i); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
   __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(15, 0, 44, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sasc_pyx, __pyx_n_s_infer_tree, 44, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 44, __pyx_L1_error)

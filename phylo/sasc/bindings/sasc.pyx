@@ -6,10 +6,10 @@ For more info about this module's functionalities:
 
 ---------
 
-A module that exposes the phylogeny inference algorithm 
-explained in the SASC paper. 
-An example workflow with this module could be:
+Module that exposes the phylogeny inference algorithm presented at
+https://github.com/sciccolella/sasc
 
+Simple example workflow:
 from phylo import sasc as sc
 from multiprocessing import cpu_count
 
@@ -49,14 +49,14 @@ def infer_tree(
         max_deletions=INT_MAX,
         repetitions=5,
         start_temp=10**4,
-        cooling_rate=0.01, #this cannot be written as 10**-2, otherwise Cython builds it from 10L and assigns 0 to it
-	cores=1,
+	    cores=1,
         el_a_variance=0,
         el_b_variance=0,
         el_g_variance=0,
         monoclonal=False,
         gammas=1,
-        get_cells=False
+        get_cells=False,
+        cooling_rate=0.01 #this cannot be written as 10**-2, otherwise Cython builds it from 10L and assigns 0 to it
 ):
     """
     Infers a tree from a matrix representing the mutations for a sample of cells using
@@ -90,7 +90,7 @@ def infer_tree(
             The starting temperature for simulated annealing.
         cooling_rate(float), by default 0.01:
             The cooling rate for simulated annealing.
-        cores, by default 1:
+        cores(int), by default 1:
             The number of cores used by SASC.
         el_a_variance(float), by default 0:
             The variance of the false negative rates for error learning.
@@ -127,8 +127,8 @@ def infer_tree(
     cdef sca.sasc_in_t* arguments = &args_struct
 
     genotype_matrix = labeled_genotype_matrix.matrix()
-    arguments.N = len(genotype_matrix)
-    arguments.M = len(genotype_matrix[0])    
+    arguments.N = genotype_matrix.shape[0]
+    arguments.M = genotype_matrix.shape[1]
     cdef int N = arguments.N
     cdef int M = arguments.M
 
@@ -186,11 +186,11 @@ def infer_tree(
     # Marshalling of the matrix
     arguments.genotype_matrix = <int**>malloc(N*sizeof(int*))
     if arguments.genotype_matrix == NULL:
-        raise Exception('out of memory')
+        exit('out of memory')
     for i in range(N):
         arguments.genotype_matrix[i] = <int*>malloc(M*sizeof(int))
         if arguments.genotype_matrix[i] == NULL:
-            raise Exception('out of memory')
+            exit('out of memory')
         for j in range(M):
             arguments.genotype_matrix[i][j] = genotype_matrix[i][j]
 
@@ -225,11 +225,11 @@ def infer_tree(
 
     c_out.gtp_matrix = <int**> malloc(N * sizeof(int*))
     if c_out.gtp_matrix == NULL:
-        raise Exception('out of memory')
+        exit('out of memory')
     for i in range(N):
         c_out.gtp_matrix[i] = <int*> malloc(M * sizeof(int))
         if c_out.gtp_matrix[i] == NULL:
-            raise Exception('out of memory')
+            exit('out of memory')
     
     c_out.ids_of_leaves = <int*> malloc(N * sizeof(int))
     c_out.el_alphas = <double*> malloc(M * sizeof(double))
@@ -239,7 +239,7 @@ def infer_tree(
         or c_out.el_gammas == NULL
         or c_out.ids_of_leaves == NULL
     ):
-        raise Exception('out of memory')
+        exit('out of memory')
 
     cdef int comp_result
     cdef sca.node_t* root

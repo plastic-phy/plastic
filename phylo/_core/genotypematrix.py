@@ -2,6 +2,7 @@ from pandas import DataFrame
 import numpy as np
 import tatsu as ts
 import re
+from copy import deepcopy
 
 
 class DuplicateLabelsError(Exception): pass
@@ -108,12 +109,12 @@ class GenotypeMatrix:
             none.
 
         Returns:
-            list(list(int)):
-                A list that represents the matrix. The coefficient in position [i][j] will be a 0 if
+            np.ndarray:
+                A numpy array that represents the matrix. The coefficient in position [i][j] will be a 0 if
                 the i-th cell doesn't exhibit the j-th mutation, 1 if it does, and 2 if no conclusion could be drawn
                 in the analysis. The returned object is independent from the internal representation.
         """
-        return self._data.to_numpy().tolist()
+        return deepcopy(self._data.to_numpy())
 
     @property
     def cell_labels(self):
