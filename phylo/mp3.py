@@ -67,29 +67,26 @@ def tree_similarity(
             The mode with which the trees will be compared. Must be one of 'sigmoid', 'union', 'intersection'
             or 'geometric'.
         cores(int), by default 1:
-            The number of cores that will be used in the computation.
-            For now in order to avoid a fatal bug in the mp3treesim module, this function will behave
-            as if the specified number was always 1.
+            The number of cores that will be used in the computation. Enter a value less than 1 to use all cores.
 
     Returns:
         float:
             The similarity score for the trees.
     """
 
-    if int(cores) != cores or cores < 1:
+    if int(cores) != cores:
         raise ValueError(f'the number of cores must be a positive integer, but {cores} is not.')
-    # HACK DUE TO MP3TREESIM BUG, REMOVE WHEN SOLVED
-    cores = 1
-    # END HACK
 
     if not isinstance(tree1, PhylogenyTree):
         raise TypeError(
             "tree1 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load()"
-            "or make one from a networkx graph.")
+            "or make one from a networkx graph."
+        )
     if not isinstance(tree2, PhylogenyTree):
         raise TypeError(
             "tree2 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load()"
-            "or make one from a networkx graph.")
+            "or make one from a networkx graph."
+        )
 
     excluded1 = list(set(excluded1.split(',') + excluded_global.split(',')))
     excluded2 = list(set(excluded2.split(',') + excluded_global.split(',')))

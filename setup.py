@@ -1,5 +1,4 @@
 import setuptools as st
-from Cython.Build import cythonize
 
 sascdir = 'phylo/sasc/'
 with open('README.md', 'r') as f:
