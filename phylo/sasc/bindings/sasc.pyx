@@ -186,11 +186,11 @@ def infer_tree(
     # Marshalling of the matrix
     arguments.genotype_matrix = <int**>malloc(N*sizeof(int*))
     if arguments.genotype_matrix == NULL:
-        exit('out of memory')
+        raise MemoryError()
     for i in range(N):
         arguments.genotype_matrix[i] = <int*>malloc(M*sizeof(int))
         if arguments.genotype_matrix[i] == NULL:
-            exit('out of memory')
+            raise MemoryError()
         for j in range(M):
             arguments.genotype_matrix[i][j] = genotype_matrix[i][j]
 
@@ -208,7 +208,7 @@ def infer_tree(
         arguments.gammas == NULL
         or arguments.alphas == NULL
     ):
-        raise Exception('out of memory')
+        raise MemoryError()
     
     for i in range(M):
         arguments.alphas[i] = alphas[i]
@@ -225,11 +225,11 @@ def infer_tree(
 
     c_out.gtp_matrix = <int**> malloc(N * sizeof(int*))
     if c_out.gtp_matrix == NULL:
-        exit('out of memory')
+        raise MemoryError()
     for i in range(N):
         c_out.gtp_matrix[i] = <int*> malloc(M * sizeof(int))
         if c_out.gtp_matrix[i] == NULL:
-            exit('out of memory')
+            raise MemoryError()
     
     c_out.ids_of_leaves = <int*> malloc(N * sizeof(int))
     c_out.el_alphas = <double*> malloc(M * sizeof(double))
@@ -239,7 +239,7 @@ def infer_tree(
         or c_out.el_gammas == NULL
         or c_out.ids_of_leaves == NULL
     ):
-        exit('out of memory')
+        raise MemoryError()
 
     cdef int comp_result
     cdef sca.node_t* root
