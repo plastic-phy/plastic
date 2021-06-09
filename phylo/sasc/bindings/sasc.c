@@ -11,7 +11,7 @@
         ],
         "name": "sasc",
         "sources": [
-            "/home/pollo/Desktop/testing-branch/phylo/sasc/bindings/sasc.pyx"
+            "/home/pollo/Desktop/phylo-pipeline/phylo/sasc/bindings/sasc.pyx"
         ]
     },
     "module_name": "sasc"
