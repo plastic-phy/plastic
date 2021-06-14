@@ -40,8 +40,10 @@ def _conflict_dissim(a, b, **_):
 def cluster_mutations(
         genotype_matrix,
         k,
-        number_of_iterations=10,
-        verbose=False
+        n_inits=10,
+        max_iter=100,
+        verbose=False,
+        **kwargs
 ):
     """
     Clusters the mutations in a genotype matrix by applying kmodes
@@ -52,9 +54,13 @@ def cluster_mutations(
         k(int):
             The number of clustered mutations in the output matrix.
             Note that empty clusters will be discarded after clustering.
-        number_of_iterations(int):
-            The number of iterations in the clustering process.
+        n_inits(int):
+            The number of initiliazations in the clustering process.
+        max_iter(int):
+            The maximum number of iterations in the clustering process.
         verbose (bool)
+        **kwargs:
+            Additional arguments passed to KModes process.
 
     Returns:
         GenotypeMatrix:
@@ -64,10 +70,12 @@ def cluster_mutations(
             Cell labels are left unaltered.
     """
 
-    if int(k) != k or k < 1:
+    if type(k) != int or k < 1:
         raise ValueError(f'the number of clusters must be a positive integer, but {k} is not.')
-    if int(number_of_iterations) != number_of_iterations or number_of_iterations < 1:
-        raise ValueError(f'the number of iterations must be a positive integer, but {number_of_iterations} is not.')
+    if type(max_iter) != int or max_iter < 1:
+        raise ValueError(f'the number of iterations must be a positive integer, but {max_iter} is not.')
+    if type(n_inits) != int or n_inits < 1:
+        raise ValueError(f'the number of initializations must be a positive integer, but {n_inits} is not.')
 
     mutations_as_points = np.array(genotype_matrix.matrix(), dtype='int').transpose()
     mutation_labels = genotype_matrix.mutation_labels
@@ -76,8 +84,10 @@ def cluster_mutations(
         n_clusters=k,
         cat_dissim=_conflict_dissim,
         init='huang',
-        n_init=number_of_iterations,
-        verbose=(1 if verbose else 0)
+        n_init=n_inits,
+        max_iter=max_iter,
+        verbose=(1 if verbose else 0),
+        **kwargs
     )
 
     clusters = km.fit_predict(mutations_as_points)
