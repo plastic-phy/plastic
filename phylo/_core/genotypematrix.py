@@ -17,7 +17,7 @@ class _GenotypeMatrixParser:
     def parse(self, matrix_string):
         out = self.parse_function(matrix_string)
         if self.transpose:
-            out = out.T()
+            out = out.T
         try:
             out = np.vectorize(lambda x: self.value_map[x])(out)
         except KeyError as e:
