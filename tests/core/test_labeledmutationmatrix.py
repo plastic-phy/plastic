@@ -12,15 +12,15 @@ class Test_Accessors:
         a = stub_matrix()
         assert a.cells() == {'a' : [0, 0, 0], 'b' : [0, 0, 0], 'c' : [1, 0, 0]}
         assert isinstance(a.cells()['a'][0], int)
-        
+
     def test_mutations(self):
-            
+
         a = stub_matrix()
         assert a.mutations() == {'sabbia': [0, 0, 1], 'pollo' : [0, 0, 0], 'facocero': [0, 0, 0]}
 
 
 class Test_Immutability:
-    
+
     def test_matrix_immutability_after_init_parameter_modification(self):
         mutable_init_matrix = np.array([[0, 0, 0], [1, 0, 1]])
         a = GenotypeMatrix(mutable_init_matrix)
@@ -31,13 +31,13 @@ class Test_Immutability:
         mutable_init_labels = ['sabbia', 'polloplex']
         a = GenotypeMatrix([[0, 0]], mutation_labels = mutable_init_labels)
         mutable_init_labels[0] = 'you_thought_it_would_be_sabbia_but_it_is_me_dio'
-        assert set(a.mutation_labels) == {'sabbia', 'polloplex'} 
-        
+        assert set(a.mutation_labels) == {'sabbia', 'polloplex'}
+
     def test_matrix_immutability_after_modification_to_accessor(self):
         a = stub_matrix()
         a.matrix()[0][0] = 3
         b = stub_matrix()
-        assert a.matrix() == b.matrix()
+        assert np.all(a.matrix() == b.matrix())
 
     def test_labels_immutability_after_modification_through_accessor(self):
         a = stub_matrix()
@@ -54,30 +54,30 @@ class Test_Immutability:
 
 
 class TestInit:
-    
+
     def test_init(self):
 
         a = stub_matrix()
-        assert a.matrix() == [[0, 0, 0], [0, 0, 0], [1, 0, 0]]
+        assert np.all(a.matrix() == np.array([[0, 0, 0], [0, 0, 0], [1, 0, 0]]))
         assert a.cell_labels == ['a', 'b', 'c']
         assert a.mutation_labels == ['sabbia', 'pollo', 'facocero']
 
     def test_init_without_explicit_labels(self):
 
         a = GenotypeMatrix([[0, 0, 0], [0, 0, 0]])
-        assert a.matrix() == [[0, 0, 0], [0, 0, 0]]
+        assert np.all(a.matrix() == np.array([[0, 0, 0], [0, 0, 0]]))
         assert a.cell_labels == ['1', '2']
         assert a.mutation_labels == ['1', '2', '3']
 
     def test_init_with_numpy_matrix(self):
-    
+
         a = GenotypeMatrix(np.array([[0, 0, 0]]))
-        assert a.matrix() == [[0, 0, 0]]
+        assert np.all(a.matrix() == np.array([[0, 0, 0]]))
 
     def test_init_with_doubles_in_matrix(self):
 
         a =GenotypeMatrix(np.array([[0.0, 0, 0]]))
-        assert str(a.matrix()) == '[[0, 0, 0]]'
+        assert str(a.matrix()) == '[[0 0 0]]'
 
     def test_noncollection_matrix_arg(self):
 
@@ -95,12 +95,12 @@ class TestInit:
             GenotypeMatrix([[0, 1, 2], [0, 1]])
 
     def test_bad_collection_arg(self):
-        
+
         with pt.raises(ValueError):
             GenotypeMatrix("pollo")
 
     def test_bad_values_in_matrix_arg(self):
-        
+
         with pt.raises(ValueError):
             GenotypeMatrix([[69]])
 
@@ -149,7 +149,7 @@ class Test_Serialization:
         d = a.to_serializable_dict()
         a_after_rt = GenotypeMatrix.from_serializable_dict(d)
 
-        assert a.matrix() == a_after_rt.matrix()
+        assert np.all(a.matrix() == a_after_rt.matrix())
         assert a.cell_labels == a_after_rt.cell_labels
         assert a.mutation_labels == a_after_rt.mutation_labels
 

@@ -5,6 +5,133 @@ import re
 from copy import deepcopy
 
 
+class _GenotypeMatrixParser:
+    """
+    Specifications for the file formats in which matrixes can be stored.
+    """
+
+    def __init__(self, value_map, transpose=False):
+        self.value_map = value_map
+        self.transpose = transpose
+
+    def parse(self, matrix_string):
+        out = self.parse_function(matrix_string)
+        if self.transpose:
+            out = out.T()
+        try:
+            out = np.vectorize(lambda x: self.value_map[x])(out)
+        except KeyError as e:
+            raise ValueError(f'bad value in parsed matrix {str(e)}') from e
+        return out
+
+    def parse_function(self, matrix_string):
+        raise NotImplementedError('this is an abstract method!')
+
+
+def _loadstr(string):
+    return np.loadtxt( (bytes(l, 'ascii') for l in string.split('\n')) )
+
+
+class SASCParser(_GenotypeMatrixParser):
+    def __init__(self):
+        super().__init__(value_map={0: 0, 1: 1, 2: 2}, transpose=False)
+
+    def parse_function(self, matrix_string):
+        return _loadstr(matrix_string)
+
+
+class SCITEParser(_GenotypeMatrixParser):
+    def __init__(self):
+        super().__init__(value_map={0: 0, 1: 1, 2: 2, 3: 2}, transpose=True)
+
+    def parse_function(self, matrix_string):
+        return _loadstr(matrix_string)
+
+
+class SPHYRParser(_GenotypeMatrixParser):
+    def __init__(self, no_comments=True):
+        super().__init__(value_map={0: 0, 1: 1, -1: 2}, transpose=False)
+
+    def parse_function(self, matrix_string):
+        lines = matrix_string.split('\n')
+        # Delete EOL comments by trimming the line beyond the hash
+        for line in lines:
+            line = line.split('#')[0]
+        # Skip the header
+        return _loadstr('\n'.join(lines[2:]))
+
+
+class PEGSpecifiedParser(_GenotypeMatrixParser):
+    """
+    A class to quickly define new parser for file formats.
+    This should only be used for prototyping, as it's very inefficient.
+    """
+    def __init__(self, grammar, value_map, transpose):
+        """
+        Parameters:
+            grammar(string):
+                Represents a PEG in TatSu format. Some rules have semantics associated to them: the rule
+                labeled with 'matrix' represents a matrix, the rule labeled with 'row' represents
+                a matrix row/column (depending on the value for transpose), and the rule 'mcell' represents
+                a coefficient in the matrix. The grammar is not validated, so adding new grammars
+                must be followed by thorough testing to ensure it works as intended.
+                Only the first matrix that is found in the file will be returned.
+            value_map(dict):
+                A map that associates each possible production of the 'mcell' rule
+                to the value in SASC notation that represents the same information about a mutation;
+                The usual convention is used: 0 = no mutation, 1 = mutation, 2 = unknown.
+            transpose(boolean):
+                If true, then the matrix that is obtained by parsing the file is transposed.
+        """
+        super().__init__(value_map, transpose)
+        self.inner_parser = ts.compile(grammar)
+
+    def parse_function(self, matrix_string):
+        semantics = _MatrixSemantics()
+        self.inner_parser.parse(matrix_string, semantics)
+        return semantics.matrix
+
+
+class NotAMatrixError(Exception): pass
+
+
+class _MatrixSemantics:
+    """
+    Semantics for a matrix file format. This lets the parsing work as usual
+    while also allowing to build a list of each matrix that was found in the string;
+    the semantics rely on the names for the rules as specified in the documentation
+    for MatrixFileFormat, so new grammars will have to follow them as well.
+    """
+
+    def __init__(self):
+        self.matrix = None
+        self.current_matrix_rows = []
+        self.current_row = []
+
+    def matrix(self, ast):
+        matrix_width = len(self.current_matrix_rows[0])
+        if any([len(row) != matrix_width for row in self.current_matrix_rows]):
+            raise NotAMatrixError()
+
+        if not self.matrix:
+            matrix = np.array(self.current_matrix_rows)
+        self.current_matrix_rows = []
+        return ast
+
+    def row(self, ast):
+        if self.current_row:
+            self.current_matrix_rows.append(self.current_row.copy())
+        self.current_row = []
+        return ast
+
+    def mcell(self, ast):
+        self.current_row.append(ast)
+        return ast
+
+    def default(self, ast):
+        return ast
+
+
 class DuplicateLabelsError(Exception): pass
 
 
@@ -57,7 +184,8 @@ class GenotypeMatrix:
         genotype_matrix = np.array(genotype_matrix, dtype='int')
         if len(genotype_matrix.shape) != 2:
             raise ValueError(
-                f"the input matrix should be two-dimensional, but {genotype_matrix} is {len(genotype_matrix.shape)}-dimensional instead."
+                f"the input matrix should be two-dimensional, but {genotype_matrix} is {len(genotype_matrix.shape)}"
+                "-dimensional instead."
             )
 
         if len(genotype_matrix.flat) == 0:
@@ -102,7 +230,7 @@ class GenotypeMatrix:
 
     def matrix(self):
         """
-        Returns a copy of the matrix that was used to initialize the object as a list of lists, where each list is a row 
+        Returns a copy of the matrix that was used to initialize the object as a list of lists, where each list is a row
         in the matrix.
 
         Parameters:
@@ -132,7 +260,7 @@ class GenotypeMatrix:
 
     def cells(self):
         """
-        Returns a mapping between each cell label and a copy of the corresponding row of the matrix. 
+        Returns a mapping between each cell label and a copy of the corresponding row of the matrix.
 
         Parameters:
             none.
@@ -197,22 +325,23 @@ class GenotypeMatrix:
         return out
 
     @classmethod
-    def _from_strings(cls, genotype_matrix, cell_labels=None, mutation_labels=None, matstring_format="SASC"):
+    def _from_strings(cls, genotype_matrix, cell_labels=None, mutation_labels=None, matrix_parser=SASCParser()):
         """
         Builds a GenotypeMatrix from the string representation of its components, if the representations
         are valid.
 
         Parameters:
             genotype_matrix(string):
-                Represents a genotype matrix in SASC, SCITE or SPHYR format.
+                Represents a genotype matrix in string format.
             cell_labels(string?), by default None:
                 Represents the labels for the cells as a string in which the labels are separated by newlines.
                 If the string isn't specified the labels will be generated as described in the __init__.
             mutation_labels(string?), by default None:
                 Represents the labels for the mutations as a string in which the labels are separated by newlines.
                 If the string isn't specified the labels will be generated as described in the __init__.
-            matstring_format(string in {"SASC", "SPHYR", "SCITE"}):
-                The specification for the format of the matrix string.
+            matrix_parser(any object that implements a parse(str) method), by default SASCParser:
+                The object that will be used to parse the matrix. This module exposes three pre-defined
+                classes in SASCParser, SCITEParser and SPHYRParser that are already optimised.
 
         Returns:
             GenotypeMatrix:
@@ -226,7 +355,7 @@ class GenotypeMatrix:
             return [lb.strip() for lb in labels_string.splitlines() if lb.strip() != ""]
 
         return cls(
-            _matrix_parser_from_default_format(matstring_format).parse_matrix(genotype_matrix),
+            matrix_parser.parse(genotype_matrix),
             _parse_labels(cell_labels),
             _parse_labels(mutation_labels)
         )
@@ -236,10 +365,10 @@ class GenotypeMatrix:
         """
         Builds a GenotypeMatrix from its dict form as it'd be obtained from to_serializable_dict.
         """
-        return cls._from_strings(matstring_format='SASC', **dict_representation)
+        return cls._from_strings(**dict_representation)
 
     @classmethod
-    def from_files(cls, matrix_file, matstring_format='SASC', cells_file=None, mutations_file=None):
+    def from_files(cls, matrix_file, cells_file=None, mutations_file=None, matrix_parser=SASCParser()):
         """
         Reads a matrix file and (facultatively) label files, then uses their content as strings to build
         a GenotypeMatrix with the same behaviour as read_from_strings.
@@ -259,7 +388,7 @@ class GenotypeMatrix:
             genotype_matrix=genotype_matrix,
             cell_labels=_read_nullable(cells_file),
             mutation_labels=_read_nullable(mutations_file),
-            matstring_format=matstring_format
+            matrix_parser=matrix_parser
         )
 
     def to_files(self, matrix_file, cells_file=None, mutations_file=None):
@@ -282,150 +411,3 @@ class GenotypeMatrix:
         if mutations_file is not None:
             with open(mutations_file, 'w') as f:
                 f.write(matrix_dict['mutation_labels'])
-
-
-class MatrixFileFormat:
-    """
-    Specifications for the file formats in which matrixes can be stored.
-    """
-
-    def __init__(self, grammar, value_map, transpose=False):
-        """
-        Parameters:
-            grammar(string):
-                Represents a PEG in TatSu format. Some rules have semantics associated to them: the rule
-                labeled with 'matrix' represents a matrix, the rule labeled with 'row' represents
-                a matrix row/column (depending on the value for transpose), and the rule 'mcell' represents
-                a coefficient in the matrix. The grammar is not validated, so adding new grammars
-                must be followed by thorough testing to ensure it works as intended.
-            value_map(dict):
-                A map that associates each possible production of the 'mcell' rule
-                to the value in SASC notation that represents the same information about a mutation;
-                The usual convention is used: 0 = no mutation, 1 = mutation, 2 = unknown.
-            transpose(boolean):
-                If true, then the matrix that is obtained by parsing the file
-                will have to be transposed before being fed to the GenotypeMatrix initializer.
-        """
-        self.grammar = grammar
-        self.value_map = value_map
-        self.transpose = transpose
-
-
-class NotAMatrixError(Exception): pass
-
-
-class MeaninglessCellError(Exception): pass
-
-
-class _MatrixSemantics:
-    """
-    Semantics for a matrix file format. This lets the parsing work as usual
-    while also allowing to build a list of each matrix that was found in the string;
-    the semantics rely on the names for the rules as specified in the documentation
-    for MatrixFileFormat, so new grammars will have to follow them as well.
-    """
-
-    def __init__(self, value_map, transpose):
-        self.matrix_list = []
-        self.current_matrix_rows = []
-        self.current_row = []
-        self._value_map = value_map.copy()
-        self._transpose = transpose
-
-    def matrix(self, ast):
-        matrix_width = len(self.current_matrix_rows[0])
-        if any([len(row) != matrix_width for row in self.current_matrix_rows]):
-            raise NotAMatrixError()
-
-        matrix = np.array(self.current_matrix_rows)
-        self.current_matrix_rows = []
-        if self._transpose: matrix = np.transpose(matrix)
-        self.matrix_list.append(matrix)
-        return ast
-
-    def row(self, ast):
-        if self.current_row != []:
-            self.current_matrix_rows.append(self.current_row.copy())
-        self.current_row = []
-        return ast
-
-    def mcell(self, ast):
-        try:
-            self.current_row.append(self._value_map[ast])
-        except KeyError:
-            raise MeaninglessCellError(ast)
-        return ast
-
-    def default(self, ast):
-        return ast
-
-
-class MatrixParser:
-    """
-    A parser that reads a matrix string with the specified format and outputs the first
-    matrix that is found in the parsed string.
-    """
-
-    def __init__(self, file_format):
-        self.inner_parser = ts.compile(file_format.grammar)
-        self.matrix_builder = _MatrixSemantics(file_format.value_map, file_format.transpose)
-
-    def parse_matrix(self, matrix_string):
-        self.inner_parser.parse(matrix_string, semantics=self.matrix_builder)
-
-        matrix = self.matrix_builder.matrix_list[0]
-        return matrix
-
-
-_formats = {
-    'SASC': MatrixFileFormat(
-        grammar=(
-            r"""@@grammar :: SASC
-            @@whitespace ::  /(?s)[ \t\r\f\v]+/
-            start = matrix $ ;
-            mcell = "0" ~ | "1" ~ | "2" ~ ;
-            row = { mcell };
-            matrix = ("\n").{ row } ;
-            """
-        ),
-        value_map={'0': 0, '1': 1, '2': 2},
-        transpose=False
-    ),
-
-    'SCITE': MatrixFileFormat(
-        grammar=(
-            r"""
-            @@grammar :: SCITE
-            @@whitespace ::  /(?s)[ \t\r\f\v]+/
-            start = matrix $ ;
-            mcell = "0" ~ | "1" ~ | "2" ~ | "3" ~ ;
-            row = { mcell };
-            matrix = ("\n").{ row } ;
-            """
-        ),
-        value_map={'0': 0, '1': 1, '2': 2, '3': 2},
-        transpose=True
-    ),
-
-    'SPHYR': MatrixFileFormat(
-        grammar=(
-            r"""
-            @@grammar :: SPHYR
-            @@whitespace ::  /(?s)[ \t\r\f\v]+/
-            @@eol_comments :: /#([^\n]*?)$/
-            start = cell_number_line "\n" snv_number_line "\n" matrix $ ;
-            cell_number_line = /\d+/;
-            snv_number_line = /\d+/;
-            mcell = "0" ~ | "1" ~ | "-1" ~ ;
-            row = { mcell };
-            matrix = ("\n").{ row };
-            """
-        ),
-        value_map={'0': 0, '1': 1, '-1': 2},
-        transpose=False
-    )
-}
-
-
-def _matrix_parser_from_default_format(matstring_format):
-    return MatrixParser(_formats[matstring_format])

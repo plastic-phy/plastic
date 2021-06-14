@@ -17,8 +17,8 @@ from multiprocessing import cpu_count
 gmat = sc.GenotypeMatrix.from_files(
     matrix_file = 'genotype.txt', 
     mutations_file = 'mutation_labels.txt', 
-    matstring_format = 'SCITE', # SASC, SCITE and SPHYR formats are supported 
-    get_cells = True
+    matrix_parser = sc.SASCParser() # sc.SASCParser, sc.SPHYRParser and sc.SCITEParser are available
+                                    # but anything with a parse() method that puts out a matrix is fine
 )
 
 # infer a tree and get the expected genotype matrix for it, then store these to files.
