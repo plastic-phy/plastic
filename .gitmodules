@@ -1,6 +1,3 @@
 [submodule "sasc"]
-	path = phylo/sasc/sasc
+	path = plastic/phylogeny/sasc
 	url = https://github.com/sciccolella/sasc.git
-[submodule "plastic/sasc/sasc"]
-	path = plastic/sasc/sasc
-	url = https://github.com/sciccolella/sasc
