@@ -1,7 +1,7 @@
 """
 For more informations on the contents of this module:
-- help(celluloid.GenotypeMatrix)
-- help(celluloid.cluster_mutations)
+- help(clustering.GenotypeMatrix)
+- help(clustering.cluster_mutations)
 
 --------
 
@@ -10,7 +10,7 @@ https://github.com/AlgoLab/celluloid
 
 Simple example workflow:
 
-from phylo import celluloid as cl
+from plastic import clustering as cl
 
 to_cluster = cl.GenotypeMatrix.from_files('to_cluster.txt', mutations_file = 'mutations.txt')
 # Reduce the size of the input down to 50 to speed up some complex computation
@@ -32,19 +32,13 @@ from kmodes.kmodes import KModes
 from collections import defaultdict
 
 
-def _conflict_dissim(a, b, **_):
-    v = np.vectorize(lambda ai, bi: ai != 2 and bi != 2 and ai != bi)
-    return np.sum(v(a, b), axis=1)
-
-
 def cluster_mutations(
         genotype_matrix,
         k,
         n_inits=10,
         max_iter=100,
         verbose=False,
-        **kwargs
-):
+        **kwargs):
     """
     Clusters the mutations in a genotype matrix by applying kmodes
 
@@ -76,6 +70,46 @@ def cluster_mutations(
         raise ValueError(f'the number of iterations must be a positive integer, but {max_iter} is not.')
     if type(n_inits) != int or n_inits < 1:
         raise ValueError(f'the number of initializations must be a positive integer, but {n_inits} is not.')
+
+    return _celluloid(genotype_matrix, k, n_inits, max_iter,verbose,**kwargs)
+
+def _conflict_dissim(a, b, **_):
+    v = np.vectorize(lambda ai, bi: ai != 2 and bi != 2 and ai != bi)
+    return np.sum(v(a, b), axis=1)
+
+
+def _celluloid(
+        genotype_matrix,
+        k,
+        n_inits,
+        max_iter,
+        verbose,
+        **kwargs
+):
+    """
+    Clusters the mutations in a genotype matrix by applying kmodes
+
+    Parameters:
+        genotype_matrix(GenotypeMatrix):
+            A matrix representing the results of single-cell sequencing.
+        k(int):
+            The number of clustered mutations in the output matrix.
+            Note that empty clusters will be discarded after clustering.
+        n_inits(int):
+            The number of initiliazations in the clustering process.
+        max_iter(int):
+            The maximum number of iterations in the clustering process.
+        verbose (bool)
+        **kwargs:
+            Additional arguments passed to KModes process.
+
+    Returns:
+        GenotypeMatrix:
+            The result of the clustering process. Each column in the matrix
+            will be the centroid of a non-empty cluster, and will be labeled with
+            a comma-separated list of the labels of the mutations within the cluster.
+            Cell labels are left unaltered.
+    """
 
     mutations_as_points = np.array(genotype_matrix.matrix(), dtype='int').transpose()
     mutation_labels = genotype_matrix.mutation_labels

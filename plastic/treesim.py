@@ -1,8 +1,8 @@
 """
 
 For more info about the components:
-- help(mp3.PhylogenyTree)
-- help(mp3.tree_similarity)
+- help(treesim.PhylogenyTree)
+- help(treesim.tree_similarity)
 
 ---------
 
@@ -11,17 +11,17 @@ https://github.com/AlgoLab/mp3treesim
 
 Simple example workflow:
 
-from phylo import mp3
+from plastic import treesim
 import networkx as nx
 
 # load a tree from a file in DOT format.
-tree1 = mp3.PhylogenyTree.from_file('tree1.gv')
+tree1 = treesim.PhylogenyTree.from_file('tree1.gv')
 
 # build the other from a networkx graph.
 tree2 = nx.DiGraph()
 tree2.add_node('0', label = 'some,comma,separated,label,list')
 ...
-tree2 = mp3.PhylogenyTree(tree2)
+tree2 = treesim.PhylogenyTree(tree2)
 
 # compute similarity
 similarity = tree_similarity(tree1, tree2, ...)
@@ -37,8 +37,21 @@ with open('similarity.txt', w+) as f:
 import mp3treesim as mp3
 from ._core.phylogenytree import PhylogenyTree
 
+def similarity(tree1, tree2, **kwargs):
+    if not isinstance(tree1, PhylogenyTree):
+        raise TypeError(
+            "tree1 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load()"
+            "or make one from a networkx graph."
+        )
+    if not isinstance(tree2, PhylogenyTree):
+        raise TypeError(
+            "tree2 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load()"
+            "or make one from a networkx graph."
+        )
 
-def tree_similarity(
+    return _mp3treesim(tree1, tree2, **kwargs)
+
+def _mp3treesim(
         tree1,
         tree2,
         excluded1='',
@@ -76,17 +89,6 @@ def tree_similarity(
 
     if int(cores) != cores:
         raise ValueError(f'the number of cores must be a positive integer, but {cores} is not.')
-
-    if not isinstance(tree1, PhylogenyTree):
-        raise TypeError(
-            "tree1 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load()"
-            "or make one from a networkx graph."
-        )
-    if not isinstance(tree2, PhylogenyTree):
-        raise TypeError(
-            "tree2 needs to be a valid PhylogenyTree. Load it from a dot file with mp3.load()"
-            "or make one from a networkx graph."
-        )
 
     excluded1 = list(set(excluded1.split(',') + excluded_global.split(',')))
     excluded2 = list(set(excluded2.split(',') + excluded_global.split(',')))

@@ -2,7 +2,7 @@ import networkx as nx
 from copy import deepcopy
 from collections import defaultdict, deque
 from colour import Color
-import phylo._core.sascviz as sv
+import plastic._core.sascviz as sv
 import pygraphviz
 
 

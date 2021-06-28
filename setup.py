@@ -1,18 +1,18 @@
 import setuptools as st
 
-sascdir = 'phylo/sasc/'
+sascdir = 'plastic/sasc/'
 with open('README.md', 'r') as f:
     long_description = f.read()
 
 st.setup(
-    name="phylopipeline",
-    version="0.0.1",
-    description="Pipeline for the AlgoLab suite of cancer phylogeny inference tools",
-    author="Lorenzo Lucarella",
-    author_email="l.lucarella@campus.unimib.it",
+    name="plastic",
+    version="0.0.2",
+    description="Simpler and Faster Development of Tumor Phylogeny Pipelines",
+    author="Lorenzo Lucarella, Simone Ciccolella",
+    author_email="l.lucarella@campus.unimib.it, simone.ciccolella@unimib.it",
     long_description_content_type="text/markdown",
     long_description=long_description,
-    url="https://github.com/AlgoLab/phylo-pipeline/",
+    url="https://github.com/plastic-phy/plastic",
     packages=st.find_packages(),
     classifiers=[
         "Intended Audience :: Science/Research",
