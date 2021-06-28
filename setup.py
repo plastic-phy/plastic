@@ -1,6 +1,6 @@
 import setuptools as st
 
-sascdir = 'plastic/sasc/'
+sascdir = 'plastic/phylogeny/'
 with open('README.md', 'r') as f:
     long_description = f.read()
 
@@ -35,7 +35,7 @@ st.setup(
     python_requires=">=3.8",
     ext_modules=[
         st.Extension(
-            "phylo.sasc",
+            "plastic.phylogeny",
             [sascdir + filepath for filepath in
              ["bindings/sasc.c",
               "bindings/sasc-compute.c",

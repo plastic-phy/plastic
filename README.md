@@ -17,7 +17,7 @@ call ```PhylogenyTree.draw_to_file()``` and its overrides.
 
 Once the required external software has been installed, run:
 ```
-git clone https://github.com/AlgoLab/phylo-pipeline.git --recurse-submodules
+git clone git@github.com:plastic-phy/plastic.git --recurse-submodules
 cd phylo-pipeline
 pip install .
 ```

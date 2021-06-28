@@ -1,8 +1,8 @@
 """
 For more info about this module's functionalities:
-- help(sasc.SASCPhylogeny)
-- help(sasc.GenotypeMatrix)
-- help(sasc.infer_tree)
+- help(phylogeny.SASCPhylogeny)
+- help(plastic.GenotypeMatrix)
+- help(phylogeny.infer_tree)
 
 ---------
 

@@ -1,6 +1,6 @@
 """
 For more informations on the contents of this module:
-- help(clustering.GenotypeMatrix)
+- help(plastic.GenotypeMatrix)
 - help(clustering.cluster_mutations)
 
 --------
@@ -10,28 +10,25 @@ https://github.com/AlgoLab/celluloid
 
 Simple example workflow:
 
-from plastic import clustering as cl
+from plastic import clustering
 
 to_cluster = cl.GenotypeMatrix.from_files('to_cluster.txt', mutations_file = 'mutations.txt')
 # Reduce the size of the input down to 50 to speed up some complex computation
 # (for instance SASC tree inference)
-clustered = cl.cluster_mutations(to_cluster, k = 50)
+clustered = clustering.cluster_mutations(to_cluster, k = 50)
 
 # Get the clustered mutations as comma separated lists of simple mutations
 muts = clustered.mutations()
 
 # Save the matrix and use it for some intensive computation
-cl.GenotypeMatrix.to_files('clustered.txt', mutations_file = 'clustered_mutations.txt')
-from phylo import sasc as sc
-tree = sc.infer_tree(clustered, ...)['inferred_tree']
+clustering.GenotypeMatrix.to_files('clustered.txt', mutations_file = 'clustered_mutations.txt')
 """
 
 from ._core.genotypematrix import GenotypeMatrix
 import numpy as np
 from kmodes.kmodes import KModes
 from collections import defaultdict
-
-
+   
 def cluster_mutations(
         genotype_matrix,
         k,
