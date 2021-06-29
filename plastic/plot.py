@@ -1,6 +1,6 @@
 
 from ._core.genotypematrix import GenotypeMatrix
-from ._core.phylogenytree import PhylogenyTree
+from ._core.phylogenytree import PhylogenyTree, SASCPhylogeny
 from matplotlib import pyplot as plt
 
 def _build_colormap(unclustered, clustered):
@@ -48,29 +48,22 @@ def phylogeny(tree, show_labels=False, show_support=False, graphviz_positioning=
         raise TypeError(
             "tree needs to be a valid PhylogenyTree."
         )
+
+    t = tree.as_digraph()
     
     c_gradient = list(Color("#3270FC").range_to(Color("#397D02"), 101))
 
     if show_labels:
-        labels=_get_label_to_id_map(tree)
-    else:
-        labels=None
+        kwargs['labels'] = _get_label_to_id_map(t)
     
     if show_support:
-        colors = [c_gradient[int(v)].hex for k, v in nx.get_node_attributes(tree, 'support').items()]
-    else:
-        colors = None
+        kwargs['node_color'] = [c_gradient[int(v)].hex for _, v in nx.get_node_attributes(t, 'support').items()]
 
     if graphviz_positioning:
-        pos  = nx.nx_agraph.graphviz_layout(tree, prog="dot")
-    else:
-        pos = None
+        kwargs['pos'] = nx.nx_agraph.graphviz_layout(t, prog="dot")
 
     nx.draw(
-        tree,
-        pos=pos,
-        labels=labels,
-        node_color=colors,
+        t,
         **kwargs
     )
 

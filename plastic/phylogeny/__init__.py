@@ -1,1 +1,1 @@
-from ._phylogeny import *
+from ._phylogeny import inference
