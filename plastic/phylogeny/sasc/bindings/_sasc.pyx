@@ -32,8 +32,8 @@ out['expected_genotype_matrix'].to_files('expected_genotype.txt')
 
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
-from ._core.genotypematrix import GenotypeMatrix
-from ._core.phylogenytree import SASCPhylogeny
+from plastic._core.genotypematrix import GenotypeMatrix
+from plastic._core.phylogenytree import SASCPhylogeny
 import numpy as np
 import pandas as pd
 import networkx as nx
@@ -41,7 +41,7 @@ cimport sascpycapi as sca
 from libc.limits cimport INT_MAX
 
 
-def infer_tree(
+def sasc(
         labeled_genotype_matrix,
         alphas,
         beta,

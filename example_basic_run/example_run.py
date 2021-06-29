@@ -1,15 +1,15 @@
-from phylo import sasc as sc, celluloid as cd, mp3
+from plastic import phylogeny as ph, clustering as cl, treesim as ts
 from multiprocessing import cpu_count
 
 def main():
     # Let's parse a matrix and cluster it to different degrees
-    matrix = cd.GenotypeMatrix.from_files('example_in')
+    matrix = cl.GenotypeMatrix.from_files('example_in')
     print('starting clustering process')
-    clustered1 = cd.cluster_mutations(matrix, k=150, number_of_iterations=1, verbose=True)
+    clustered1 = cl.cluster_mutations(matrix, k=150, n_inits=1, verbose=True)
     clustered1.to_files('clust/clustered1', mutations_file='mut_clusters')
     print('starting SASC')
 
-    out1 = sc.infer_tree(
+    out1 = ph.infer_phylogeny(
         clustered1.with_automatic_mutation_labels(),
         alphas=0.1,
         beta=0.001,
@@ -23,7 +23,7 @@ def main():
         cores=cpu_count()
     )
 
-    out2 = sc.infer_tree(
+    out2 = ph.infer_phylogeny(
         clustered1.with_automatic_mutation_labels(),
         alphas=0.1,
         beta=0.001,
@@ -43,7 +43,7 @@ def main():
     out2['inferred_tree'].with_visualization_features(collapse_simple_paths=True) \
         .draw_to_file('trees/tree2.png', show_color=False)
 
-    similarity = mp3.tree_similarity(
+    similarity = ts.similarity(
         out1['inferred_tree'],
         out2['inferred_tree'],
         ignore_unlabeled_nodes=True,
