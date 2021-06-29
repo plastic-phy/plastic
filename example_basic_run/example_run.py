@@ -1,9 +1,9 @@
-from plastic import phylogeny as ph, clustering as cl, treesim as ts
+from plastic import phylogeny as ph, clustering as cl, treesim as ts, GenotypeMatrix
 from multiprocessing import cpu_count
 
 def main():
     # Let's parse a matrix and cluster it to different degrees
-    matrix = cl.GenotypeMatrix.from_files('example_in')
+    matrix = GenotypeMatrix.from_files('example_in')
     print('starting clustering process')
     clustered1 = cl.cluster_mutations(matrix, k=150, n_inits=1, verbose=True)
     clustered1.to_files('clust/clustered1', mutations_file='mut_clusters')
