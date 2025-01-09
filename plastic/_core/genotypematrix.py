@@ -325,7 +325,7 @@ class GenotypeMatrix:
         return out
 
     @classmethod
-    def _from_strings(cls, genotype_matrix, cell_labels=None, mutation_labels=None, matrix_parser=SASCParser()):
+    def _from_strings(cls, genotype_matrix, cell_labels=None, mutation_labels=None, str_parser="SASCParser"):
         """
         Builds a GenotypeMatrix from the string representation of its components, if the representations
         are valid.
@@ -342,12 +342,25 @@ class GenotypeMatrix:
             matrix_parser(any object that implements a parse(str) method), by default SASCParser:
                 The object that will be used to parse the matrix. This module exposes three pre-defined
                 classes in SASCParser, SCITEParser and SPHYRParser that are already optimised.
-
+            str_parser(string), by default SASCParser:
+                represent the parser to use
         Returns:
             GenotypeMatrix:
                 The object representation of the input; refer to the initializer for the
                 validation conditions and the behaviour if label files are omitted.
         """
+
+        if str_parser == "SASCParser":
+            matrix_parser = SASCParser()
+        
+        elif str_parser == "SCITEParser":
+            matrix_parser = SCITEParser()
+        
+        elif str_parser == "SPHYRParser":
+            matrix_parser = SPHYRParser()
+        
+        else:
+            matrix_parser = PEGSpecifiedParser()
 
         def _parse_labels(labels_string):
             if labels_string is None:
@@ -368,10 +381,12 @@ class GenotypeMatrix:
         return cls._from_strings(**dict_representation)
 
     @classmethod
-    def from_files(cls, matrix_file, cells_file=None, mutations_file=None, matrix_parser=SASCParser()):
+    def from_files(cls, matrix_file, cells_file=None, mutations_file=None, str_parser="SASCParser"):
         """
         Reads a matrix file and (facultatively) label files, then uses their content as strings to build
         a GenotypeMatrix with the same behaviour as read_from_strings.
+        
+        str_parser is a string that specifies the parser to use
         """
 
         def _read_nullable(file_name, default_output=None):
@@ -388,7 +403,7 @@ class GenotypeMatrix:
             genotype_matrix=genotype_matrix,
             cell_labels=_read_nullable(cells_file),
             mutation_labels=_read_nullable(mutations_file),
-            matrix_parser=matrix_parser
+            str_parser=str_parser
         )
 
     def to_files(self, matrix_file, cells_file=None, mutations_file=None):
