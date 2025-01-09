@@ -18,30 +18,30 @@ call ```PhylogenyTree.draw_to_file()``` and its overrides.
 Once the required external software has been installed, run:
 ```
 git clone git@github.com:plastic-phy/plastic.git --recurse-submodules
-cd phylo-pipeline
+cd plastic
 pip install .
 ```
-The tool will be installed under the name ```phylopipeline```.
+The tool will be installed under the name ```plastic```.
 
 ### USAGE
 
-This package exposes one module, ```phylo``` and three public submodules:
+This package exposes one module, ```plastic``` and three public submodules:
 ```
-phylo.mp3
-phylo.sasc
-phylo.celluloid
+plastic.treesim (mp3)
+plastic.phylogeny (sasc)
+plastic.clustering (celluloid)
 ```
 That can be imported with the usual python import directives like:
 ```
-from phylo import sasc as sc
-from phylo.celluloid import cluster_mutations
+from plastic import phylogeny as ph
+from plastic.clustering import cluster_mutations
 ```
 
 The three modules have been designed with the intent to closely mirror the behaviour of the three original tools while exposing them as library modules. Reading the original documentations of the tools and the documentation of the modules, which is 
 reachable with the likes of:
 ```
-from phylo import sasc
-help(sasc)
+from plastic import phylogeny
+help(phylogeny)
 ```
 will be enough to understand the usage of the modules.
 
