@@ -406,11 +406,12 @@ class GenotypeMatrix:
             str_parser=str_parser
         )
 
-    def to_files(self, matrix_file, cells_file=None, mutations_file=None):
+    def to_files(self, matrix_file, cells_file=None, mutations_file=None, output_type = 'sasc'):
         """
         Dumps a matrix to a file with a specified format. Also dumps the cell labels and the mutation labels
         if outputs are specified for them as well. The files will be created if they don't exist,
         but only if the target directory already exists. If the files already exist, **they will be overwritten**.
+        output_type must be used to specify the format: sasc or SCITE
         """
 
         output_files = [file for file in {matrix_file, cells_file, mutations_file} if file is not None]
@@ -418,6 +419,14 @@ class GenotypeMatrix:
             raise AttributeError('the same file was specified for more than one output.')
 
         matrix_dict = self.to_serializable_dict()
+        
+        if output_type == 'SCITE':
+            new_matrix = matrix_dict['genotype_matrix'].replace('2', '3')
+            
+            new_matrix = [row.split() for row in new_matrix.split('\n')]
+            new_matrix_transposed = list(map(list, zip(*new_matrix)))
+            matrix_dict['genotype_matrix'] = '\n'.join([' '.join(row) for row in new_matrix_transposed])
+
         with open(matrix_file, 'w') as f:
             f.write(matrix_dict['genotype_matrix'])
         if cells_file is not None:
