@@ -68,30 +68,36 @@ def create_command(parameters, matrix, cells, mutations, matrix_file_path, cells
         final_commands.append(internal_command)
     return final_commands
 
-def run_not_specified(matrix : GenotypeMatrix, parameters : list[list[str]]
+def inference(matrix : GenotypeMatrix, parameters : list[list[str]]
                       , matrix_placeholder : str,
                       output : str, wd : str = os.getcwd(), cells_placeholder : str = None,
                       mutations_placeholder : str = None, type_tree = PhylogenyTree) -> PhylogenyTree:
     
     '''
-    Returns a PhylogenyTree object as the result of the sequence of commands in parameters, all the executable must be 
-    downloaded and compiled before the use by the user.
+    Returns a PhylogenyTree object as the result of executing a sequence of commands specified in parameters, all the executables must be 
+    downloaded and compiled by the user before the use.
 
     input:
         matrix: GenotypeMatrix or a subclass object that implements a correct version of the to_files method
-        parameters: list of lists of strings where the strings are all the parts of the commands and the internal lists are 
+        parameters: list of lists of strings (list[list[str]]) where the strings are all the parts of the commands and the internal lists are 
             the total commands, in at least one of the internal lists must be the value of matrix_placeholder
+            example:
+                if the command to run the executable is:
+                path/to/the/executable/included path/to/the/matrix/file -option1 a -option2 b -option3 c
+                than the parameters variable must be:
+                parameters = [['path/to/the/executable/included', 'matrix_placeholder', '-option1', 'a', '-option2', 'b', '-option3', 'c']]
+                if two or more different commands are needed than the parameters variable must be:
+                parameters = [['path/to/the/first/executable/included', 'matrix_placeholder_if_needed_in_this_command', '-option1', 'a', '-option2', 'b', '-option3', 'c'],
+                                'path/to/the/second/executable/included', 'matrix_placeholder_if_needed_in_this_command', '-option1', 'd', '-option2', 'e', '-option3', 'f']
         matrix_placeholder: str representing the placeholder for the matrix in parameters, this value will be replaced before the use
-            with the path to the temporary file used to store the matrix's data, to avoid errors it must be unique in parameters
+            with the path to the temporary file used to store the matrix data, must be unique within parameters to prevent errors
         output: str representing the name of the output obtained as result of the execution of the last command to be 
-            used for the creation of the PhylogenyTree if it provides one, otherwise output must be 'stdout'
+            used to construct the PhylogenyTree. if the output is printed to the terminal use 'stdout'
         wd: str representing the path to the working directory
         cells_placeholder: str representing the placeholder for the cells file in parameters, this value will be replaced before the use
-            with the path to the temporary file used to store the cells' names, to avoid errors it must be unique and different from the
-            matrix_placeholder
+            with the path to the temporary file used to store the cells names, must be unique and different from matrix_placeholder
         mutations_placeholder: str representing the placeholder for the mutations file in parameters, this value will be replaced before the use
-            with the path to the temporary file used to store the mutations' names, to avoid errors it must be unique and different from the
-            matrix_placeholder and the cells_placeholder
+            with the path to the temporary file used to store the mutations' names, must be unique and different from both matrix_placeholder and cells_placeholder
         type_tree: PhylogenyTree or a subclass implementing the from_file or from_dotstring method used to instantiate the tree that will
             be returned, type_tree must not be an object of a class, it must be the class
     '''

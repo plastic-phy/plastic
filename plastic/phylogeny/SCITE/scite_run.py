@@ -14,7 +14,7 @@ def r_l_check(par):
 
 def seed_check(par):
     """
-    checks that par is int greater or equal to 0
+    checks that par is int greater than or equal to 0
     """
     if isinstance(par, int) and par >= 0:
         return True
@@ -23,7 +23,7 @@ def seed_check(par):
 
 def ad_fd_check(par):
     """
-    checks that par is float and greater than 0
+    checks that par is a float greater than 0
     """
     if isinstance(par, float) and par > 0:
         return True
@@ -41,7 +41,7 @@ def s_transpose_a_check(par):
 
 def e_check(par):
     """
-    checks that par is float between 0 and 1 , -1 is default
+    checks that par is float between 0 and 1 , the default value is -1
     """
     if isinstance(par, float) and par >= 0 and par <= 1 or par == -1.0:
         return True
@@ -77,7 +77,7 @@ def g_check(par):
 
 def move_probs_check(par, val):
     """
-    checks that par is a tuple of 3 floats if val is false, 2 otherwise, all the elements in par must be values between 0 and 1
+    Checks that par is a tuple of three floats if val is False, or a tuple of two floats otherwise. All elements in par must be between 0 and 1
     """
     if isinstance(par, tuple):
         if val and len(par) == 2:
@@ -202,13 +202,14 @@ def create_command(i, scite_path, names, n, m, fd, ad, r, l, s,
                              ad = ad, r = r, l = l, s = s, transpose = transpose, e = e, x = x,
                              sd = sd, o = o, a = a, g = g, seed = seed, t = t, move_probs = move_probs)
 
-def run_scite(matrix : GenotypeMatrix, scite_path : str, fd : float, ad : float, wd : str = os.getcwd(), r : int = 1,
+def inference(matrix : GenotypeMatrix, scite_path : str, fd : float, ad : float, wd : str = os.getcwd(), r : int = 1,
               l : int = 900000, s : bool = False, transpose : bool = False, e : float = -1.0, x : float = 10.0, sd : float = 0.1,
               o : str = 'output', a : bool = False, g : float = 1.0, seed : int = 0, t : str = '',
               move_probs : tuple = (0.55, 0.4, 0.05))-> PhylogenyTree: 
     """
     Returns a PhylogenyTree object as the best result of the downloaded and compiled SCITE program by the user.
-    For better informations read the README file for SCITE
+    Only the mutation absence/presence option is available.
+    For more information read the README file for SCITE
 
     input:
         matrix: GenotypeMatrix object used to run SCITE
@@ -225,16 +226,16 @@ def run_scite(matrix : GenotypeMatrix, scite_path : str, fd : float, ad : float,
         e: float between 0 and 1 representing the learning of error beta, specify the probability to chose the move for
            changing the error rate in the MCMC, by default set to -1.0 to be ignored by the program
         x: float representing the scaling of the known error rate for the MH jump, by default set to 10
-        sd: float representing the prior standard deviation for AD erro rate, by default set to 0.1
+        sd: float representing the prior standard deviation for AD error rate, by default set to 0.1
         o: string representing the name used by SCITE as base name for the output files
         a: bool representing if the option '-a' is selected for the program, with this option SCITE adds the individual 
-           cells as additional nodes to the reported trees, read the SCITE README file for more informations
-        g: float representing the desired value of gamma, read the SCITE README file for more informations
+           cells as additional nodes to the reported trees, read the SCITE README file for more information
+        g: float representing the desired value of gamma, read the SCITE README file for more information
         seed: int used as a fixed seed for the random number generator
         t: string representing the path to a file with the true tree in GraphViz format
         move_probs: tuple of three floats which changes the default probabilities for the three MCMC moves to the specified 
                     values. If -transpose is selected and move_probs is provided then move_probs must be a tuple of two floats,
-                    read the SCITE README file for more informations
+                    read the SCITE README file for more information
 
         NOTE: the '-p' and '-no_tree_list' options are not available
     """

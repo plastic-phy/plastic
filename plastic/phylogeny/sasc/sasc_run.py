@@ -1,5 +1,5 @@
-from .sasc import sasc as _sasc
-from .._core.genotypematrix import GenotypeMatrix 
+from .._sasc import sasc as _sasc
+from plastic import GenotypeMatrix 
 
 def inference(genotype_matrix, **kwargs):
 
