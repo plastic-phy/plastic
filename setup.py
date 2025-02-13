@@ -8,8 +8,8 @@ st.setup(
     name="plastic",
     version="0.0.2",
     description="Simpler and Faster Development of Tumor Phylogeny Pipelines",
-    author="Lorenzo Lucarella, Simone Ciccolella",
-    author_email="l.lucarella@campus.unimib.it, simone.ciccolella@unimib.it",
+    author="Lorenzo Lucarella, Simone Ciccolella, Andy Giacon",
+    author_email="l.lucarella@campus.unimib.it, simone.ciccolella@unimib.it, a.giacon@campus.unimib.it",
     long_description_content_type="text/markdown",
     long_description=long_description,
     url="https://github.com/plastic-phy/plastic",
@@ -18,7 +18,7 @@ st.setup(
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
         "Operating System :: POSIX :: Linux",
-        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Scientific/Engineering :: Bio-Informatics"
     ],
@@ -30,9 +30,10 @@ st.setup(
         'kmodes',
         'networkx',
         'colour',
-        'numpy'
+        'numpy',
+        'matplotlib'
     ],
-    python_requires=">=3.8",
+    python_requires="3.10",
     ext_modules=[
         st.Extension(
             "plastic.phylogeny._sasc",

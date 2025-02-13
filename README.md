@@ -1,4 +1,4 @@
-# PHYLO-PIPELINE
+# PLASTIC
 
 A pipeline for the following toolchain developed by AlgoLabs:  
 - [celluloid](https://github.com/AlgoLab/celluloid)  
@@ -8,7 +8,14 @@ A pipeline for the following toolchain developed by AlgoLabs:
 - [mp3](https://github.com/AlgoLab/mp3treesim)  
     A tool for comparisons between (potentially) fully labeled phylogenies with poly-occurring labels, with a similarity measure based on the comparison of the minimum topologies for each label triplet found in the two trees.
 
-
+The pipeline also include:
+- [SCITE](https://github.com/cbg-ethz/SCITE)
+    A software package to compute mutation histories of somatic cells. Given noisy mutation profiles of single cells, SCITE performs a stochastic search to find the Maximum Likelihood (ML) or Maximum aposterori (MAP) tree and/or to sample from the posterior probability distribution. Tree reconstruction can be combined with an estimation of the error rates in the mutation profiles.
+- [SPhyR](https://github.com/elkebir-group/SPhyR)
+    An algorithm for reconstructing phylogenetic trees from single-cell sequencing data. SPhyR employs the k-Dollo phylogeny model, where each SNV can only be gained once but lost k times.
+- [Generic]
+    A generic algorithm to run a software not present in the list above.
+    
 ### INSTALLATION
 
 Note: in order to install this package, a [graphviz-dev](https://pygraphviz.github.io/documentation/stable/install.html) installation is required.
@@ -28,7 +35,7 @@ The tool will be installed under the name ```plastic```.
 This package exposes one module, ```plastic``` and three public submodules:
 ```
 plastic.treesim (mp3)
-plastic.phylogeny (sasc)
+plastic.phylogeny (sasc, SCITE, SPhyR, generic)
 plastic.clustering (celluloid)
 ```
 That can be imported with the usual python import directives like:
