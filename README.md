@@ -24,7 +24,7 @@ call ```PhylogenyTree.draw_to_file()``` and its overrides.
 
 Once the required external software has been installed, run:
 ```
-git clone git@github.com:plastic-phy/plastic.git --recurse-submodules
+git clone https://github.com/plastic-phy/plastic.git --recurse-submodules
 cd plastic
 pip install .
 ```

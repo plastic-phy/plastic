@@ -33,10 +33,10 @@ st.setup(
         'numpy',
         'matplotlib'
     ],
-    python_requires="3.10",
+    python_requires="==3.10.*",
     ext_modules=[
         st.Extension(
-            "plastic.phylogeny._sasc",
+            "plastic.phylogeny.sasc._sasc",
             [sascdir + filepath for filepath in
              ["bindings/_sasc.c",
               "bindings/sasc-compute.c",
