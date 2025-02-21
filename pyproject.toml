@@ -1,6 +1,41 @@
 [build-system]
-    requires = [
-        "setuptools",
-        "wheel"
-    ]
-    build-backend = "setuptools.build_meta"
+requires = ["setuptools", "wheel", "cython", "numpy"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plastic"
+version = "0.0.2"
+description = "Simpler and Faster Development of Tumor Phylogeny Pipelines"
+authors = [
+    { name = "Lorenzo Lucarella", email = "l.lucarella@campus.unimib.it" },
+    { name = "Simone Ciccolella", email = "simone.ciccolella@unimib.it" },
+    { name = "Andy Giacon", email = "a.giacon@campus.unimib.it" }
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = [
+    "pandas",
+    "tatsu",
+    "mp3treesim",
+    "pygraphviz",
+    "kmodes",
+    "networkx",
+    "colour",
+    "numpy",
+    "matplotlib"
+]
+
+[project.urls]
+Homepage = "https://github.com/plastic-phy/plastic"
+Repository = "https://github.com/plastic-phy/plastic"
+
+[tool.setuptools]
+packages = ["plastic", "plastic._core", "plastic.phylogeny", "plastic.phylogeny.sasc", "plastic.phylogeny.SCITE", "plastic.phylogeny.SPhyR", "plastic.phylogeny.generic"]
+
+[tool.setuptools.package-data]
+"plastic.phylogeny.sasc" = ["bindings/*.pxd", "bindings/*.pyx", "bindings/*.h", "sasc/*.h"]
+
+[tool.cython]
+language_level = "3"
+

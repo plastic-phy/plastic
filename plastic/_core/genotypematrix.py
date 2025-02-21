@@ -60,6 +60,18 @@ class SPHYRParser(_GenotypeMatrixParser):
         # Skip the header
         return _loadstr('\n'.join(lines[2:]))
 
+class KDPFCParser(_GenotypeMatrixParser):
+    def __init__(self, no_comments=True):
+        super().__init__(value_map={0: 0, 1: 1, 2: 2}, transpose=False)
+
+    def parse_function(self, matrix_string):
+        lines = matrix_string.split('\n')
+        # Delete EOL comments by trimming the line beyond the hash
+        for line in lines:
+            line = line.split('#')[0]
+        # Skip the header
+        return _loadstr('\n'.join(lines[2:]))
+
 
 class PEGSpecifiedParser(_GenotypeMatrixParser):
     """
@@ -325,7 +337,7 @@ class GenotypeMatrix:
         return out
 
     @classmethod
-    def _from_strings(cls, genotype_matrix, cell_labels=None, mutation_labels=None, matrix_parser=SASCParser()):
+    def _from_strings(cls, genotype_matrix, cell_labels=None, mutation_labels=None, str_parser="SASCParser"):
         """
         Builds a GenotypeMatrix from the string representation of its components, if the representations
         are valid.
@@ -342,12 +354,27 @@ class GenotypeMatrix:
             matrix_parser(any object that implements a parse(str) method), by default SASCParser:
                 The object that will be used to parse the matrix. This module exposes three pre-defined
                 classes in SASCParser, SCITEParser and SPHYRParser that are already optimised.
-
+            str_parser(string), by default SASCParser:
+                represent the parser to use: SASCParser, SCITEParser, SPHYRParser, KDPFCParser or something else
         Returns:
             GenotypeMatrix:
                 The object representation of the input; refer to the initializer for the
                 validation conditions and the behaviour if label files are omitted.
         """
+
+        if str_parser == "SASCParser":
+            matrix_parser = SASCParser()
+        
+        elif str_parser == "SCITEParser":
+            matrix_parser = SCITEParser()
+        
+        elif str_parser == "SPHYRParser":
+            matrix_parser = SPHYRParser()
+        
+        elif str_parser == "KDPFCParser":
+            matrix_parser = KDPFCParser()
+        else:
+            matrix_parser = PEGSpecifiedParser()
 
         def _parse_labels(labels_string):
             if labels_string is None:
@@ -368,10 +395,12 @@ class GenotypeMatrix:
         return cls._from_strings(**dict_representation)
 
     @classmethod
-    def from_files(cls, matrix_file, cells_file=None, mutations_file=None, matrix_parser=SASCParser()):
+    def from_files(cls, matrix_file, cells_file=None, mutations_file=None, str_parser="SASCParser"):
         """
         Reads a matrix file and (facultatively) label files, then uses their content as strings to build
         a GenotypeMatrix with the same behaviour as read_from_strings.
+        
+        str_parser is a string that specifies the parser to use
         """
 
         def _read_nullable(file_name, default_output=None):
@@ -388,14 +417,15 @@ class GenotypeMatrix:
             genotype_matrix=genotype_matrix,
             cell_labels=_read_nullable(cells_file),
             mutation_labels=_read_nullable(mutations_file),
-            matrix_parser=matrix_parser
+            str_parser=str_parser
         )
 
-    def to_files(self, matrix_file, cells_file=None, mutations_file=None):
+    def to_files(self, matrix_file, cells_file=None, mutations_file=None, output_type = 'sasc'):
         """
         Dumps a matrix to a file with a specified format. Also dumps the cell labels and the mutation labels
         if outputs are specified for them as well. The files will be created if they don't exist,
         but only if the target directory already exists. If the files already exist, **they will be overwritten**.
+        output_type must be used to specify the format: sasc, SCITE or SPhyR
         """
 
         output_files = [file for file in {matrix_file, cells_file, mutations_file} if file is not None]
@@ -403,6 +433,19 @@ class GenotypeMatrix:
             raise AttributeError('the same file was specified for more than one output.')
 
         matrix_dict = self.to_serializable_dict()
+        
+        if output_type == 'SCITE':
+            new_matrix = matrix_dict['genotype_matrix'].replace('2', '3')
+            
+            new_matrix = [row.split() for row in new_matrix.split('\n')]
+            new_matrix_transposed = list(map(list, zip(*new_matrix)))
+            matrix_dict['genotype_matrix'] = '\n'.join([' '.join(row) for row in new_matrix_transposed])
+
+        if output_type == 'SPhyR':
+            new_matrix = matrix_dict['genotype_matrix'].replace('2', '-1')
+            new_matrix = str(self._data.shape[0]) + ' #cells' + '\n' + str(self._data.shape[1]) + ' #SNVs' + '\n' + new_matrix
+            matrix_dict['genotype_matrix'] = new_matrix
+
         with open(matrix_file, 'w') as f:
             f.write(matrix_dict['genotype_matrix'])
         if cells_file is not None:

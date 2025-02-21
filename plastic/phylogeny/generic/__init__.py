@@ -1,0 +1,1 @@
+from .not_specified_run import inference
