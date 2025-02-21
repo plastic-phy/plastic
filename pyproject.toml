@@ -31,7 +31,7 @@ Homepage = "https://github.com/plastic-phy/plastic"
 Repository = "https://github.com/plastic-phy/plastic"
 
 [tool.setuptools]
-packages = ["plastic", "plastic.phylogeny", "plastic.phylogeny.sasc"]
+packages = ["plastic", "plastic._core", "plastic.phylogeny", "plastic.phylogeny.sasc", "plastic.phylogeny.SCITE", "plastic.phylogeny.SPhyR", "plastic.phylogeny.generic"]
 
 [tool.setuptools.package-data]
 "plastic.phylogeny.sasc" = ["bindings/*.pxd", "bindings/*.pyx", "bindings/*.h", "sasc/*.h"]
