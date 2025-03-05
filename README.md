@@ -8,6 +8,9 @@ A pipeline for the following toolchain developed by AlgoLabs:
 - [mp3](https://github.com/AlgoLab/mp3treesim)  
     A tool for comparisons between (potentially) fully labeled phylogenies with poly-occurring labels, with a similarity measure based on the comparison of the minimum topologies for each label triplet found in the two trees.
 
+In the tumor phylogeny pipeline depicted below (from https://doi.org/10.1007/978-3-031-82768-6_8), celluloid would perform step e. Mutation Clustering, sasc would perform step f. Phylogeny Inference, and mp3 would perform step h. Tree Similarity.
+
+![image](images/framework.png)
 
 ### INSTALLATION
 
