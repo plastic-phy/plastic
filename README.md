@@ -8,6 +8,7 @@ A pipeline for the following toolchain developed by AlgoLabs:
 - [mp3](https://github.com/AlgoLab/mp3treesim)  
     A tool for comparisons between (potentially) fully labeled phylogenies with poly-occurring labels, with a similarity measure based on the comparison of the minimum topologies for each label triplet found in the two trees.
 
+
 The pipeline also include:
 - [SCITE](https://github.com/cbg-ethz/SCITE)
     A software package to compute mutation histories of somatic cells. Given noisy mutation profiles of single cells, SCITE performs a stochastic search to find the Maximum Likelihood (ML) or Maximum aposterori (MAP) tree and/or to sample from the posterior probability distribution. Tree reconstruction can be combined with an estimation of the error rates in the mutation profiles.
@@ -16,6 +17,12 @@ The pipeline also include:
 - [Generic]
     A generic algorithm to run a software not present in the list above.
     
+
+In the tumor phylogeny pipeline depicted below (from https://doi.org/10.1007/978-3-031-82768-6_8), celluloid would perform step e. Mutation Clustering, sasc would perform step f. Phylogeny Inference, and mp3 would perform step h. Tree Similarity.
+
+![image](images/framework.png)
+
+
 ### INSTALLATION
 
 Note: in order to install this package, a [graphviz-dev](https://pygraphviz.github.io/documentation/stable/install.html) installation is required.
