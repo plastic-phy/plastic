@@ -1,4 +1,4 @@
-# PHYLO-PIPELINE
+# PLASTIC
 
 A pipeline for the following toolchain developed by AlgoLabs:  
 - [celluloid](https://github.com/AlgoLab/celluloid)  
@@ -8,9 +8,20 @@ A pipeline for the following toolchain developed by AlgoLabs:
 - [mp3](https://github.com/AlgoLab/mp3treesim)  
     A tool for comparisons between (potentially) fully labeled phylogenies with poly-occurring labels, with a similarity measure based on the comparison of the minimum topologies for each label triplet found in the two trees.
 
+
+The pipeline also include:
+- [SCITE](https://github.com/cbg-ethz/SCITE)
+    A software package to compute mutation histories of somatic cells. Given noisy mutation profiles of single cells, SCITE performs a stochastic search to find the Maximum Likelihood (ML) or Maximum aposterori (MAP) tree and/or to sample from the posterior probability distribution. Tree reconstruction can be combined with an estimation of the error rates in the mutation profiles.
+- [SPhyR](https://github.com/elkebir-group/SPhyR)
+    An algorithm for reconstructing phylogenetic trees from single-cell sequencing data. SPhyR employs the k-Dollo phylogeny model, where each SNV can only be gained once but lost k times.
+- [Generic]
+    A generic algorithm to run a software not present in the list above.
+    
+
 In the tumor phylogeny pipeline depicted below (from https://doi.org/10.1007/978-3-031-82768-6_8), celluloid would perform step e. Mutation Clustering, sasc would perform step f. Phylogeny Inference, and mp3 would perform step h. Tree Similarity.
 
 ![image](images/framework.png)
+
 
 ### INSTALLATION
 
@@ -20,31 +31,31 @@ call ```PhylogenyTree.draw_to_file()``` and its overrides.
 
 Once the required external software has been installed, run:
 ```
-git clone git@github.com:plastic-phy/plastic.git --recurse-submodules
-cd phylo-pipeline
+git clone https://github.com/plastic-phy/plastic.git --recurse-submodules
+cd plastic
 pip install .
 ```
-The tool will be installed under the name ```phylopipeline```.
+The tool will be installed under the name ```plastic```.
 
 ### USAGE
 
-This package exposes one module, ```phylo``` and three public submodules:
+This package exposes one module, ```plastic``` and three public submodules:
 ```
-phylo.mp3
-phylo.sasc
-phylo.celluloid
+plastic.treesim (mp3)
+plastic.phylogeny (sasc, SCITE, SPhyR, generic)
+plastic.clustering (celluloid)
 ```
 That can be imported with the usual python import directives like:
 ```
-from phylo import sasc as sc
-from phylo.celluloid import cluster_mutations
+from plastic import phylogeny as ph
+from plastic.clustering import cluster_mutations
 ```
 
 The three modules have been designed with the intent to closely mirror the behaviour of the three original tools while exposing them as library modules. Reading the original documentations of the tools and the documentation of the modules, which is 
 reachable with the likes of:
 ```
-from phylo import sasc
-help(sasc)
+from plastic import phylogeny
+help(phylogeny)
 ```
 will be enough to understand the usage of the modules.
 

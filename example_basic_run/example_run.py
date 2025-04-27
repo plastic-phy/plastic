@@ -7,9 +7,8 @@ def main():
     print('starting clustering process')
     clustered1 = cl.cluster_mutations(matrix, k=150, n_inits=1, verbose=True)
     clustered1.to_files('clust/clustered1', mutations_file='mut_clusters')
-    print('starting SASC')
 
-    out1 = ph.inference(
+    out1 = ph.sasc.inference(
         clustered1.with_automatic_mutation_labels(),
         alphas=0.1,
         beta=0.001,
@@ -23,7 +22,7 @@ def main():
         cores=cpu_count()
     )
 
-    out2 = ph.inference(
+    out2 = ph.sasc.inference(
         clustered1.with_automatic_mutation_labels(),
         alphas=0.1,
         beta=0.001,
